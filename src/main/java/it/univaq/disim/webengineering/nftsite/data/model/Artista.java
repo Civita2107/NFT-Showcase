@@ -1,5 +1,9 @@
 package it.univaq.disim.webengineering.nftsite.data.model;
 
-public class Artista {
+public interface Artista {
     
+    String getUsername();
+    String getEmail();
+    void setUsername();
+    void setEmail();
 }
