@@ -1,9 +1,12 @@
-package it.univaq.disim.webengineering.nftsite.data.impl;
+package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
-import it.univaq.disim.webengineering.nftsite.data.model.Artista;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Artista;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
-public class ArtistaImpl implements Artista {
+
+public class ArtistaImpl extends DataItemImpl<Integer> implements Artista {
     
+    private int id;
     private String username;
     private String email;
 
@@ -18,6 +21,8 @@ public class ArtistaImpl implements Artista {
         this.username = user;
         this.email = email;
     }
+
+    
 
     @Override
     public String getUsername() {
@@ -37,5 +42,14 @@ public class ArtistaImpl implements Artista {
     @Override
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

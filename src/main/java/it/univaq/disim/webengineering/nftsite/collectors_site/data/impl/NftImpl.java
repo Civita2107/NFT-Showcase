@@ -1,9 +1,11 @@
-package it.univaq.disim.webengineering.nftsite.data.impl;
+package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
-import it.univaq.disim.webengineering.nftsite.data.model.Artista;
-import it.univaq.disim.webengineering.nftsite.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Artista;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
-public class NftImpl implements Nft {
+
+public class NftImpl extends DataItemImpl<Integer> implements Nft {
     
     private String nome;
     private Artista artista;

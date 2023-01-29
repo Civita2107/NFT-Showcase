@@ -1,11 +1,13 @@
-package it.univaq.disim.webengineering.nftsite.data.impl;
+package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import java.util.List;
 
-import it.univaq.disim.webengineering.nftsite.data.model.Nft;
-import it.univaq.disim.webengineering.nftsite.data.model.Wallet;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
-public class WalletImpl implements Wallet {
+
+public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
 
     private String username;
     private List<Nft> nfts;
