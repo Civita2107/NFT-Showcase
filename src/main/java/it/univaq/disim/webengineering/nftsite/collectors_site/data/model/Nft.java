@@ -5,13 +5,26 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 public interface Nft extends DataItem<Integer> {
     
     String getTitle();
-    Artista getArtista();
+
+    void setTitle(String title);
+
     String getTokenId();
-    String getContractAddress();
+
+    void setTokenId(String tokenId);
+
+    String getContractAddress(); //da qui prendiamo il wallet del creatore
+
+    void setContractAddress(String contractAddress);
+
     String getDescription();
+
+    void setDescription(String description);
+
     String getMetadata();
-    String getWalletAddress();
-    void setTitolo(String nome);
-    void setArtista(Artista artista);
-    void setAnno(String anno);
+
+    void setMetadata(String metadata); //bytecode della foto
+
+    String getWalletAddress(); //da qui prendiamo il wallet del possessore
+
+    void setWalletAddress(String walletAddress);
 }
