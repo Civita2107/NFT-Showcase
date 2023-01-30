@@ -5,8 +5,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
 public interface Wallet extends DataItem<Integer> {
     
-    String getUsername();
+    String getAddress();
     List<Nft> getNfts();
-    void setUsername(String user);
+    void setAddress(String address);
     void setNfts(List<Nft> nft);
 }

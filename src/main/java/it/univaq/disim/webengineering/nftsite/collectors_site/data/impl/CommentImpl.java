@@ -1,6 +1,8 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Utente;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
 public class CommentImpl extends DataItemImpl<Integer> implements Comment {

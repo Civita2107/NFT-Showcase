@@ -9,12 +9,12 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
 public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
 
-    private String username;
+    private String address;
     private List<Nft> nfts;
 
     @Override
-    public String getUsername() {
-        return username;
+    public String getAddress() {
+        return address;
     }
 
     @Override
@@ -23,8 +23,8 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     }
 
     @Override
-    public void setUsername(String user) {
-        this.username = user;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

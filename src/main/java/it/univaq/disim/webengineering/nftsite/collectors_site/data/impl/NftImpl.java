@@ -26,7 +26,7 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
     }
 
     @Override
-    public String getNome() {
+    public String getTitle() {
         return nome;
     }
 
@@ -38,11 +38,6 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
     @Override
     public String getAnno() {
         return anno;
-    }
-
-    @Override
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     @Override

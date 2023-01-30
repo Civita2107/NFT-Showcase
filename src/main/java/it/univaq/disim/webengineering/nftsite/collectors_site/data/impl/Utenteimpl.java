@@ -7,14 +7,12 @@ public class Utenteimpl extends DataItemImpl<Integer> implements Utente{
 
     private int id;
     private String username;
-    private String password;
     private String email;
 
     
     public Utenteimpl(int id, String username, String password, String email) {
         this.id = id;
         this.username = username;
-        this.password = password;
         this.email = email;
     }
 
@@ -39,16 +37,6 @@ public class Utenteimpl extends DataItemImpl<Integer> implements Utente{
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
     public String getEmail() {
         return email;
     }
@@ -57,10 +45,4 @@ public class Utenteimpl extends DataItemImpl<Integer> implements Utente{
     public void setEmail(String email) {
         this.email = email;
     }
-
-
-    
-
-
-    
 }

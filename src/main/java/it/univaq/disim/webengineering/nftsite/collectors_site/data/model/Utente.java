@@ -11,10 +11,6 @@ public interface Utente extends DataItem<Integer>  {
     String getUsername();
     
     void setUsername(String username);
-    
-    String getPassword();
-    
-    void setPassword(String password);
 
     String getEmail();
     

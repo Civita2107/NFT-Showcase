@@ -18,7 +18,7 @@ public class NftDAOimp implements NftDAO {
     @Override
     public void storeNft(Nft nft) throws DataLayerException {
         try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO nft (nome, artista, anno) values ("+"'"+nft.getNome()+"','"+nft.getArtista()+"','"+nft.getAnno()+"'")) {
+            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO nft (nome, artista, anno) values ("+"'"+nft.getTitle()+"','"+nft.getArtista()+"','"+nft.getAnno()+"'")) {
                 ps.executeUpdate();
             } catch (SQLException ex) {
                 throw new DataLayerException("ARTISTA MANCANTE", ex);
