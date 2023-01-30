@@ -2,23 +2,23 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import java.util.List;
 
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Utente;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Acquistati;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 
 
-public class Acquistatiimpl extends DataItemImpl<Integer> implements Acquistati{
+public class AcquistatiImpl extends DataItemImpl<Integer> implements Acquistati{
 
     private String nome;
     private boolean pubblica;
-    private Utente utente;
+    private User User;
     private List<Nft> nft;
 
-    public Acquistatiimpl(String nome, boolean pubblica, Utente utente, List<Nft> nft) {
+    public AcquistatiImpl(String nome, boolean pubblica, User User, List<Nft> nft) {
         this.nome = nome;
         this.pubblica = pubblica;
-        this.utente = utente;
+        this.User = User;
         this.nft = nft;
     }
 
@@ -39,12 +39,12 @@ public class Acquistatiimpl extends DataItemImpl<Integer> implements Acquistati{
         this.pubblica = pubblica;
     }
     @Override
-    public Utente getUtente() {
-        return utente;
+    public User getUser() {
+        return User;
     }
     @Override
-    public void setUtente(Utente utente) {
-        this.utente = utente;
+    public void setUser(User User) {
+        this.User = User;
     }
     @Override
     public List<Nft> getNft() {
