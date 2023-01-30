@@ -9,7 +9,7 @@ public interface Acquistati extends DataItem<Integer> {
     
     String getNome();
 
-    Utente getUtente();
+    User getUtente();
 
     List<Nft> getNft();
 
@@ -17,7 +17,7 @@ public interface Acquistati extends DataItem<Integer> {
 
     void setPubblica(boolean pubblica);
 
-    void setUtente(Utente utente);
+    void setUtente(User utente);
 
     boolean isPubblica();
 

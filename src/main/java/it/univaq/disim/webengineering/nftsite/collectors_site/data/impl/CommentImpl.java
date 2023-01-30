@@ -2,17 +2,17 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Utente;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
 public class CommentImpl extends DataItemImpl<Integer> implements Comment {
 
     private int id;
-    private Utente user;
+    private User user;
     private Nft nft;
     private String text;
 
-    public CommentImpl(String text,Utente user,Nft nft){
+    public CommentImpl(String text,User user,Nft nft){
         super();
         this.user = user;
         this.nft = nft;
@@ -29,7 +29,7 @@ public class CommentImpl extends DataItemImpl<Integer> implements Comment {
     public int getId(){
         return this.id;
     }
-    public Utente getUser(){
+    public User getUser(){
         return this.user;
     }
     public Nft getNft(){
@@ -41,7 +41,7 @@ public class CommentImpl extends DataItemImpl<Integer> implements Comment {
     public void setId(int id){
         this.id = id;
     }
-    public void setUser(Utente user){
+    public void setUser(User user){
         this.user = user;
     }
     public void setNft(Nft nft){
