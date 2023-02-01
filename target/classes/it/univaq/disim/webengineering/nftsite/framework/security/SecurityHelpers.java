@@ -1,4 +1,4 @@
-package it.univaq.disim.webengineering.nftsite.framework;
+package it.univaq.disim.webengineering.nftsite.framework.security;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
