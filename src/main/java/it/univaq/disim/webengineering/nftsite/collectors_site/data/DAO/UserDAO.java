@@ -13,19 +13,18 @@ import java.security.NoSuchAlgorithmException;
 
 public interface UserDAO {
 
-    boolean getUsernameEsistente(String username) throws DataLayerException;
+    boolean getUsernameEsistente(String username) throws DataLayerException, IOException;
 
-    boolean getEmailEsistente(String email) throws DataLayerException;
+    boolean getEmailEsistente(String email) throws DataLayerException, IOException;
 
     User getCredenziali(String username, String password) throws DataLayerException;
 
-    User nuovoUtente(User user) throws DataLayerException;
+    //User nuovoUtente(User user) throws DataLayerException;
 
     User getUser(int id) throws DataLayerException;
 
     int updateUser(User user) throws DataLayerException;
 
-    int updateUserPassword(User user) throws DataLayerException;
 
     void storeUser(User user) throws  DataLayerException;
 
