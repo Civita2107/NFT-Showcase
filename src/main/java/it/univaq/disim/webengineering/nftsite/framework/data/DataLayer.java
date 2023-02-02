@@ -4,9 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.sql.DataSource;
 
-public class DataLayer {
+public class DataLayer implements AutoCloseable {
 
     private final DataSource datasource;
     private Connection connection;
