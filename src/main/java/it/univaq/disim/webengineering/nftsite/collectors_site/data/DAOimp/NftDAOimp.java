@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Artista;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
