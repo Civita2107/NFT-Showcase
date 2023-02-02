@@ -174,7 +174,7 @@ public class SecurityHelpers {
     //tutti i caratteri "pericolosi", usati per eseguire
     //SQL injection attraverso i parametri delle form
     //this function adds backslashes in front of
-    //all the "malicious" charcaters, usually exploited
+    //all the "malicious" characters, usually exploited
     //to perform SQL injection through form parameters
     public static String addSlashes(String s) {
         return s.replaceAll("(['\"\\\\])", "\\\\$1");
