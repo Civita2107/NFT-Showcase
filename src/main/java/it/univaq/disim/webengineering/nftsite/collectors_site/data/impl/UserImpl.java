@@ -46,11 +46,13 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     public void setEmail(String email) {
         this.email = email;
     }
-
+    
+    @Override
     public String getPassword() {
         return password;
     }
 
+    @Override
     public void setPassword(String password) {
         this.password = password;
     }
