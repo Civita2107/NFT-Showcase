@@ -22,7 +22,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 public class UserDAOimpl implements UserDAO{
 
     @Override
-    public boolean getUsernameEsistente(String username) throws DataLayerException {
+    public boolean getUsernameEsistente(String username) throws DataLayerException, IOException {
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -42,17 +42,22 @@ public class UserDAOimpl implements UserDAO{
             // messaggio di errore se lo user esiste
            response.sendError(HttpServletResponse.SC_CONFLICT, "User già esistente"); 
     
-        } catch (SQLException ex) {
+        }
+      }
+         catch (SQLException ex) {
 
           throw new DataLayerException("USERNAME UTENTE", ex);
         } 
+
+      
+      
         
         
         return false;
     }
 
     @Override
-    public boolean getEmailEsistente(String email) throws DataLayerException {
+    public boolean getEmailEsistente(String email) throws DataLayerException, IOException {
   
       Connection conn = null;
       PreparedStatement pstmt = null;
@@ -72,7 +77,9 @@ public class UserDAOimpl implements UserDAO{
           // messaggio di errore se la mail esiste
          response.sendError(HttpServletResponse.SC_CONFLICT, "Email già esistente"); 
   
-      } catch (SQLException ex) {
+      }
+     }
+      catch (SQLException ex) {
 
         throw new DataLayerException("EMAIL UTENTE", ex);
       } 
@@ -126,7 +133,7 @@ public class UserDAOimpl implements UserDAO{
           } catch (SQLException ex) {
               throw new DataLayerException("NUOVO UTENTE", ex);
           }
-          return utente;
+         // return utente;
     }
 
     @Override
@@ -137,8 +144,6 @@ public class UserDAOimpl implements UserDAO{
               ps.setInt(1, id);
               try (ResultSet rset = ps.executeQuery()) {
                   if (rset.next()) {
-                      utente = new UserImpl();
-
                       utente.setUsername(rset.getString("username"));
                       utente.setEmail(rset.getString("email"));
                   }
