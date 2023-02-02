@@ -1,5 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
+import java.util.List;
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
@@ -55,5 +57,25 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     @Override
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public List<User> getFollower() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void addFollower(User follower) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public List<User> getFollowing() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void addFollowing(User following) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

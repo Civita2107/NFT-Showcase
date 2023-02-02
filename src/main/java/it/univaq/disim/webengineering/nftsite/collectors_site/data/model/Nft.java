@@ -27,4 +27,7 @@ public interface Nft extends DataItem<Integer> {
     String getWalletAddress(); //da qui prendiamo il wallet del possessore
 
     void setWalletAddress(String walletAddress);
+
+    boolean isPubblica();
+
 }
