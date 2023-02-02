@@ -45,41 +45,46 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
     public String getContractAddress() {
         return contractAddress;
     }
-
+    @Override
     public void setTitle(String title) {
         this.title = title;
     }
-
+    @Override
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
-
+    @Override
     public void setContractAddress(String contractAddress) {
         this.contractAddress = contractAddress;
     }
-
+    @Override
     public String getDescription() {
         return description;
     }
-
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }
-
+    @Override
     public String getMetadata() {
         return metadata;
     }
-
+    @Override
     public void setMetadata(String metadata) {
         this.metadata = metadata;
     }
-
+    @Override
     public String getWalletAddress() {
         return walletAddress;
     }
-
+    @Override
     public void setWalletAddress(String walletAddress) {
         this.walletAddress = walletAddress;
+    }
+
+    @Override
+    public boolean isPubblica() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
