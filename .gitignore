@@ -1,2 +1,3 @@
-/WebEngineeringProject/target/
-/WebEngineeringProject/.idea/
+.vscode
+target
+.idea
