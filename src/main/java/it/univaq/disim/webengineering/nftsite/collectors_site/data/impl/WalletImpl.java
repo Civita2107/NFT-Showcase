@@ -11,6 +11,9 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
 
     private String address;
     private List<Nft> nfts;
+    private int userId;
+
+
 
     @Override
     public String getAddress() {
@@ -31,5 +34,17 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     public void setNfts(List<Nft> nfts) {
         this.nfts = nfts;
     }
+
+    
+    @Override
+    public int getUserId() {
+        return userId;
+    }
+
+    @Override
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     
 }

@@ -8,6 +8,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     private int id;
     private String username;
     private String email;
+    private String password;
 
     
     public UserImpl(int id, String username, String password, String email) {
@@ -44,5 +45,13 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     @Override
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
