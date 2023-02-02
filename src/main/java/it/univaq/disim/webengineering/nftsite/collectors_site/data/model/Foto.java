@@ -1,4 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
+import java.io.InputStream;
+
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
 public interface Foto extends DataItem<Integer> {
@@ -19,10 +22,6 @@ public interface Foto extends DataItem<Integer> {
     public String getFilename();
 
     public void setFilename(String imageFilename);
-
-    public Disco getDisco();
-
-    public void setDisco(Disco disco);
 
 
 }
