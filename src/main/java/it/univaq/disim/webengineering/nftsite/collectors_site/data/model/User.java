@@ -15,5 +15,9 @@ public interface User extends DataItem<Integer>  {
     String getEmail();
     
     void setEmail(String email);
+
+    void setPassword();
+
+    String getPassword();
     
 }
