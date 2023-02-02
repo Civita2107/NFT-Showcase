@@ -1,4 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
+import java.util.List;
+
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
 
@@ -19,5 +21,13 @@ public interface User extends DataItem<Integer>  {
     void setPassword(String password);
 
     String getPassword();
+
+    List<User> getFollower();
+
+    void addFollower(User follower);
+
+    List<User> getFollowing();
+
+    void addFollowing(User following);
     
 }
