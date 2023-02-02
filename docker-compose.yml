@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+#  db:
+#    image: mysql:latest
+#    environment:
+#      MYSQL_ROOT_PASSWORD: nimda
+#      MYSQL_DATABASE: example_db
+#      MYSQL_USER: example_db_user
+#      MYSQL_PASSWORD: example_db_pass
+  #  ports:
+  #    - "3306:3306"
+#    volumes:
+#    - ./db:/docker-entrypoint-initdb.d
+
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+#      - my-db:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 81:80
+    environment:
+      MYSQL_USERNAME: 'user'
+      MYSQL_ROOT_PASSWORD: 'password'
+  
+  web:
+    depends_on:
+      - db
+    image: tomcat:9.0
+    # Environment variables do not appear to be getting loaded the first time Tomcat starts!
+    environment:
+      JDBC_URL: jdbc:mysql://db:3306/example_db?connectTimeout=0&amp;socketTimeout=0&amp;autoReconnect=true
+      JDBC_USER: example_db_user
+      JDBC_PASS: example_db_pass
+    ports:
+    - "80:8080"
+    volumes:
+    - ./src/main:/usr/local/tomcat/webapps
+    - ./target:/usr/local/tomcat/webapps
+    - ./pom.xml:/usr/local/tomcat/webapps
+    links:
+      - db
+
+volumes:
+  my-db: 
