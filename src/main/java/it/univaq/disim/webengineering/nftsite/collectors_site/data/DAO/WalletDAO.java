@@ -1,18 +1,19 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
+import org.asynchttpclient.AsyncHttpClient;
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.asynchttpclient.AsyncHttpClient;
-
 public interface WalletDAO {
 
-    List<Wallet> searchWalletByStringsLogged(String value, Integer numberOfElements, int idUser) throws DataLayerException;
+    List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataLayerException;
 
     Wallet searchWalletByStrings(String value) throws DataLayerException;
 
