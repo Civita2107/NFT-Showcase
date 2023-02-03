@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
 
+import javax.servlet.http.HttpSession;
 
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.DefaultAsyncHttpClient;
@@ -44,13 +45,42 @@ public class WalletDAOimp implements WalletDAO{
         return client;
     }
 
-    //TODO implementare dopo aver fatto il login: serve per visualizzare i dati il database attivo dell'utente
     @Override
-    public List<Wallet> searchWalletByStringsLogged(String value, Integer numberOfElements, int idUser)
-        throws DataLayerException {
-      // TODO Auto-generated method stub
-      return null;
-    }
+    public List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataLayerException {
+    int userId = (int) session.getAttribute("userId");
+    List<Wallet> userWallets = new ArrayList<>();
+
+    // Connessione al database e recupero dei dati
+    Connection conn = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+    try {
+        // Apertura della connessione
+        conn = DB.getConnection();
+
+        // Creazione della query per recuperare i wallet dell'utente
+        String query = "SELECT * FROM wallets WHERE userId=?";
+        stmt = conn.prepareStatement(query);
+        stmt.setInt(1, userId);
+
+        // Esecuzione della query
+        rs = stmt.executeQuery();
+
+        // Recupero dei wallet
+        while (rs.next()) {
+            Wallet wallet = new WalletImpl();
+            wallet.setAddress(rs.getString("address"));
+            wallet.setUserId(rs.getInt("userId"));
+            userWallets.add(wallet);
+        }
+    } catch (SQLException e) {
+        // Gestione dell'errore
+        e.printStackTrace();
+    } 
+
+    return userWallets;
+}
+
 
  
     @Override
