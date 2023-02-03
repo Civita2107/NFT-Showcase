@@ -9,10 +9,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public interface NftDAO {
 
-    void storeNft(Nft nft) throws DataLayerException;
 
-    Nft getNft(int id) throws DataLayerException;
+    Nft searchNft(String title,String contractAddress) throws DataLayerException;
 
-    Collection getCollection(Collection collection) throws DataLayerException;
     
 }

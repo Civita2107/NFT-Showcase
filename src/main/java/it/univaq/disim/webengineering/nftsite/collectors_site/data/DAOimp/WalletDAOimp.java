@@ -24,13 +24,19 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletIm
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
+import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
-public class WalletDAOimp implements WalletDAO{
+public class WalletDAOimp extends DAO implements WalletDAO{
     
 
     
+    public WalletDAOimp(DataLayer d) {
+        super(d);
+    }
+
     @Override
     public AsyncHttpClient getNfts(Wallet wallet) throws IOException {
         AsyncHttpClient client = new DefaultAsyncHttpClient();

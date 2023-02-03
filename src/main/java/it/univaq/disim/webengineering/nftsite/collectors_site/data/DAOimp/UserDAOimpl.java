@@ -2,24 +2,25 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.asynchttpclient.Response;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
-public class UserDAOimpl implements UserDAO{
+public class UserDAOimpl extends DAO implements UserDAO{
+
+    public UserDAOimpl(DataLayer d) {
+        super(d);
+    }
 
     @Override
     public boolean getUsernameEsistente(String username) throws DataLayerException, IOException {
