@@ -14,28 +14,16 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class NftDAOimp implements NftDAO {
-//inutile
-    @Override
-    public void storeNft(Nft nft) throws DataLayerException {
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("INSERT INTO nft (nome, artista, anno) values ("+"'"+nft.getTitle()+"','"+nft.getArtista()+"','"+nft.getAnno()+"'")) {
-                ps.executeUpdate();
-            } catch (SQLException ex) {
-                throw new DataLayerException("ARTISTA MANCANTE", ex);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        
-    }
-//inutile
+
     @Override
-    public Nft getNft(int id) throws DataLayerException {
+    public Nft searchNft(String title,String contractAddress) throws DataLayerException {
         
         Nft nft=null;
+        title=null;
+        contractAddress=null;
         try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM nft where id="+id)) {
+            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM nft where title="+title+" or "+"contractAddress="+contractAddress)) {
                 try (ResultSet rset = ps.executeQuery()) {
                     if (rset.next()) {
                         nft = (Nft)rset;
@@ -48,14 +36,10 @@ public class NftDAOimp implements NftDAO {
         return nft;
     }
     
+    
 
    
-//inutile
-    @Override
-    public Collection getCollection(Collection collection) throws DataLayerException {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
 
     
     
