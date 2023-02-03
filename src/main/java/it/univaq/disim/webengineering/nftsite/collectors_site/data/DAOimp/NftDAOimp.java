@@ -7,13 +7,14 @@ import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class NftDAOimp implements NftDAO {
-
+//inutile
     @Override
     public void storeNft(Nft nft) throws DataLayerException {
         try (Connection connection = DB.getConnection()) {
@@ -28,7 +29,7 @@ public class NftDAOimp implements NftDAO {
 
         
     }
-
+//inutile
     @Override
     public Nft getNft(int id) throws DataLayerException {
         
@@ -48,22 +49,12 @@ public class NftDAOimp implements NftDAO {
     }
     
 
+   
+//inutile
     @Override
-    public Artista getArtistaNft(Nft nft) throws DataLayerException {
-            
-        Artista artista=null;
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM nft where artista="+nft.getArtista())) {
-                try (ResultSet rset = ps.executeQuery()) {
-                    if (rset.next()) {
-                        artista = (Artista)rset;
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return artista;
+    public Collection getCollection(Collection collection) throws DataLayerException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     
