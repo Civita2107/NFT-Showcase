@@ -5,10 +5,11 @@ import java.io.IOException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+import it.univaq.disim.webengineering.nftsite.framework.controller.AbstractBaseController;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 
-public class Login {
+public class Login extends AbstractBaseController{
     
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
         TemplateResult result = new TemplateResult(getServletContext());
