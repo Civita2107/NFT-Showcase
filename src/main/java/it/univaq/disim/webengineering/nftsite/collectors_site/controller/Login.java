@@ -17,17 +17,17 @@ import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerEx
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
 
-public class Login extends AbstractBaseController{
+public class Login extends CollectorsBaseController{
     
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
         TemplateResult result = new TemplateResult(getServletContext());
 
         request.setAttribute("referrer", request.getParameter("referrer"));
-     //   request.setAttribute("outline", result); //bisogna vedere se va implementato
+        request.setAttribute("outline", result); //bisogna vedere se va implementato
         result.activate("login.ftl", request, response);
     }
 
-    private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
         String username = request.getParameter("user");
         String password = request.getParameter("password");
 
@@ -38,7 +38,7 @@ public class Login extends AbstractBaseController{
             try {
                 password = SecurityHelpers.encryptPassword(password);
                 CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-                User user = dataLayer.getUserDAO().getCredenziali(username, password);
+                User user = dataLayer.getUserDAO().getCredenziali(username, password); // vanno sistemate tutte le classi DAO per non far dare errore
 
                 if (user != null) {
                     int userId = user.getKey();
@@ -61,14 +61,20 @@ public class Login extends AbstractBaseController{
 
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, TemplateManagerException, IOException, DataException {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    protected DataLayer createDataLayer(DataSource ds) throws ServletException {
-        // TODO Auto-generated method stub
-        return null;
+            throws ServletException {
+        try {
+            if (SecurityHelpers.checkSession(request) != null) {
+                response.sendRedirect("home");
+            }
+            if (request.getParameter("username") != null && request.getParameter("password") != null) {
+                action_login(request, response);
+            } else {
+                String https_redirect_url = SecurityHelpers.checkHttps(request);
+                request.setAttribute("https_redirect", https_redirect_url);
+                action_default(request, response);
+            }
+        } catch (IOException | TemplateManagerException e) {
+            handleError(e, request, response);
+        }       
     }
 }
