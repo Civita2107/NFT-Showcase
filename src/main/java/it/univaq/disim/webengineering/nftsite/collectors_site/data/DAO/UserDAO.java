@@ -1,15 +1,9 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
-import java.util.List;
+import java.io.IOException;
 
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
-
-import javax.servlet.http.Part;
-import java.io.File;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 public interface UserDAO {
 
