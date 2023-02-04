@@ -59,6 +59,13 @@ public class Login extends CollectorsBaseController{
         }
     }
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request  servlet request
+     * @param response servlet response
+     */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
