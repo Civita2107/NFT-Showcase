@@ -27,7 +27,7 @@ public class DataLayer implements AutoCloseable {
         dao.init();
     }
 
-    public DAO getDAO(Class entityClass, DAO dao) throws DataException {
+    public DAO getDAO(Class entityClass) {
         return daos.get(entityClass);
     }
 

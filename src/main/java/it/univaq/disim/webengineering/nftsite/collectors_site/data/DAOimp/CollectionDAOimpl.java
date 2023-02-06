@@ -18,10 +18,16 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.Collectio
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
-public class CollectionDAOimpl implements CollectionDAO {
+public class CollectionDAOimpl extends DAO implements CollectionDAO {
+
+    public CollectionDAOimpl(DataLayer d) {
+        super(d);
+    }
 
     @Override
     public Integer getTotalPageBySearch(String viewItem) throws DataLayerException{
