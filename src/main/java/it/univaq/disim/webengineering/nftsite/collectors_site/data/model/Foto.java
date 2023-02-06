@@ -1,6 +1,5 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
 import java.io.InputStream;
-
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 

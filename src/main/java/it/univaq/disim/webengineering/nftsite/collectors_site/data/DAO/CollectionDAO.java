@@ -32,14 +32,14 @@ public interface CollectionDAO {
       //  public List<Collection> getCollezioniAssociate(int idUser) throws DataLayerException;
 
 
-        public void updateCollection(Collection Collection, String[] id_dischi, String[] id_accesso) throws DataLayerException;
+       // public void updateCollection(Collection Collection, String[] id_dischi, String[] id_accesso) throws DataLayerException;
 
 
-        public void insertCollection(Collection Collection, int id_User, String[] id_dischi, String[] id_accesso) throws DataLayerException;
+     //   public void insertCollection(Collection Collection, int id_User, String[] id_dischi, String[] id_accesso) throws DataLayerException;
 
         public String getCACollection() throws DataLayerException;
 
-        public boolean deleteCollection(int id) throws DataLayerException;
+       // public boolean deleteCollection(int id) throws DataLayerException;
 
         public Collection getCollezione(Nft nft) throws DataLayerException;
 

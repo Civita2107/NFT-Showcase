@@ -148,19 +148,8 @@ public class CollectionDAOimpl implements CollectionDAO {
         return collezioni;
     }
    
-    //eliminare
-    @Override
-    public void updateCollection(Collection Collection, String[] id_dischi, String[] id_accesso) throws DataLayerException {
-        // TODO Auto-generated method stub
-        
-    }
+ 
 
-    //eliminare
-    @Override
-    public void insertCollection(Collection Collection, int id_User,String[] id_dischi, String[] id_accesso) throws DataLayerException {
-        // TODO Auto-generated method stub
-        
-    }
 
     //rivedere
     @Override
@@ -210,12 +199,7 @@ public class CollectionDAOimpl implements CollectionDAO {
         return c;
     }
 
-    //eliminare
-    @Override
-    public boolean deleteCollection(int id) throws DataLayerException {
-        // TODO Auto-generated method stub
-        return false;
-    }
+
 
     @Override
     public List<User> getCollezionisti(int id) throws DataLayerException {
