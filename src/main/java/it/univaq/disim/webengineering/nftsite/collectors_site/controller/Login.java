@@ -65,10 +65,10 @@ public class Login extends CollectorsBaseController{
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws DataLayerException
      */
     @Override
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             if (SecurityHelpers.checkSession(request) != null) {
                 response.sendRedirect("home");
