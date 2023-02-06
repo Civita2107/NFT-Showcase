@@ -12,7 +12,8 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     private String email;
     private String password;
 
-    
+    public UserImpl(){}
+
     public UserImpl(int id, String username, String password, String email) {
         this.id = id;
         this.username = username;
