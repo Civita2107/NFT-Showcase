@@ -13,13 +13,57 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class UserDAOimpl extends DAO implements UserDAO{
 
+    private PreparedStatement sUser;
+    private PreparedStatement identityCheck, sUserByEmail, sUserByNickname;
+    private PreparedStatement sCollezionisti, sCollezionistiByKeyword;
+    private PreparedStatement iUser, uUser, dUser;
+    private PreparedStatement CollezionistiMostAttivi;
+
     public UserDAOimpl(DataLayer d) {
         super(d);
+    }
+
+    
+    @Override
+    public User createUser() {
+        return new UserProxy(getDataLayer());
+    }
+
+    private UserProxy createUser(ResultSet rs) throws DataException {
+        try {
+            UserProxy a = (UserProxy) createUser();
+
+            a.setKey(rs.getInt("ID"));
+            a.setUsername(rs.getString("username"));
+            a.setEmail(rs.getString("email"));
+            a.setPassword(rs.getString("password"));
+
+            return a;
+        } catch (SQLException ex) {
+            throw new DataException("Unable to create User object form ResultSet", ex);
+        }
+    }
+
+    public User getUserByNickname(String nickname) throws DataException {
+        User a = null;
+        try {
+            sUserByNickname.setString(1, nickname);
+            try (ResultSet rs = sUserByNickname.executeQuery()) {
+                if (rs.next()) {
+                    a = createUser(rs);
+                    dataLayer.getCache().add(User.class, a);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load User by Nickname", ex);
+        }
+        return a;
     }
 
     @Override

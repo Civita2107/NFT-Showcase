@@ -6,21 +6,25 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 public interface Foto extends DataItem<Integer> {
 
     
-    InputStream getImageData() throws DataException;
+    InputStream getFotoData() throws DataException;
 
-    void setImageData(InputStream is) throws DataException;
+    void setFotoData(InputStream is) throws DataException;
 
-    String getImageType();
+    String getFotoType();
 
-    void setImageType(String type);
+    void setFotoType(String type);
 
-    long getImageSize();
+    long getFotoSize();
 
-    void setImageSize(long size);
+    void setFotoSize(long size);
 
     public String getFilename();
 
-    public void setFilename(String imageFilename);
+    public void setFilename(String FotoFilename);
+
+    void setNft(Nft Nft);
+
+    Nft getNft();
 
 
 }

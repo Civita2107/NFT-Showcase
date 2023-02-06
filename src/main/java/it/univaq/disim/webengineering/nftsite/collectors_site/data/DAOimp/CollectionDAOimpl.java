@@ -1,6 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
-import java.lang.System.Logger;
+import java.util.logging.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 
-import com.mysql.cj.xdevapi.Collection;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
@@ -122,7 +121,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         } catch (SQLException ex) {
             throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
         }   catch (DataLayerException ex) {
-                Logger.getLogger(CollectionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CollectionDAO.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         return collezioni;
@@ -148,7 +147,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         } catch (SQLException ex) {
             throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
         }   catch (DataLayerException ex) {
-            Logger.getLogger(CollectionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectionDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return collezioni;
@@ -173,7 +172,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         } catch (SQLException ex) {
             throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
         }   catch (DataLayerException ex) {
-            Logger.getLogger(CollezionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return contractAddress;
@@ -199,7 +198,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         } catch (SQLException ex) {
             throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
         }   catch (DataLayerException ex) {
-            Logger.getLogger(CollezionDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return c;
@@ -208,9 +207,9 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 
 
     @Override
-    public List<User> getCollezionisti(int id) throws DataLayerException {
+    public List<User> getUser(int id) throws DataLayerException {
 
-        List<User> collezionisti = new ArrayList<>();
+        List<User> user = new ArrayList<>();
         try (Connection connection = DB.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM User where id!=?")) {
                 ps.setInt(1, id);
@@ -219,17 +218,17 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                         User c = new UserImpl(); //creare un costruttore vuoto per UserImpl
                         c.setUsername(getCACollection());(rset.getString("username"));
                         c.setId(rset.getInt("id"));
-                        collezionisti.add(c);
+                        user.add(c);
                     }
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET COLLEZIONISTI BY PAGE", ex);
+            throw new DataLayerException("GET user BY PAGE", ex);
         }   catch (DataLayerException ex) {
-            Logger.getLogger(CollezioneDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return collezionisti;
+        return user;
     }
 
 }
