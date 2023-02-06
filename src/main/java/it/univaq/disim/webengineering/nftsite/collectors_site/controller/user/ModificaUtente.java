@@ -6,6 +6,7 @@ import javax.servlet.http.*;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
@@ -71,7 +72,7 @@ public class ModificaUtente extends CollectorsBaseController {
                 if (SecurityHelpers.encryptPassword(password).equals(user.getPassword())) {
 
                     if (username != null && !username.isEmpty()) {
-                        if (userDAO.getUseraByUsername(username) == null) {
+                        if (userDAO.getUserByUsername(username) == null) {
                             user.setUsername(username);
                             SecurityHelpers.createSession(request, username, user.getKey());
                         } else {
