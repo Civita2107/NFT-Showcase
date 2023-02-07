@@ -24,7 +24,7 @@ public interface CollectionDAO {
 
   List<Collection> getCollectionsCondivise(User user) throws DataException;
 
-  List<Integer> getCollectionsstiVisualizza(Collection collection) throws DataException;
+  List<Integer> getUsersVisualizza(Collection collection) throws DataException;
 
   boolean getCollectionsCondivise(Collection collection) throws DataException;
 
@@ -44,5 +44,5 @@ public interface CollectionDAO {
 
   List<Collection> getCollectionsByKeyword(String keyword) throws DataException;
 
-  void deleteDischiCollection(Collection collection, List<Nft> nfts) throws SQLException;
+  void deleteNftsCollection(Collection collection, List<Nft> nfts) throws SQLException;
 }

@@ -1,5 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
 
+import java.util.List;
+
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
 public interface Collection extends DataItem<Integer> {
@@ -11,5 +13,10 @@ public interface Collection extends DataItem<Integer> {
     void setWalletAddress(String walletAddress);
     void setNome(String nome);
     void setTotalSupply(int totalSupply);
+    boolean isPubblica();
+    void setPubblica(boolean pubblica);
+    void setUser(User user);
+    User getUser();
+    List<Nft> getNfts();
 
 }

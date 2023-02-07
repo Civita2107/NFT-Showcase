@@ -20,12 +20,12 @@ public interface UserDAO {
 
     User identityCheck(String username, String password) throws DataException;
 
-    User getUserByNickname(String nickname) throws DataException;
+    User getUserByUsername(String nickname) throws DataException;
 
     User getUserByEmail(String email) throws DataException;
 
     //Statistiche TOP
-    public List<User> usersMostDischi() throws DataException;
+    public List<User> usersMostNft() throws DataException;
 
-    public List<Integer> CountusersMostDischi() throws DataException;
+    public List<Integer> CountusersMostNft() throws DataException;
 }

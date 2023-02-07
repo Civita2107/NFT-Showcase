@@ -28,8 +28,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockExcep
 
 public class CollectionDAOimpl extends DAO implements CollectionDAO {
     private PreparedStatement sCollectionByID, sUser;
-    private PreparedStatement sCollections, sCollectionsPubbliche, sDischiByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza;
-    private PreparedStatement iCollection, dDischiByCollection, sCollectionsCondiviseByCollection, iVisualizza, iDiscoCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
+    private PreparedStatement sCollections, sCollectionsPubbliche, sNftsByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza;
+    private PreparedStatement iCollection, dNftsByCollection, sCollectionsCondiviseByCollection, iVisualizza, iNftCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
 
     public CollectionDAOimpl(DataLayer d) {
         super(d);
@@ -61,9 +61,9 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             dVisualizza = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=?");
             dVisualizzaUser = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=? AND IDUser=?");
 
-            sDischiByCollection = connection.prepareStatement("SELECT disco.ID AS discoID FROM Disco INNER JOIN disco_collection ON Disco.ID = disco_collection.ID_disco INNER JOIN Collection ON Collection.ID = disco_collection.IDCollection WHERE Collection.ID=?");
-            iDiscoCollection = connection.prepareStatement("INSERT INTO disco_collection (ID_disco,IDCollection) VALUES(?,?) ", Statement.RETURN_GENERATED_KEYS);
-            dDischiByCollection = connection.prepareStatement("DELETE FROM disco_collection WHERE ID_disco=? AND IDCollection=?");
+            sNftsByCollection = connection.prepareStatement("SELECT Nft.ID AS NftID FROM Nft INNER JOIN Nft_collection ON Nft.ID = Nft_collection.ID_Nft INNER JOIN Collection ON Collection.ID = Nft_collection.IDCollection WHERE Collection.ID=?");
+            iNftCollection = connection.prepareStatement("INSERT INTO Nft_collection (ID_Nft,IDCollection) VALUES(?,?) ", Statement.RETURN_GENERATED_KEYS);
+            dNftsByCollection = connection.prepareStatement("DELETE FROM Nft_collection WHERE ID_Nft=? AND IDCollection=?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -83,18 +83,18 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             sVisualizza.close();
             sCollectionsByUser.close();
             sCollectionsCondivise.close();
-            sDischiByCollection.close();
+            sNftsByCollection.close();
             sCollectionsCondiviseByCollection.close();
 
             iCollection.close();
             iVisualizza.close();
-            iDiscoCollection.close();
+            iNftCollection.close();
             uCollection.close();
             uPubblica.close();
             dCollection.close();
             dVisualizza.close();
             dVisualizzaUser.close();
-            dDischiByCollection.close();
+            dNftsByCollection.close();
 
         } catch (SQLException ex) {
             throw new DataException("Error destroying collectors data layer", ex);
@@ -295,10 +295,10 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                 }
 
             }
-            for (Disco d : collection.getDischi()) {
-                iDiscoCollection.setInt(1, d.getKey());
-                iDiscoCollection.setInt(2, collection.getKey());
-                iDiscoCollection.executeUpdate();
+            for (Nft d : collection.getNfts()) {
+                iNftCollection.setInt(1, d.getKey());
+                iNftCollection.setInt(2, collection.getKey());
+                iNftCollection.executeUpdate();
             }
             dataLayer.getCache().add(Collection.class, collection);
         } catch (SQLException ex) {
@@ -370,15 +370,15 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
     }
 
     @Override
-    public void deleteDischiCollection(Collection collection, List<Disco> dischi) throws SQLException {
+    public void deleteNftsCollection(Collection collection, List<Nft> Nfts) throws SQLException {
         try {
-            for (Disco d : dischi) {
-                dDischiByCollection.setInt(1, d.getKey());
-                dDischiByCollection.setInt(2, collection.getKey());
-                dDischiByCollection.executeUpdate();
+            for (Nft d : Nfts) {
+                dNftsByCollection.setInt(1, d.getKey());
+                dNftsByCollection.setInt(2, collection.getKey());
+                dNftsByCollection.executeUpdate();
             }
         } catch (SQLException ex) {
-            throw new SQLException("Unable to delete Dischi", ex);
+            throw new SQLException("Unable to delete Nfts", ex);
         }
     }
 
