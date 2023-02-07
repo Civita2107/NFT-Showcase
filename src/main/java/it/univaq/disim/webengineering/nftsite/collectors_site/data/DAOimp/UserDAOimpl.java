@@ -56,7 +56,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             uUser = connection.prepareStatement("UPDATE User SET nome=?,cognome=?,username=?,email=?,password=?,versione=? WHERE ID=?");
             dUser = connection.prepareStatement("DELETE FROM User WHERE ID=?");
 
-            //Statistiche --> User più attivo per numero di dischi posseduti
+            //Statistiche --> User più attivo per numero di nft posseduti
             UsersMostAttivi = connection.prepareStatement("SELECT User.ID as userId,COUNT(User.ID) as Occorrenze From User INNER JOIN Disco ON User.ID=Disco.IDUser GROUP BY User.ID ORDER BY COUNT(User.ID) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -112,17 +112,6 @@ public class UserDAOimpl extends DAO implements UserDAO{
                 if (User instanceof DataItemProxy && !((DataItemProxy) User).isModified()) {
                     return;
                 }
-                if (User.getNome() != null) {
-                    uUser.setString(1, User.getNome());
-                } else {
-                    uUser.setString(1, null);
-                }
-                if (User.getCognome() != null) {
-                    uUser.setString(2, User.getCognome());
-                } else {
-                    uUser.setString(2, null);
-                }
-
                 uUser.setString(3, User.getUsername());
                 uUser.setString(4, User.getEmail());
                 uUser.setString(5, User.getPassword());
@@ -139,16 +128,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
                     User.setVersion(next_version);
                 }
             } else {
-                if (User.getNome() != null) {
-                    iUser.setString(1, User.getNome());
-                } else {
-                    iUser.setString(1, null);
-                }
-                if (User.getCognome() != null) {
-                    iUser.setString(2, User.getCognome());
-                } else {
-                    iUser.setString(2, null);
-                }
+            
                 iUser.setString(3, User.getUsername());
                 iUser.setString(4, User.getEmail());
                 iUser.setString(5, User.getPassword());
@@ -204,7 +184,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
                     }
                 }
             } catch (DataException ex) {
-                Logger.getLogger(UserDAO_MySQL.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 throw new DataException("Unable to load User by ID", ex);
             }
@@ -281,7 +261,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
     }
 
     @Override
-    public List<User> usersMostDischi() throws DataException {
+    public List<User> usersMostNft() throws DataException {
         List<User> result = new ArrayList();
         try (ResultSet rs = UsersMostAttivi.executeQuery()) {
             while (rs.next()) {
@@ -294,7 +274,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
     }
 
     @Override
-    public List<Integer> CountusersMostDischi() throws DataException {
+    public List<Integer> CountusersMostNft() throws DataException {
         List<Integer> result = new ArrayList();
         try (ResultSet rs = UsersMostAttivi.executeQuery()) {
             while (rs.next()) {
