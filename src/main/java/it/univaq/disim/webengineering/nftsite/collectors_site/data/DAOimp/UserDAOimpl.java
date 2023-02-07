@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.UserProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
