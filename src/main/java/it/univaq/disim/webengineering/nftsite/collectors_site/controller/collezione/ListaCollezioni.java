@@ -66,7 +66,7 @@ public class ListaCollezioni extends CollectorsBaseController {
         String encodedRequestURL = URLEncoder.encode(completeRequestURL, StandardCharsets.UTF_8);
         request.setAttribute("referrer", encodedRequestURL);
 
-        List<Collection> collezioni;
+        List<Collection> collections;
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         CollectionDAO collectionDAO = dataLayer.getCollectionDAO();
         collections = collectionDAO.getCollections();
