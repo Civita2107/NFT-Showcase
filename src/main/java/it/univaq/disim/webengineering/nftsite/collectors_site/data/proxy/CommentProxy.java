@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CommentImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -14,13 +15,14 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 public class CommentProxy extends CommentImpl implements DataItemProxy {
 
     protected boolean modified;
-
+    protected int userKey = 0;
     protected DataLayer dataLayer;
 
     public CommentProxy(DataLayer dataLayer) {
         super();
         this.dataLayer = dataLayer;
         this.modified = false;
+        this.userKey = 0;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class CommentProxy extends CommentImpl implements DataItemProxy {
     @Override
     public void setUser(User user) {
         super.setUser(user);
+        this.userKey = user.getKey();
         this.modified = true;
     }
 
@@ -57,6 +60,18 @@ public class CommentProxy extends CommentImpl implements DataItemProxy {
             }
         }
         return super.getNft();
+    }
+
+    @Override
+    public User getUser() {
+        if (super.getUser() == null && userKey > 0) {
+            try {
+                super.setUser(((UserDAO) dataLayer.getDAO(User.class)).getUser(userKey));
+            } catch (DataException e) {
+                Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+        return super.getUser();
     }
 
     @Override
