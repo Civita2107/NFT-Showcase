@@ -203,7 +203,7 @@ private PreparedStatement SWalletbyId,SWalletAddress,SWallets,DWalletbyAddress,I
         try (PreparedStatement ps = IWallet;){ // TODO connection.prepareStatement("INSERT INTO wallet (address,nft,userId) VALUES(?,?,?,?,?)", RETURN_GENERATED_KEYS)) {
             ps.setString(1, wallet.getAddress());
             ps.setString(2, wallet.getAddress());
-            ps.setObject(3,wallet.getNfts().toArray());
+            ps.setObject(3,wallet.getNfts());
 
             ps.executeUpdate();
 
