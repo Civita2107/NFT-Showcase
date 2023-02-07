@@ -19,7 +19,7 @@ public interface Collection extends DataItem<Integer> {
     void setPubblica(boolean pubblica);
     void setUser(User user);
     User getUser();
-    Array getNfts();
-    void setNfts(Array nfts);
+    List<Nft> getNfts();
+    void setNfts(List<Nft> nft);
 
 }

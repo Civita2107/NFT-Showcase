@@ -21,7 +21,7 @@ public class CollectorsDataLayer extends DataLayer {
         //registriamo i nostri dao
         //register our daos
         registerDAO(Collection.class, new CollectionDAOimpl(this));
-        registerDAO(Comment.class, new CommentDAOimp(this));
+        registerDAO(Comment.class, new CommentDAOimpl(this));
         registerDAO(Foto.class, new FotoDAOimpl(this));
         registerDAO(Nft.class, new NftDAOimp(this));
         registerDAO(User.class, new UserDAOimpl(this));

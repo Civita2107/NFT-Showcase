@@ -18,6 +18,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.Collectio
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.CollectionProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
@@ -295,6 +296,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                 }
 
             }
+
             for (Nft d : collection.getNfts()) {
                 iNftCollection.setInt(1, d.getKey());
                 iNftCollection.setInt(2, collection.getKey());
