@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import javax.sql.DataSource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
-import it.univaq.disim.webengineering.nftsite.framework.controller.AbstractBaseController;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
@@ -38,7 +36,7 @@ public class Login extends CollectorsBaseController{
             try {
                 password = SecurityHelpers.encryptPassword(password);
                 CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-                User user = dataLayer.getUserDAO().getCredenziali(username, password); // vanno sistemate tutte le classi DAO per non far dare errore
+                User user = dataLayer.getUserDAO().identityCheck(username, password);
 
                 if (user != null) {
                     int userId = user.getKey();
