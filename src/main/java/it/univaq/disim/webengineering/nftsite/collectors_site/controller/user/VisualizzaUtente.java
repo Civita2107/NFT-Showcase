@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,7 +50,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         UserDAO userDAO = dataLayer.getUserDAO();
         user = userDAO.getUser((Integer.parseInt(request.getParameter("id"))));
 
-        Set<Collection> collezioni = new HashSet<>(dataLayer.getCollectionDAO().getCollezioni(user));
+        Set<Collection> collezioni = new HashSet<>(dataLayer.getCollectionDAO().getCollections(user));
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(user);
 
         request.setAttribute("user", user);

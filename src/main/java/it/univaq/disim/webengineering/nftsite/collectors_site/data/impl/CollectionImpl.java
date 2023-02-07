@@ -1,8 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
-import java.lang.reflect.Array;
-import java.util.*;
-
+import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
@@ -10,6 +8,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
 public class CollectionImpl extends DataItemImpl<Integer> implements Collection {
+
     private String contractAddress;
     private String walletAddress;
     private String nome;
@@ -17,6 +16,23 @@ public class CollectionImpl extends DataItemImpl<Integer> implements Collection 
     private boolean pubblica;
     private User user;
     private List<Nft> nfts;
+
+    
+    public CollectionImpl() {
+        super();
+        nome = "";
+        pubblica = true;
+        this.user = null;
+        this.nfts = null;
+    }
+
+    public CollectionImpl(String nome, boolean pubblica, User user, List<Nft> nfts) {
+        super();
+        this.nome = nome;
+        this.pubblica = pubblica;
+        this.user = user;
+        this.nfts = nfts;
+    }
 
     @Override
     public String getContractAdrress() {

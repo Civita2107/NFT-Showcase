@@ -28,4 +28,8 @@ public interface UserDAO {
     public List<User> usersMostNft() throws DataException;
 
     public List<Integer> CountusersMostNft() throws DataException;
+
+    User getFollower(User user) throws DataException;
+
+    User getFollowing(User user) throws DataException;
 }

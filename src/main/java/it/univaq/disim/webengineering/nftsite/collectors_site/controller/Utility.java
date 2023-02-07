@@ -78,6 +78,8 @@ public class Utility {
             wallets = walletDAO.getWallets(userId);
 
             return wallets;
+        } else {
+            return null;
         }
     }
 

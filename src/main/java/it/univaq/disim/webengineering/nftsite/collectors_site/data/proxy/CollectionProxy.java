@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;

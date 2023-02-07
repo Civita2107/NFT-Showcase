@@ -3,6 +3,7 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collez
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -77,7 +78,7 @@ public class ModificaCollezione extends CollectorsBaseController {
         result.activate("collezione/modifica.ftl", request, response);
     }
 
-    /**private void action_modifica(HttpServletRequest request, HttpServletResponse response) {
+    private void action_modifica(HttpServletRequest request, HttpServletResponse response) {
 
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
@@ -90,7 +91,7 @@ public class ModificaCollezione extends CollectorsBaseController {
             Collection collection = collectionDAO.getCollection(id);
             collection.setNome(request.getParameter("nome"));
             List<Nft> oldNfts = nftDAO.getNfts(collectionDAO.getCollection(id));
-            collectionDAO.deleteNftsCollezione(collectionDAO.getCollection(id), oldNfts);
+            collectionDAO.deleteNftsCollection(collectionDAO.getCollection(id), oldNfts);
 
             for (String nft : request.getParameterValues("nfts")) {
                 nfts.add(nftDAO.getNft(Integer.parseInt(nft)));
@@ -98,36 +99,36 @@ public class ModificaCollezione extends CollectorsBaseController {
 
             collection.setNfts(nfts);
 
-            if (request.getParameter("pubblica").equals("pubblica") && !collezione.getPubblica()) {
-                collezione.setPubblica(true);
-                collezioneDAO.deleteVisualizza(collezione);
+            if (request.getParameter("pubblica").equals("pubblica") && !collection.isPubblica()) {
+                collection.setPubblica(true);
+                collectionDAO.deleteVisualizza(collection);
             }
             if (request.getParameter("pubblica").equals("privata")) {
-                collezione.setPubblica(false);
-                collezioneDAO.deleteVisualizza(collezione);
+                collection.setPubblica(false);
+                collectionDAO.deleteVisualizza(collection);
             }
 
-            collezioneDAO.storeCollezione(collezione);
+            collectionDAO.storeCollection(collection);
 
             if (request.getParameter("pubblica").equals("condivisa")) {
-                collezione.setPubblica(false);
-                collezioneDAO.setPubblica(collezione, false);
-                //controllo se è gia condivisa quindi quey su visualizza
-                if (collezioneDAO.getCollezioniCondivise(collezione)) {
-                    collezioneDAO.deleteVisualizza(collezione);
+                collection.setPubblica(false);
+                collectionDAO.setPubblica(collection, false);
+                //controllo se è gia condivisa quindi query su visualizza
+                if (collectionDAO.getCollectionsCondivise(collection)) {
+                    collectionDAO.deleteVisualizza(collection);
                 }
 
                 for (String coll : request.getParameterValues("collezionisti")) {
-                    collezioneDAO.storeVisualizza(collezione, collezionistaDAO.getCollezionista(Integer.parseInt(coll)));
+                    collectionDAO.storeVisualizza(collection, userDAO.getUser(Integer.parseInt(coll)));
                 }
             }
 
-            response.sendRedirect("visualizza-collezione?id=" + collezione.getKey());
+            response.sendRedirect("visualizza-collezione?id=" + collection.getKey());
         } catch (Exception e) {
             handleError(e, request, response);
         }
 
-    } **/
+    } 
 
     private void action_notLogged(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, ServletException {
         accessCheckFailed(request, response);

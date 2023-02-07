@@ -1,9 +1,16 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.ricerca;
 
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
@@ -11,11 +18,6 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
-
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class Ricerca extends CollectorsBaseController {
     /**
