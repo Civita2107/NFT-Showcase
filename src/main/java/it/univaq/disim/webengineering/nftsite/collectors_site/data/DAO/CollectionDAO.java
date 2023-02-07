@@ -43,7 +43,7 @@ public interface CollectionDAO {
 
         public Collection getCollezione(Nft nft) throws DataLayerException;
 
-        public List<User> getCollezionisti(int id) throws DataLayerException;
+        public List<User> getUser(int id) throws DataLayerException;
 
       //  public List<User> getAccessoUserNotByUser(int idP, int id) throws DataLayerException;
 

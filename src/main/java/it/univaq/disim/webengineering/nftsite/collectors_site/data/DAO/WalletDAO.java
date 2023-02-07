@@ -9,22 +9,21 @@ import org.asynchttpclient.AsyncHttpClient;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public interface WalletDAO {
 
-    List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataLayerException;
+    List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataException;
 
-    Wallet searchWalletByStrings(String value) throws DataLayerException;
+    Wallet searchWalletByStrings(String value) throws DataException;
 
-    List<Wallet> getWallets() throws DataLayerException;
+    List<Wallet> getWallets() throws DataException;
 
-    List<Wallet> getWallets(int idUser) throws DataLayerException;
+    List<Wallet> getWallets(int idUser) throws DataException;
 
-    boolean deleteWallet(Wallet wallet) throws DataLayerException;
+    boolean deleteWallet(Wallet wallet) throws DataException;
 
 
-    void storeWallet(Wallet wallet) throws DataException, DataLayerException;
+    void storeWallet(Wallet wallet) throws DataException;
 
     AsyncHttpClient getNfts(Wallet wallet) throws DataException, IOException;
 }
