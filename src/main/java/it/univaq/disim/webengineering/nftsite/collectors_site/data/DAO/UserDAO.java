@@ -1,23 +1,31 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
+import java.util.List;
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 
 public interface UserDAO {
 
-    boolean getUsernameEsistente(String username) throws DataException;
+ 
+    User createUser();
 
-    boolean getEmailEsistente(String email) throws DataException;
+    List<User> getUsers() throws DataException;
 
-    User getCredenziali(String username, String password) throws DataException;
+    User getUser(int user_key) throws DataException;
 
-    User createUser() throws DataException;
+    void storeUser(User user) throws DataException;
 
-    User getUser(int id) throws DataException;
+    List<User> getUsersByKeyword(String keyword) throws DataException;
 
-    int updateUser(User user) throws DataException;
+    User identityCheck(String username, String password) throws DataException;
 
+    User getUserByUsername(String nickname) throws DataException;
 
-    void storeUser(User user) throws  DataException;
+    User getUserByEmail(String email) throws DataException;
 
+    //Statistiche TOP
+    public List<User> usersMostNft() throws DataException;
+
+    public List<Integer> CountusersMostNft() throws DataException;
 }

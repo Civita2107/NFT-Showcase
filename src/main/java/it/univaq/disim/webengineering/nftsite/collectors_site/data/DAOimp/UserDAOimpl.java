@@ -5,6 +5,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,22 +21,70 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.UserPro
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
+import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockException;
 
 public class UserDAOimpl extends DAO implements UserDAO{
 
     private PreparedStatement sUser;
-    private PreparedStatement identityCheck, sUserByEmail, sUserByNickname;
-    private PreparedStatement sCollezionisti, sCollezionistiByKeyword;
+    private PreparedStatement identityCheck, sUserByEmail, sUserByUsername;
+    private PreparedStatement sUsers, sUsersByKeyword;
     private PreparedStatement iUser, uUser, dUser;
-    private PreparedStatement CollezionistiMostAttivi;
+    private PreparedStatement UsersMostAttivi;
 
+  
     public UserDAOimpl(DataLayer d) {
         super(d);
     }
 
-    
+    @Override
+    public void init() throws DataException {
+        try {
+            super.init();
+
+            sUser = connection.prepareStatement("SELECT * FROM User WHERE ID=?");
+            sUserByEmail = connection.prepareStatement("SELECT * FROM User WHERE email=?");
+            sUserByUsername = connection.prepareStatement("SELECT * FROM User WHERE username=?");
+            identityCheck = connection.prepareStatement("SELECT * FROM User WHERE Username=? AND Password=?");
+
+            sUsers = connection.prepareStatement("SELECT ID AS userId FROM User");
+            sUsersByKeyword = connection.prepareStatement("SELECT ID AS userId FROM User WHERE Username LIKE ?");
+
+            iUser = connection.prepareStatement("INSERT INTO User (nome,cognome,username,email,password) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uUser = connection.prepareStatement("UPDATE User SET nome=?,cognome=?,username=?,email=?,password=?,versione=? WHERE ID=?");
+            dUser = connection.prepareStatement("DELETE FROM User WHERE ID=?");
+
+            //Statistiche --> User più attivo per numero di nft posseduti
+            UsersMostAttivi = connection.prepareStatement("SELECT User.ID as userId,COUNT(User.ID) as Occorrenze From User INNER JOIN Disco ON User.ID=Disco.IDUser GROUP BY User.ID ORDER BY COUNT(User.ID) DESC LIMIT 3");
+        } catch (SQLException ex) {
+            throw new DataException("Error initializing collectors data layer", ex);
+        }
+    }
+
+    @Override
+    public void destroy() throws DataException {
+        try {
+
+            identityCheck.close();
+            sUser.close();
+            sUserByEmail.close();
+            sUserByUsername.close();
+            sUsers.close();
+            sUsersByKeyword.close();
+
+            iUser.close();
+            uUser.close();
+            dUser.close();
+
+            UsersMostAttivi.close();
+
+        } catch (SQLException ex) {
+        }
+        super.destroy();
+    }
+
     @Override
     public User createUser() {
         return new UserProxy(getDataLayer());
@@ -51,170 +105,185 @@ public class UserDAOimpl extends DAO implements UserDAO{
         }
     }
 
-    public User getUserByNickname(String nickname) throws DataException {
+    @Override
+    public void storeUser(User User) throws DataException {
+        try {
+            if (User.getKey() != null && User.getKey() > 0) {
+                if (User instanceof DataItemProxy && !((DataItemProxy) User).isModified()) {
+                    return;
+                }
+                uUser.setString(3, User.getUsername());
+                uUser.setString(4, User.getEmail());
+                uUser.setString(5, User.getPassword());
+
+                long current_version = User.getVersion();
+                long next_version = current_version + 1;
+
+                uUser.setLong(6, next_version);
+                uUser.setLong(7, User.getKey());
+
+                if (uUser.executeUpdate() == 0) {
+                    throw new OptimisticLockException(User);
+                } else {
+                    User.setVersion(next_version);
+                }
+            } else {
+            
+                iUser.setString(3, User.getUsername());
+                iUser.setString(4, User.getEmail());
+                iUser.setString(5, User.getPassword());
+
+                if (iUser.executeUpdate() == 1) {
+                    try (ResultSet keys = iUser.getGeneratedKeys()) {
+                        if (keys.next()) {
+                            int key = keys.getInt(1);
+                            User.setKey(key);
+                            dataLayer.getCache().add(User.class, User);
+                        }
+                    }
+                }
+            }
+            if (User instanceof DataItemProxy) {
+                ((DataItemProxy) User).setModified(false);
+            }
+        } catch (SQLException | OptimisticLockException ex) {
+            if (ex.getMessage().contains("Duplicated entry")) {
+                throw new DataException("Duplicated entry", ex);
+            } else {
+                throw new DataException("Unable to store User", ex);
+            }
+        }
+    }
+
+    @Override
+    public List<User> getUsers() throws DataException {
+        List<User> result = new ArrayList();
+
+        try (ResultSet rs = sUsers.executeQuery()) {
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("userId")));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Users", ex);
+        }
+        return result;
+    }
+
+    @Override
+    public User getUser(int user_key) throws DataException {
+        User a = null;
+        if (dataLayer.getCache().has(User.class, user_key)) {
+            a = dataLayer.getCache().get(User.class, user_key);
+        } else {
+            try {
+                sUser.setInt(1, user_key);
+                try (ResultSet rs = sUser.executeQuery()) {
+                    if (rs.next()) {
+                        a = createUser(rs);
+                        dataLayer.getCache().add(User.class, a);
+                    }
+                }
+            } catch (DataException ex) {
+                Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                throw new DataException("Unable to load User by ID", ex);
+            }
+        }
+        return a;
+    }
+
+    @Override
+    public User getUserByUsername(String username) throws DataException {
         User a = null;
         try {
-            sUserByNickname.setString(1, nickname);
-            try (ResultSet rs = sUserByNickname.executeQuery()) {
+            sUserByUsername.setString(1, username);
+            try (ResultSet rs = sUserByUsername.executeQuery()) {
                 if (rs.next()) {
                     a = createUser(rs);
                     dataLayer.getCache().add(User.class, a);
                 }
             }
         } catch (SQLException ex) {
-            throw new DataException("Unable to load User by Nickname", ex);
+            throw new DataException("Unable to load User by Username", ex);
         }
         return a;
     }
 
     @Override
-    public boolean getUsernameEsistente(String username) throws DataLayerException, IOException {
-
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        HttpServletResponse  response=null;
-        
+    public User getUserByEmail(String email) throws DataException {
+        User a = null;
         try {
-          // Connessione al database
-          conn = DB.getConnection();
-          
-          // Query per verificare se il nome utente esiste già
-          pstmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
-          pstmt.setString(1, username);
-          rs = pstmt.executeQuery();
-          
-          if (rs.next()) {
-            // messaggio di errore se lo user esiste
-           response.sendError(HttpServletResponse.SC_CONFLICT, "User già esistente"); 
-    
+            sUserByEmail.setString(1, email);
+            try (ResultSet rs = sUserByEmail.executeQuery()) {
+                if (rs.next()) {
+                    a = createUser(rs);
+                    dataLayer.getCache().add(User.class, a);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load User by Email", ex);
         }
-      }
-         catch (SQLException ex) {
-
-          throw new DataLayerException("USERNAME UTENTE", ex);
-        } 
-
-      
-      
-        
-        
-        return false;
+        return a;
     }
 
     @Override
-    public boolean getEmailEsistente(String email) throws DataLayerException, IOException {
-  
-      Connection conn = null;
-      PreparedStatement pstmt = null;
-      ResultSet rs = null;
-      HttpServletResponse  response=null;
-      
-      try {
-        // Connessione al database
-        conn = DB.getConnection();
-        
-        // Query per verificare se la mail utente esiste già
-        pstmt = conn.prepareStatement("SELECT * FROM users WHERE email = ?");
-        pstmt.setString(1, email);
-        rs = pstmt.executeQuery();
-        
-        if (rs.next()) {
-          // messaggio di errore se la mail esiste
-         response.sendError(HttpServletResponse.SC_CONFLICT, "Email già esistente"); 
-  
-      }
-     }
-      catch (SQLException ex) {
-
-        throw new DataLayerException("EMAIL UTENTE", ex);
-      } 
-      
-      
-      return false;
+    public List<User> getUsersByKeyword(String keyword) throws DataException {
+        try {
+            sUsersByKeyword.setString(1, "%" + keyword + "%");
+            try (ResultSet rs = sUsersByKeyword.executeQuery()) {
+                List<User> result = new ArrayList<>();
+                while (rs.next()) {
+                    result.add((User) getUser(rs.getInt("userId")));
+                }
+                return result;
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Users by keyword", ex);
+        }
     }
 
     @Override
-    public User getCredenziali(String username, String password) throws DataLayerException {
-  
-          User utente = null;
-          try (Connection connection = DB.getConnection()) {
-              try (PreparedStatement ps = connection.prepareStatement( "SELECT * FROM user WHERE username=? AND password=?")) {
-
-                  ps.setString(1, username);
-                  ps.setString(2, password);
-                  try (ResultSet rset = ps.executeQuery()) {
-                      if (rset.next()) {
-                         // utente.setUsername(rset.getString("username"));
-                          utente.setId(rset.getInt("id"));
-                          utente.setEmail(rset.getString("email"));
-                      }
-                  }
-              }
-          } catch (SQLException ex) {
-              throw new DataLayerException("CREDENZIALI UTENTE", ex);
-          }
-          return utente;
-      
+    public User identityCheck(String username, String password) throws DataException {
+        try {
+            identityCheck.setString(1, username);
+            identityCheck.setString(2, password);
+            try (ResultSet rs = identityCheck.executeQuery()) {
+                if (rs.next()) {
+                    User a = createUser(rs);
+                    dataLayer.getCache().add(User.class, a);
+                    return createUser(rs);
+                }
+            }
+        } catch (SQLException | DataException ex) {
+            throw new DataException("User non trovato", ex);
+        }
+        return null;
     }
 
     @Override
-    public void storeUser(User utente) throws DataLayerException {
-          try (Connection connection = DB.getConnection()) {
-              try (PreparedStatement ps = connection.prepareStatement("INSERT INTO user(username,password,email) VALUES(?,?,?,?,?)", RETURN_GENERATED_KEYS)) {
-                  ps.setString(1, utente.getUsername());
-                  ps.setString(2, utente.getPassword());
-                  ps.setString(3, utente.getEmail());
-  
-                  ps.executeUpdate();
-  
-                  try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                      if (generatedKeys.next()) {
-                          utente.setId(generatedKeys.getInt(1));
-                      } else {
-                          throw new DataLayerException("RECUPERO UTENTE");
-                      }
-                  }
-              }
-          } catch (SQLException ex) {
-              throw new DataLayerException("NUOVO UTENTE", ex);
-          }
-         // return utente;
+    public List<User> usersMostNft() throws DataException {
+        List<User> result = new ArrayList();
+        try (ResultSet rs = UsersMostAttivi.executeQuery()) {
+            while (rs.next()) {
+                result.add((User) getUser(rs.getInt("userId")));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Best Users", ex);
+        }
+        return result;
     }
 
     @Override
-    public User getUser(int id) throws DataLayerException {
-      User utente = null;
-      try (Connection connection = DB.getConnection()) {
-          try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM user WHERE user.id=?")) {
-              ps.setInt(1, id);
-              try (ResultSet rset = ps.executeQuery()) {
-                  if (rset.next()) {
-                      utente.setUsername(rset.getString("username"));
-                      utente.setEmail(rset.getString("email"));
-                  }
-              }
-          }
-      } catch (SQLException ex) {
-          throw new DataLayerException("DATI UTENTE", ex);
-      }
-      return utente;
-    }
-
-    @Override
-    public int updateUser(User user) throws DataLayerException {
-      int result;
-      try (Connection connection = DB.getConnection()) {
-          try (PreparedStatement ps = connection.prepareStatement("UPDATE user set  username=?, email=?, password=? WHERE user.id=?")) {
-              ps.setString(1, user.getUsername());
-              ps.setString(2, user.getEmail());
-              ps.setInt(3, user.getId());
-              result = ps.executeUpdate();
-          }
-      } catch (SQLException ex) {
-          throw new DataLayerException("DATI UTENTE", ex);
-      }
-      return result;
+    public List<Integer> CountusersMostNft() throws DataException {
+        List<Integer> result = new ArrayList();
+        try (ResultSet rs = UsersMostAttivi.executeQuery()) {
+            while (rs.next()) {
+                result.add(rs.getInt("Occorrenze"));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Best Users", ex);
+        }
+        return result;
     }
 
 

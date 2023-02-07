@@ -30,4 +30,6 @@ public interface Nft extends DataItem<Integer> {
 
     boolean isPubblica();
 
+    void setPubblica(boolean pubblica);
+
 }

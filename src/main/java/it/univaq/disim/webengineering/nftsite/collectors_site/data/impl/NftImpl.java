@@ -12,6 +12,7 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
     private String description;
     private String metadata;
     private String walletAddress;
+    private boolean pubblica;
 
     public NftImpl() {
         super();
@@ -84,7 +85,13 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
 
     @Override
     public boolean isPubblica() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.pubblica;
+
+    }
+
+    @Override
+    public void setPubblica(boolean pubblica){
+        this.pubblica = pubblica;
     }
 
 }

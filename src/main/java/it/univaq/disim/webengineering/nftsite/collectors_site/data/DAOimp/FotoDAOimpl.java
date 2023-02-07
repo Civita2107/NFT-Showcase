@@ -10,6 +10,7 @@ import java.util.List;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.FotoDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Foto;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.FotoProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
@@ -32,7 +33,7 @@ public class FotoDAOimpl extends DAO implements FotoDAO {
             sFotoByFileName = connection.prepareStatement("SELECT * FROM Foto WHERE filename=?");
             sFoto = connection.prepareStatement("SELECT ID FROM Foto");
             dFotoByDisco = connection.prepareStatement("DELETE FROM Foto WHERE ID=? AND IDDisco=?");
-            Foto = connection.prepareStatement("INSERT INTO Foto (size, type, filename, IDDisco, versione) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            iFoto = connection.prepareStatement("INSERT INTO Foto (size, type, filename, IDDisco, versione) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
             throw new DataException("Error initializing newspaper data layer", ex);
         }
@@ -62,11 +63,11 @@ public class FotoDAOimpl extends DAO implements FotoDAO {
         FotoProxy i = (FotoProxy) createFoto();
         try {
             i.setKey(rs.getInt("ID"));
-            i.setFotoize(rs.getLong("size"));
+            i.setFotoSize(rs.getLong("size"));
             i.setFotoType(rs.getString("type"));
             i.setFilename(rs.getString("filename"));
             i.setVersion(rs.getLong("versione"));
-            i.setDiscoKey(rs.getInt("IDDisco"));
+          //  i.setNftKey(rs.getInt("IDDisco"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create Foto object form ResultSet", ex);
         }

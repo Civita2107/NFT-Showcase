@@ -35,7 +35,6 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
         this.nfts = nfts;
     }
 
-    
     @Override
     public int getUserId() {
         return userId;

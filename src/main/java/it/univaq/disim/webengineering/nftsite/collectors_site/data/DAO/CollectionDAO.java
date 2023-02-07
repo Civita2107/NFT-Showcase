@@ -1,55 +1,48 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
 
+import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public interface CollectionDAO {
 
-        
-      //  List<Collection> searchCollectionByStringsLogged(String value, Integer numberOfElements, int idUser) throws DataLayerException;
 
-       // List<Collection> searchCollectionByStrings(String value, Integer numberOfElements) throws DataLayerException;
+  Collection createCollection();
 
-       // List<Collection> getCollezioniLogImp(int numberOfElements, int idUser) throws DataLayerException;
-
-      //  List<Collection> getCollezioniImp(Integer numberOfElements) throws DataLayerException;
-        
-        Integer getTotalPageBySearch(String viewItem) throws DataLayerException;
-
-        Integer getTotalPage() throws DataLayerException;
-
-        List<Collection> searchCollectionByStrings(String value) throws DataLayerException;
-
-        public List<Collection> getCollezioni() throws DataLayerException;
-
-        public List<Collection> getCollezioni(String contractAddress) throws DataLayerException;
-
-      //  public List<Collection> getCollezioniAssociate(int idUser) throws DataLayerException;
+  Collection getCollection(int collection_key) throws DataException;
 
 
-       // public void updateCollection(Collection Collection, String[] id_dischi, String[] id_accesso) throws DataLayerException;
+  List<Collection> getCollections() throws DataException;
 
+  List<Collection> getCollections(User user) throws DataException;
 
-     //   public void insertCollection(Collection Collection, int id_User, String[] id_dischi, String[] id_accesso) throws DataLayerException;
+  List<Collection> getCollectionsCondivise(User user) throws DataException;
 
-        public String getCACollection() throws DataLayerException;
+  List<Integer> getUsersVisualizza(Collection collection) throws DataException;
 
-       // public boolean deleteCollection(int id) throws DataLayerException;
+  boolean getCollectionsCondivise(Collection collection) throws DataException;
 
-        public Collection getCollezione(Nft nft) throws DataLayerException;
+  List<Collection> getCollectionsPubbliche(User user) throws DataException;
 
-        public List<User> getUser(int id) throws DataLayerException;
+  void storeCollection(Collection collection) throws DataException;
 
-      //  public List<User> getAccessoUserNotByUser(int idP, int id) throws DataLayerException;
+  void storeVisualizza(Collection collection, User user) throws DataException;
 
-      //  public List<User> getAccessoUserByUser(int id) throws DataLayerException;
+  void deleteCollection(Collection collection) throws SQLException;
 
+  void deleteVisualizza(Collection collection) throws SQLException;
 
+  void deleteVisualizza(Collection collection, User user) throws SQLException;
 
+  void setPubblica(Collection collection, Boolean stato) throws DataException;
 
+  List<Collection> getCollectionsByKeyword(String keyword) throws DataException;
+
+  void deleteNftsCollection(Collection collection, List<Nft> nfts) throws SQLException;
 }
