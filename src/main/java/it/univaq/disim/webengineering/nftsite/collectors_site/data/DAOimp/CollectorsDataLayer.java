@@ -20,9 +20,9 @@ public class CollectorsDataLayer extends DataLayer {
     public void init() throws DataException {
         //registriamo i nostri dao
         //register our daos
-        registerDAO(Collection.class, new CollectionDAOimp(this));
+        registerDAO(Collection.class, new CollectionDAOimpl(this));
         registerDAO(Comment.class, new CommentDAOimp(this));
-        registerDAO(Foto.class, new FotoDAOimp(this));
+        registerDAO(Foto.class, new FotoDAOimpl(this));
         registerDAO(Nft.class, new NftDAOimp(this));
         registerDAO(User.class, new UserDAOimpl(this));
         registerDAO(Wallet.class, new WalletDAOimp(this));

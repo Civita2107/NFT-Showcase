@@ -4,9 +4,8 @@ import java.util.List;
 
 import javax.validation.OverridesAttribute;
 
-import com.mysql.cj.x.protobuf.MysqlxNotice.Warning.Level;
-
-import freemarker.log.Logger;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
@@ -63,8 +62,17 @@ public class UserProxy extends UserImpl implements DataItemProxy {
         if (super.getFollowing() == null) {
             try {
                 super.addFollowing(((UserDAO) dataLayer.getDAO(User.class)).getFollowing(this));
+            } catch (DataException e) {
+                Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
             }
         }
+        return super.getFollowing();
+    }
+
+    @Override
+    public void addFollowing(User user) {
+        super.addFollower(user);
+        this.modified = true;
     }
 
   /**   @Override

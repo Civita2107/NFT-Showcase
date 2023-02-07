@@ -49,7 +49,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         UserDAO userDAO = dataLayer.getUserDAO();
         user = userDAO.getUser((Integer.parseInt(request.getParameter("id"))));
 
-        Set<Collection> collezioni = new HashSet<>(dataLayer.getCollezioneDAO().getCollezioni(user));
+        Set<Collection> collezioni = new HashSet<>(dataLayer.getCollectionDAO().getCollezioni(user));
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(user);
 
         request.setAttribute("user", user);

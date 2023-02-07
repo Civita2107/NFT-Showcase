@@ -39,11 +39,18 @@ public class Utility {
 
     public static List<Wallet> getWallets(HttpServletRequest request) throws DataException {
         List<Wallet> wallets;
-        String keyword = request.getParameter("keyword");
-        CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-        WalletDAO walletDAO = dataLayer.getWalletDAO();
-        wallets = walletDAO.getWallets(keyword);
+        HttpSession s = request.getSession(false);
+        if (s != null) {
+            int userId = (int) s.getAttribute("userid");
+            CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
+            WalletDAO walletDAO = dataLayer.getWalletDAO();
+            wallets = walletDAO.getWallets(userId);
 
-        return wallets;
+            return wallets;
+        } else {
+            return null;
+        }
     }
+
+    public static List<Nft> getNfts()
 }
