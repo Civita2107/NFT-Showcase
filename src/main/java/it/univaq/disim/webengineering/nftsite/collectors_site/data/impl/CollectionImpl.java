@@ -14,7 +14,7 @@ public class CollectionImpl extends DataItemImpl<Integer> implements Collection 
     private int totalSupply;
     private boolean pubblica;
     private User user;
-    private Nft nfts;
+    private List<Nft> nfts;
 
     @Override
     public String getContractAdrress() {
