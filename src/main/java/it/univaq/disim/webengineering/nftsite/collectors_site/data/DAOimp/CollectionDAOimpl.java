@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,216 +20,366 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
+import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockException;
 
 public class CollectionDAOimpl extends DAO implements CollectionDAO {
+    private PreparedStatement sCollectionByID, sUser;
+    private PreparedStatement sCollections, sCollectionsPubbliche, sDischiByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza;
+    private PreparedStatement iCollection, dDischiByCollection, sCollectionsCondiviseByCollection, iVisualizza, iDiscoCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
 
     public CollectionDAOimpl(DataLayer d) {
         super(d);
     }
 
     @Override
-    public Integer getTotalPageBySearch(String viewItem) throws DataLayerException{
+    public void init() throws DataException {
+        try {
+            super.init();
 
-        viewItem.replace("!", "!!")
-                .replace("%", "!%")
-                .replace("_", "!_")
-                .replace("[", "![");
+            sCollections = connection.prepareStatement("SELECT ID AS collectionID FROM Collection where pubblica = 1");
+            sCollectionsPubbliche = connection.prepareStatement("SELECT ID AS collectionID FROM Collection where pubblica = 1 AND IDuser = ?");
+            sCollectionByID = connection.prepareStatement("SELECT * FROM Collection WHERE ID=?");
+            sCollectionsByUser = connection.prepareStatement("SELECT ID AS collectionID FROM Collection WHERE IDuser=?");
+            sCollectionsByKeyword = connection.prepareStatement("SELECT ID AS collectionID FROM Collection WHERE pubblica = 1 AND nome LIKE ?");
 
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) as totali FROM (SELECT * FROM Collection WHERE nome LIKE ?) as tot")){
-                ps.setString(1, "%" + viewItem + "%");
-                //ps.setInt(2, (Integer.valueOf(numPage)*4)-4);
-                //ps.setInt(3, (Integer.valueOf(numPage)*4));
-                try(ResultSet rset = ps.executeQuery()){
-                    if(rset.next()){
-                        return (int) Math.ceil(rset.getDouble("totali")/4);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            sUser = connection.prepareStatement("SELECT * FROM user WHERE ID=?");
+
+            sCollectionsCondivise = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN User ON User.ID = visualizza.IDUser WHERE User.ID=?");
+            sCollectionsCondiviseByCollection = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN User ON User.ID = visualizza.IDUser WHERE Collection.ID=?");
+
+            iCollection = connection.prepareStatement("INSERT INTO Collection (nome,pubblica,IDuser) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uCollection = connection.prepareStatement("UPDATE Collection SET nome=?,pubblica=?,IDuser=?,versione=? WHERE ID=?");
+            uPubblica = connection.prepareStatement("UPDATE Collection SET pubblica=?,versione=? WHERE ID=?");
+            dCollection = connection.prepareStatement("DELETE FROM Collection WHERE ID=?");
+
+            sVisualizza = connection.prepareStatement("SELECT IDUser FROM visualizza WHERE IDCollection=?");
+            iVisualizza = connection.prepareStatement("INSERT INTO visualizza (IDUser,IDCollection) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
+            dVisualizza = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=?");
+            dVisualizzaUser = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=? AND IDUser=?");
+
+            sDischiByCollection = connection.prepareStatement("SELECT disco.ID AS discoID FROM Disco INNER JOIN disco_collection ON Disco.ID = disco_collection.ID_disco INNER JOIN Collection ON Collection.ID = disco_collection.IDCollection WHERE Collection.ID=?");
+            iDiscoCollection = connection.prepareStatement("INSERT INTO disco_collection (ID_disco,IDCollection) VALUES(?,?) ", Statement.RETURN_GENERATED_KEYS);
+            dDischiByCollection = connection.prepareStatement("DELETE FROM disco_collection WHERE ID_disco=? AND IDCollection=?");
+
+        } catch (SQLException ex) {
+            throw new DataException("Error initializing collectors data layer", ex);
         }
-        return null;
     }
 
     @Override
-    public Integer getTotalPage() throws DataLayerException{
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("select CAST(count(*) as float) as tot from Collection")){
-                try(ResultSet rset = ps.executeQuery()){
-                    if(rset.next()){
-                        return (int) Math.ceil(rset.getDouble("tot")/4);
+    public void destroy() throws DataException {
+        try {
+
+            sCollectionByID.close();
+
+            sCollectionsByKeyword.close();
+            sUser.close();
+            sCollections.close();
+            sCollectionsPubbliche.close();
+            sVisualizza.close();
+            sCollectionsByUser.close();
+            sCollectionsCondivise.close();
+            sDischiByCollection.close();
+            sCollectionsCondiviseByCollection.close();
+
+            iCollection.close();
+            iVisualizza.close();
+            iDiscoCollection.close();
+            uCollection.close();
+            uPubblica.close();
+            dCollection.close();
+            dVisualizza.close();
+            dVisualizzaUser.close();
+            dDischiByCollection.close();
+
+        } catch (SQLException ex) {
+            throw new DataException("Error destroying collectors data layer", ex);
+        }
+        super.destroy();
+    }
+
+    @Override
+    public Collection createCollection() {
+        return new CollectionProxy(getDataLayer());
+    }
+
+    private CollectionProxy createCollection(ResultSet rs) throws DataException {
+        CollectionProxy a = (CollectionProxy) createCollection();
+        try {
+            a.setKey(rs.getInt("ID"));
+            a.setNome(rs.getString("nome"));
+            a.setPubblica(rs.getBoolean("pubblica"));
+            a.setUserKey((rs.getInt("IDuser")));
+            a.setVersion(rs.getLong("versione"));
+        } catch (SQLException ex) {
+            throw new DataException("Unable to create collection object form ResultSet", ex);
+        }
+        return a;
+    }
+
+    @Override
+    public Collection getCollection(int collection_key) throws DataException {
+        Collection a = null;
+        if (dataLayer.getCache().has(Collection.class, collection_key)) {
+            a = dataLayer.getCache().get(Collection.class, collection_key);
+        } else {
+            try {
+                sCollectionByID.setInt(1, collection_key);
+                try (ResultSet rs = sCollectionByID.executeQuery()) {
+                    if (rs.next()) {
+                        a = createCollection(rs);
+                        dataLayer.getCache().add(Collection.class, a);
                     }
                 }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to load Collection by ID", ex);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-        return null;
+        return a;
     }
-   
+
     @Override
-    public List<Collection> searchCollectionByStrings(String value) throws DataLayerException {
-        List<Collection> collezioni = new ArrayList();
+    public List<Collection> getCollections() throws DataException {
+        List<Collection> result = new ArrayList();
 
-        value.replace("!", "!!")
-                .replace("%", "!%")
-                .replace("_", "!_")
-                .replace("[", "![");
-                
+        try (ResultSet rs = sCollections.executeQuery()) {
+            while (rs.next()) {
+                result.add((Collection) getCollection(rs.getInt("collectionID")));
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Collections", ex);
+        }
+        return result;
+    }
 
+    @Override
+    public List<Collection> getCollections(User user) throws DataException {
+        List<Collection> result = new ArrayList();
 
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM collezion c join user coll on c.id=coll.id WHERE nome LIKE ? ESCAPE '!'")) {
-                ps.setString(1, "%" + value + "%");
-                try (ResultSet rset = ps.executeQuery()) {
-                    while (rset.next()) {
-                        Collection c = new CollectionImpl();
-                        c.setNome(rset.getString("nome"));
-                        c.setContractAddress(rset.getString("contractAddress"));
-                        collezioni.add(c);
-                    }
+        try {
+            sCollectionsByUser.setInt(1, user.getKey());
+            try (ResultSet rs = sCollectionsByUser.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Collection) getCollection(rs.getInt("collectionID")));
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET DISCHI BY PAGE", ex);
-        } catch (DataLayerException ex) {
-           //?? Logger.getLogger(DiscoDAOImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataException("Unable to load Collections by User", ex);
         }
-        return collezioni;
+        return result;
     }
 
     @Override
-    public List<Collection> getCollezioni() throws DataLayerException {
+    public List<Integer> getUsersVisualizza(Collection collection) throws DataException {
+        List<Integer> result = new ArrayList();
 
-        List<Collection> collezioni = new ArrayList();
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM Collection")) {
-
-                try (ResultSet rset = ps.executeQuery()) {
-                    while (rset.next()) {
-                        Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, rset.getString("nome"));
-                        Collection c = new CollectionImpl();
-                        c.setNome(rset.getString("nome"));
-                        c.setContractAddress(rset.getString("contractAddress"));
-                        collezioni.add(c);
-                      
-                    }
+        try {
+            sVisualizza.setInt(1, collection.getKey());
+            try (ResultSet rs = sVisualizza.executeQuery()) {
+                while (rs.next()) {
+                    result.add((int) rs.getInt("IDUser"));
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
-        }   catch (DataLayerException ex) {
-                Logger.getLogger(CollectionDAO.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        return collezioni;
+            throw new DataException("Unable to load Users from Visualizza", ex);
+        }
+        return result;
     }
 
     @Override
-    public List<Collection> getCollezioni(String contractAddress) throws DataLayerException {
+    public List<Collection> getCollectionsCondivise(User user) throws DataException {
+        List<Collection> result = new ArrayList();
 
-        List<Collection> collezioni = new ArrayList();
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM collezion c where c.contractAddress=?")) {
-                ps.setString(1, contractAddress);
-                try (ResultSet rset = ps.executeQuery()) {
-                    while (rset.next()) {
-                        CollectionImpl c = new CollectionImpl();
-                        c.setNome(rset.getString("nome"));
-                        c.setContractAddress(rset.getString("contractAddress"));
-                        collezioni.add(c);
-
-                    }
+        try {
+            sCollectionsCondivise.setInt(1, user.getKey());
+            try (ResultSet rs = sCollectionsCondivise.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Collection) getCollection(rs.getInt("collectionID")));
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
-        }   catch (DataLayerException ex) {
-            Logger.getLogger(CollectionDAO.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataException("Unable to load Collections condivise", ex);
         }
-
-        return collezioni;
-    }
-   
- 
-
-
-    //rivedere
-    @Override
-    public String getCACollection() throws DataLayerException {
-        String contractAddress = "";
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT contractAddress FROM collection order by contractAddress desc limit 1 ";)) {
-                try (ResultSet rset = ps.executeQuery()) {
-                    while (rset.next()) {
-                        contractAddress=rset.getString("contractAddress");
-
-                    }
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
-        }   catch (DataLayerException ex) {
-            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return contractAddress;
+        return result;
     }
 
     @Override
-    public Collection getCollezione(Nft nft) throws DataLayerException {
+    public List<Collection> getCollectionsPubbliche(User user) throws DataException {
+        List<Collection> result = new ArrayList();
 
-        Collection c = new CollectionImpl();
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM collezion where contractAddress=?")) {
-                ps.setString(1, nft.getContractAddress());
-                try (ResultSet rset = ps.executeQuery()) {
-                    if (rset.next()) {
-                        c.setNome(rset.getString("nome"));
-                        c.setContractAddress(rset.getString("contractAddress"));
-                       
-
-
-                    }
+        try {
+            sCollectionsPubbliche.setInt(1, user.getKey());
+            try (ResultSet rs = sCollectionsPubbliche.executeQuery()) {
+                while (rs.next()) {
+                    result.add((Collection) getCollection(rs.getInt("collectionID")));
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET COLLEZIONI BY PAGE", ex);
-        }   catch (DataLayerException ex) {
-            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataException("Unable to load Collections pubbliche", ex);
         }
-
-        return c;
+        return result;
     }
 
-
-
     @Override
-    public List<User> getUser(int id) throws DataLayerException {
-
-        List<User> user = new ArrayList<>();
-        try (Connection connection = DB.getConnection()) {
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM User where id!=?")) {
-                ps.setInt(1, id);
-                try (ResultSet rset = ps.executeQuery()) {
-                    while (rset.next()) {
-                        User c = new UserImpl(); //creare un costruttore vuoto per UserImpl
-                        c.setUsername(getCACollection());(rset.getString("username"));
-                        c.setId(rset.getInt("id"));
-                        user.add(c);
-                    }
+    public boolean getCollectionsCondivise(Collection collection) throws DataException {
+        List<Collection> result = new ArrayList();
+        boolean b = false;
+        try {
+            sCollectionsCondiviseByCollection.setInt(1, collection.getKey());
+            try (ResultSet rs = sCollectionsCondiviseByCollection.executeQuery()) {
+                if (rs.next()) {
+                    b = true;
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("GET user BY PAGE", ex);
-        }   catch (DataLayerException ex) {
-            Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new DataException("Unable to load Collections condivise", ex);
         }
+        return b;
+    }
 
-        return user;
+    @Override
+    public void setPubblica(Collection collection, Boolean stato) throws DataException {
+        try {
+            uPubblica.setBoolean(1, stato);
+            long current_version = collection.getVersion();
+            long next_version = current_version + 1;
+            uPubblica.setLong(2, next_version);
+            uPubblica.setInt(3, collection.getKey());
+            uPubblica.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataException("Unable to set pubblica", ex);
+        }
+    }
+
+    @Override
+    public void storeCollection(Collection collection) throws DataException {
+        try {
+            if (collection.getKey() != null && collection.getKey() > 0) {
+
+                if (collection instanceof DataItemProxy && !((DataItemProxy) collection).isModified()) {
+                    return;
+                }
+                uCollection.setString(1, collection.getNome());
+                uCollection.setBoolean(2, collection.isPubblica());
+                uCollection.setInt(3, collection.getUser().getKey());
+
+                long current_version = collection.getVersion();
+                long next_version = current_version + 1;
+
+                uCollection.setLong(4, next_version);
+                uCollection.setInt(5, collection.getKey());
+
+                if (uCollection.executeUpdate() == 0) {
+                    throw new OptimisticLockException(collection);
+                } else {
+                    collection.setVersion(next_version);
+                }
+
+            } else {
+                iCollection.setString(1, collection.getNome());
+                iCollection.setBoolean(2, collection.isPubblica());
+                iCollection.setInt(3, collection.getUser().getKey());
+
+                if (iCollection.executeUpdate() == 1) {
+                    try (ResultSet keys = iCollection.getGeneratedKeys()) {
+                        if (keys.next()) {
+                            int key = keys.getInt(1);
+                            collection.setKey(key);
+                            dataLayer.getCache().add(Collection.class, collection);
+                        }
+                    }
+                }
+
+            }
+            for (Disco d : collection.getDischi()) {
+                iDiscoCollection.setInt(1, d.getKey());
+                iDiscoCollection.setInt(2, collection.getKey());
+                iDiscoCollection.executeUpdate();
+            }
+            dataLayer.getCache().add(Collection.class, collection);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to store Collection", ex);
+        }
+    }
+
+    @Override
+    public void storeVisualizza(Collection collection, User user) throws DataException {
+        try {
+            iVisualizza.setInt(1, user.getKey());
+            iVisualizza.setInt(2, collection.getKey());
+            iVisualizza.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new DataException("Unable to store Visualizza", ex);
+        }
+    }
+
+    @Override
+    public List<Collection> getCollectionsByKeyword(String keyword) throws DataException {
+        try {
+            sCollectionsByKeyword.setString(1, "%" + keyword + "%");
+            try (ResultSet rs = sCollectionsByKeyword.executeQuery()) {
+                List<Collection> result = new ArrayList();
+                while (rs.next()) {
+                    result.add((Collection) getCollection(rs.getInt("collectionID")));
+                }
+                return result;
+            } catch (DataException e) {
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Collections by keyword", ex);
+        }
+    }
+
+    @Override
+    public void deleteCollection(Collection collection) throws SQLException {
+        try {
+            dCollection.setInt(1, collection.getKey());
+            dCollection.executeUpdate();
+        } catch (SQLException ex) {
+            throw new SQLException("Unable to delete Collection", ex);
+        }
+    }
+
+    @Override
+    public void deleteVisualizza(Collection collection) throws SQLException {
+        try {
+            dVisualizza.setInt(1, collection.getKey());
+            dVisualizza.executeUpdate();
+        } catch (SQLException ex) {
+            throw new SQLException("Unable to delete Visualizza", ex);
+        }
+    }
+
+    @Override
+    public void deleteVisualizza(Collection collection, User user) throws SQLException {
+        try {
+
+            dVisualizzaUser.setInt(1, collection.getKey());
+            dVisualizzaUser.setInt(2, user.getKey());
+            dVisualizzaUser.executeUpdate();
+
+        } catch (SQLException ex) {
+            throw new SQLException("Unable to delete Visualizza", ex);
+        }
+    }
+
+    @Override
+    public void deleteDischiCollection(Collection collection, List<Disco> dischi) throws SQLException {
+        try {
+            for (Disco d : dischi) {
+                dDischiByCollection.setInt(1, d.getKey());
+                dDischiByCollection.setInt(2, collection.getKey());
+                dDischiByCollection.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new SQLException("Unable to delete Dischi", ex);
+        }
     }
 
 }
