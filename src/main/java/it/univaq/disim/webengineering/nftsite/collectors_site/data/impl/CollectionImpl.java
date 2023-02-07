@@ -2,6 +2,8 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import java.util.List;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -14,7 +16,7 @@ public class CollectionImpl extends DataItemImpl<Integer> implements Collection 
     private int totalSupply;
     private boolean pubblica;
     private User user;
-    private List<Nft> nfts;
+    private Array nfts;
 
     @Override
     public String getContractAdrress() {
@@ -78,7 +80,12 @@ public class CollectionImpl extends DataItemImpl<Integer> implements Collection 
     }
     
     @Override
-    public List<Nft> getNfts(){
+    public Array getNfts(){
         return this.nfts;
+    }
+
+    @Override
+    public void setNfts(Array nfts){
+        this.nfts=nfts;
     }
 }

@@ -2,6 +2,8 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
 
 import java.util.List;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
+
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
 public interface Collection extends DataItem<Integer> {
@@ -17,6 +19,7 @@ public interface Collection extends DataItem<Integer> {
     void setPubblica(boolean pubblica);
     void setUser(User user);
     User getUser();
-    List<Nft> getNfts();
+    Array getNfts();
+    void setNfts(Array nfts);
 
 }
