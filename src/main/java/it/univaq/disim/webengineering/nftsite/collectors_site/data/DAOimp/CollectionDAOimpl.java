@@ -109,7 +109,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 
                 try (ResultSet rset = ps.executeQuery()) {
                     while (rset.next()) {
-                        Logger.getLogger(CollectionDAOImpl.class.getName()).log(Level.SEVERE, null, rset.getString("nome"));
+                        Logger.getLogger(CollectionDAOimpl.class.getName()).log(Level.SEVERE, null, rset.getString("nome"));
                         Collection c = new CollectionImpl();
                         c.setNome(rset.getString("nome"));
                         c.setContractAddress(rset.getString("contractAddress"));
