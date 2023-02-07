@@ -82,8 +82,8 @@ public class ListaCollezioni extends CollectorsBaseController {
         CollectionDAO collectionDAO = dataLayer.getCollectionDAO();
 
         Set<Collection> collections = new HashSet<>();
-        collections.addAll(collectionDAO.getCollezioni());
-        collezioni.addAll(collectionDAO.getCollections(Utility.getUser(request)));
+        collections.addAll(collectionDAO.getCollections());
+        collections.addAll(collectionDAO.getCollections(Utility.getUser(request)));
         request.setAttribute("collections", collections);
 
         result.activate("collezione/lista.ftl", request, response);
