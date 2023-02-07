@@ -11,7 +11,7 @@ public interface UserDAO {
 
     User getCredenziali(String username, String password) throws DataException;
 
-    User createUser(User user) throws DataException;
+    User createUser() throws DataException;
 
     User getUser(int id) throws DataException;
 
