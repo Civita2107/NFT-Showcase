@@ -4,6 +4,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
+import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
