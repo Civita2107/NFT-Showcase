@@ -9,7 +9,7 @@ public interface Wallet extends DataItem<Integer> {
     String getAddress();
     List<Nft> getNfts();
     void setAddress(String d);
-    void setNfts(Array array);
+    void setNfts(Array nfts);
     void setUserId(int id);
     int getUserId();
 }

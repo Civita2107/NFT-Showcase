@@ -1,6 +1,8 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
 import java.util.List;
+import java.sql.Array;
+
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
@@ -10,7 +12,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
 
     private String address;
-    private List<Nft> nfts;
+    private Array nfts;
     private int userId;
 
 
@@ -21,7 +23,7 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     }
 
     @Override
-    public List<Nft> getNfts() {
+    public Array getNfts() {
         return nfts;
     }
 
@@ -31,7 +33,7 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     }
 
     @Override
-    public void setNfts(List<Nft> nfts) {
+    public void setNfts(Array nfts) {
         this.nfts = nfts;
     }
 
@@ -44,6 +46,7 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     public void setUserId(int userId) {
         this.userId = userId;
     }
+
 
     
 }
