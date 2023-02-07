@@ -25,10 +25,9 @@ public class CommentProxy extends CommentImpl implements DataItemProxy {
         this.userKey = 0;
     }
 
-    @Override
-    public void setKey(Integer key) {
-        super.setKey(key);
-        this.modified = false;
+    public void setUserKey(int userKey) {
+        this.userKey = userKey;
+        super.setUser(null);
     }
 
     @Override
