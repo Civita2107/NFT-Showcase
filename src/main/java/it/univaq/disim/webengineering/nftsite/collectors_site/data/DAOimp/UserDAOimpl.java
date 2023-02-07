@@ -1,7 +1,5 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,19 +9,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
-import javax.servlet.http.HttpServletResponse;
-
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.UserProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
-import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockException;
 
 public class UserDAOimpl extends DAO implements UserDAO{
@@ -284,6 +276,18 @@ public class UserDAOimpl extends DAO implements UserDAO{
             throw new DataException("Unable to load Best Users", ex);
         }
         return result;
+    }
+
+    @Override
+    public User getFollower(User user) throws DataException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public User getFollowing(User user) throws DataException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

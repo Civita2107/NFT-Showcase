@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,8 +44,8 @@ public class ListaUtenti extends CollectorsBaseController {
         List<User> utenti;
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         UserDAO userDAO = dataLayer.getUserDAO();
-        utenti = userDAO.getUser();
+        utenti = userDAO.getUsers();
         request.setAttribute("utenti",utenti);
-        result.activate(user/lista.ftl, request, response); //chiameremo la cartella dei template relativi all'user così
+        result.activate("user/lista.ftl", request, response); //chiameremo la cartella dei template relativi all'user così
     }
 }
