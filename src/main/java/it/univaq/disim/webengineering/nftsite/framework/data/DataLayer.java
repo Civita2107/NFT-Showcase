@@ -54,9 +54,9 @@ public class DataLayer implements AutoCloseable {
         return connection;
     }
 
-    public DataCache getCache() { //se io faccio 2 get di un oggetto rischio la desincronizzazione se ne cambio uno e l'altro no, quindi
-        return cache;              //creo una cache degli oggetti caricati
-    }
+    public DataCache getCache() { //se io faccio 2 get di un oggetto rischio la desincronizzazione 
+        return cache;             //se ne cambio uno e l'altro no, quindi
+    }                             //creo una cache degli oggetti caricati
 
     //Metodo dell'interfaccia AutoCloseable (permette di usare questa classe nei try-with-resources)
     //Method from the Autocloseable interface (allows this class to be used in try-with-resources)
