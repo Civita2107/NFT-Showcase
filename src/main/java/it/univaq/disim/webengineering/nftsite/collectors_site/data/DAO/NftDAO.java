@@ -20,7 +20,7 @@ public interface NftDAO {
 
     Nft getNft(int key) throws DataException;
 
-    List<Nft> getNft(Comment comment) throws DataException;
+    Nft getNft(Comment comment) throws DataException;
 
     List<Nft> getNftByKeyword(String keyword) throws DataException;
     
