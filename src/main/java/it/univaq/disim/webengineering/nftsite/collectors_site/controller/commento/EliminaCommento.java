@@ -56,4 +56,8 @@ public class EliminaCommento extends CollectorsBaseController {
         }
         response.sendRedirect("lista-collezioni");
     }
+
+    private void action_notLogged(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, ServletException {
+        request.getRequestDispatcher("login").forward(request, response);
+    }
 }

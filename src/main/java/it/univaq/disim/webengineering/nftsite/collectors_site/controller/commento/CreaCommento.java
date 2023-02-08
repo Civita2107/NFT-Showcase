@@ -56,6 +56,13 @@ public class CreaCommento extends CollectorsBaseController {
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
+        CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
+        Nft nft = dataLayer.getNftDAO().getNft(Utility.getUser(request));
+        User user = Utility.getUser(request);
+        request.setAttribute("nft", nft);
+        request.setAttribute("user", user);
+
+        result.activate("collezione/crea.ftl", request, response);
     }
 
     private void action_crea(HttpServletRequest request, HttpServletResponse response) {
