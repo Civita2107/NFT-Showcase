@@ -10,6 +10,10 @@ public interface CommentDAO {
     List<Comment> getComments(Nft nft);
 
     void storeComment(Comment comment);
+
+    Object getComment(int i);
+
+    void deleteComment(Object comment);
     
     
 }
