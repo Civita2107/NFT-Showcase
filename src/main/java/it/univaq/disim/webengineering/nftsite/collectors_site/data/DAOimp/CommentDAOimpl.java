@@ -20,5 +20,23 @@ public class CommentDAOimpl extends DAO implements CommentDAO {
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public void storeComment(Comment comment) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Object getComment(int i) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteComment(Object comment) {
+        // TODO Auto-generated method stub
+        
+    }
     
 }

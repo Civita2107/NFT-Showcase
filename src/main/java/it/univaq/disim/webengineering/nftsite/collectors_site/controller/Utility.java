@@ -96,4 +96,8 @@ public class Utility {
         return nfts;
     }
 
+    public static Nft getNft(HttpServletRequest request) {
+        return null;
+    }
+
 }
