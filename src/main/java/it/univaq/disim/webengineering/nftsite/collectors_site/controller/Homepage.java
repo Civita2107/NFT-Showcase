@@ -14,7 +14,6 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.Collec
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 
@@ -50,7 +49,7 @@ public class Homepage extends CollectorsBaseController {
         NftDAO nftDAO = dataLayer.getNftDAO();
         UserDAO userDAO = dataLayer.getUserDAO();
 
-        nfts = nftDAO.getNfts(user);
+ //       nfts = nftDAO.getNfts(user);
         users = userDAO.usersMostNft();
         
         result.activate("index.tpl", request, response);
