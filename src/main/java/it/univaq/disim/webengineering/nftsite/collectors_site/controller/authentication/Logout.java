@@ -1,4 +1,4 @@
-package it.univaq.disim.webengineering.nftsite.collectors_site.controller;
+package it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
 
 public class Logout extends CollectorsBaseController {

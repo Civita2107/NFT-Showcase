@@ -2,12 +2,8 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.asynchttpclient.AsyncHttpClient;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
@@ -26,6 +22,9 @@ public class Utility {
 
     }
 
+    /**
+     * @return l'utente che ha effettuato il login
+     */
     public static User getUser(HttpServletRequest request) throws DataException{
         User user;
         HttpSession s = request.getSession(false);
@@ -66,8 +65,9 @@ public class Utility {
         return collections;
     }
 
-
-
+    /**
+     * @return la lista dei wallets associati ad un utente
+     */
     public static List<Wallet> getWallets(HttpServletRequest request) throws DataException {
         List<Wallet> wallets;
         HttpSession s = request.getSession(false);
@@ -84,7 +84,7 @@ public class Utility {
     }
 
     /**
-     * @return la lista dei dischi i cui dati contengono la keyword passata come parametro nella request
+     * @return la lista degli nfts i cui dati contengono la keyword passata come parametro nella request
      */
     public static List<Nft> getNfts(HttpServletRequest request) throws DataException {
         List<Nft> nfts;
