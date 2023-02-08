@@ -23,5 +23,7 @@ public interface NftDAO {
     Nft getNft(Comment comment) throws DataException;
 
     List<Nft> getNftByKeyword(String keyword) throws DataException;
+
+    Nft getNft(User user);
     
 }

@@ -177,6 +177,12 @@ public class NftDAOimp extends DAO implements NftDAO {
         return result;
     }
 
+    @Override
+    public Nft getNft(User user) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
 
     
