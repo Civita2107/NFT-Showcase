@@ -1,7 +1,9 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
+import java.security.DrbgParameters.Reseed;
 import java.util.List;
 
+import freemarker.core.ReturnInstruction.Return;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
@@ -11,6 +13,8 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     private String username;
     private String email;
     private String password;
+    private List<User> follow;
+    private List<User> followers;
 
     public UserImpl(){}
 
@@ -62,21 +66,21 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
 
     @Override
     public List<User> getFollower() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.followers;
     }
 
     @Override
     public void addFollower(User follower) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       this.followers.add(follower);
     }
 
     @Override
     public List<User> getFollowing() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this.follow;
     }
 
     @Override
     public void addFollowing(User following) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       this.follow.add(following);
     }
 }
