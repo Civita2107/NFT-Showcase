@@ -12,6 +12,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collect
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.NftProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
@@ -44,21 +45,15 @@ public class NftDAOimp extends DAO implements NftDAO {
     }
 
     private NftProxy createNft(ResultSet rs) throws DataException {
-        NftProxy a = (NftProxy) createNft();
+        NftProxy a = (NftProxy) createNft(rs);
         try {
-            a.setKey(rs.getInt("ID"));
-            a.setTitolo(rs.getString("titolo"));
-            a.setAnno(rs.getString("anno"));
-            a.setEtichetta(rs.getString("etichetta"));
-            a.setGenere(rs.getString("genere"));
-            a.setFormato(rs.getString("formato"));
-            a.setBarcode(rs.getString("barcode"));
-            a.setCollezionistaKey(rs.getInt("IDCollezionista"));
-            if (rs.getString("stato") != null && !rs.getString("stato").isBlank()) {
-                a.setStato(rs.getString("stato"));
-            } else {
-                a.setStato(null);
-            }
+            a.setKey(rs.getInt("tokenId"));
+            a.setTitle(rs.getString("titolo"));
+            a.setContractAddress(rs.getString("contractAddress"));
+            a.setDescription(rs.getString("description"));
+            a.setMetadata(rs.getString("metadata"));
+            a.setWalletAddress(rs.getString("walletAddress"));
+            a.setPubblica(rs.getBoolean("pubblica"));
             a.setVersion(rs.getLong("versione"));
 
 
@@ -139,7 +134,7 @@ public class NftDAOimp extends DAO implements NftDAO {
 
 
     @Override
-    public List<Nft> getNftByKeyword(String keyword) {
+    public List<Nft> getNftByKeyword(String keyword) throws DataException {
        List<Nft> result = new ArrayList();
         try {
             sNftByKeyword.setString(1, "%" + keyword + "%");
