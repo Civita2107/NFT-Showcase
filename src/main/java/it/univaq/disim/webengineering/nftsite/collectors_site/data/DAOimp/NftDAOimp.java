@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
@@ -145,15 +146,12 @@ public class NftDAOimp extends DAO implements NftDAO {
 
     //Chiedere
     @Override
-    public List<Nft> getNft(Comment comment) throws DataException {
+    public Nft getNft(Comment comment) throws DataException {
         try {
             sNftByComment.setInt(1, comment.getKey());
             try (ResultSet rs = sNftByComment.executeQuery()) {
-                List<Nft> list = new ArrayList<>();
-                while (rs.next()) {
-                    list.add(createNft(rs));
-                }
-                return list;
+                Nft list = new NftImpl();
+               return list;
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load Nft from" + comment.getText(), ex);

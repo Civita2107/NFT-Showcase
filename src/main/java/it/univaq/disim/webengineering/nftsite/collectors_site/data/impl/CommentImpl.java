@@ -26,27 +26,42 @@ public class CommentImpl extends DataItemImpl<Integer> implements Comment {
         this.text = "";
     }
 
+    @Override
     public int getId(){
         return this.id;
     }
+
+    @Override
     public User getUser(){
         return this.user;
     }
+
+    @Override
     public Nft getNft(){
         return this.nft;
     }
+
+    @Override
     public String getText(){
         return this.text;
     }
+
+    @Override
     public void setId(int id){
         this.id = id;
     }
+
+    @Override
     public void setUser(User user){
         this.user = user;
     }
+
+    @Override
     public void setNft(Nft nft){
         this.nft = nft;
     }
+
+    @Override
     public void setText(String text){
         this.text = text;
     }
