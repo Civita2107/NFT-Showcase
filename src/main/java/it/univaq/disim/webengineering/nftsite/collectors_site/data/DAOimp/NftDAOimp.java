@@ -21,7 +21,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class NftDAOimp extends DAO implements NftDAO {
 
-    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword;
+    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment;
 
     public NftDAOimp(DataLayer d) {
         super(d);
@@ -37,7 +37,10 @@ public class NftDAOimp extends DAO implements NftDAO {
             sNftByUser = connection.prepareStatement("SELECT * FROM Nft WHERE IDUser = ? ");
 
             sNftByKeyword = connection.prepareStatement("SELECT ID AS NftId FROM Nft WHERE titolo LIKE ? OR anno LIKE ?"); //correggere TODO
-
+            sNft= connection.prepareStatement("SELECT * FROM Nft WHERE Id=?");
+            sNftByComment = connection.prepareStatement("SELECT * FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
+            
+            
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -118,18 +121,43 @@ public class NftDAOimp extends DAO implements NftDAO {
 
     
 
-    //Chiedere
+    
     @Override
     public Nft getNft(int key) throws DataException {
-        // TODO Auto-generated method stub
-        return null;
+        Nft d = null;
+        if (dataLayer.getCache().has(Nft.class, key)) {
+            d = dataLayer.getCache().get(Nft.class, key);
+        } else {
+            try {
+                sNft.setInt(1, key);
+                try (ResultSet rs = sNft.executeQuery()) {
+                    if (rs.next()) {
+                        d = createNft(rs);
+                        dataLayer.getCache().add(Nft.class, d);
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to load Nft by ID", ex);
+            }
+        }
+        return d;
     }
 
     //Chiedere
     @Override
-    public Nft getNft(Comment comment) throws DataException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<Nft> getNft(Comment comment) throws DataException {
+        try {
+            sNftByComment.setInt(1, comment.getKey());
+            try (ResultSet rs = sNftByComment.executeQuery()) {
+                List<Nft> list = new ArrayList<>();
+                while (rs.next()) {
+                    list.add(createNft(rs));
+                }
+                return list;
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load Nft from" + comment.getText(), ex);
+        }
     }
 
 
