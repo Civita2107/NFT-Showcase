@@ -1,16 +1,12 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy;
 
 import java.util.List;
-
-import javax.validation.OverridesAttribute;
-
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
@@ -75,7 +71,7 @@ public class UserProxy extends UserImpl implements DataItemProxy {
         this.modified = true;
     }
 
-  /**   @Override
+ /**   @Override
     public void getWallets() {
         if (super.getWallets() == null) {
             try {
