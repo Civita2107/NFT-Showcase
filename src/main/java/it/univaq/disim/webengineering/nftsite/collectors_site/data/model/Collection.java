@@ -2,7 +2,6 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
 
 import java.util.List;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
