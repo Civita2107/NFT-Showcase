@@ -49,12 +49,8 @@ public class EliminaCommento extends CollectorsBaseController {
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         CommentDAO commentDAO = dataLayer.getCommentDAO();
-        try {
-            commentDAO.deleteComment(commentDAO.getComment((Integer.parseInt(request.getParameter("id")))));
-        } catch (SQLException ex) {
-            Logger.getLogger(EliminaCommento.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        response.sendRedirect("lista-collezioni");
+        commentDAO.deleteComment(commentDAO.getComment((Integer.parseInt(request.getParameter("id")))));
+        response.sendRedirect("lista-collezioni"); //TODO: ricorda l'eccezione
     }
 
     private void action_notLogged(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, ServletException {
