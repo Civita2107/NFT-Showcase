@@ -1,16 +1,205 @@
 <!DOCTYPE web-app PUBLIC
  "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
+ <?xml version="1.0" encoding="UTF-8"?>
+ <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-<web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <display-name>Nft Application</display-name>
+
+  <!-- SERVLET -->
+  <servlet>
+        <servlet-name>Homepage</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.Homepage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Homepage</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
 
   <servlet>
     <servlet-name>Login</servlet-name>
-    <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.Login</servlet-class>
+    <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Login</servlet-class>
   </servlet>
   </servlet-mapping>
     <servlet-name>Login</servlet-name>
-    <url-pattern>/test</url-pattern>
+    <url-pattern>/login</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Logout</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Registration</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Registration</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Registration</servlet-name>
+        <url-pattern>/registration</url-pattern>
+    </servlet-mapping>
+
+    <!-- COLLEZIONE -->
+    <servlet>
+        <servlet-name>CreaCollezione</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.CreaCollezione</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreaCollezione</servlet-name>
+        <url-pattern>/crea-collezione</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VisualizzaCollezione</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.VisualizzaCollezione</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VisualizzaCollezione</servlet-name>
+        <url-pattern>/visualizza-collezione</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ListaCollezioni</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.ListaCollezioni</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ListaCollezioni</servlet-name>
+        <url-pattern>/lista-collezioni</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EliminaCollezione</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.EliminaCollezione</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EliminaCollezione</servlet-name>
+        <url-pattern>/elimina-collezione</url-pattern>
+    </servlet-mapping>
+
+    <servlet-name>ModificaCollezione</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.ModificaCollezione</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ModificaCollezione</servlet-name>
+        <url-pattern>/modifica-collezione</url-pattern>
+    </servlet-mapping>
+    <!-- USER -->
+    <servlet>
+        <servlet-name>ListaUtenti</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ListaUtenti</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ListaUtenti</servlet-name>
+        <url-pattern>/lista-utenti</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VisualizzaUtente</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.VisualizzaUtenti</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VisualizzaUtente</servlet-name>
+        <url-pattern>/visualizza-utente</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ModificaUtente</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ModificaUtente</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ModificaUtente</servlet-name>
+        <url-pattern>/modifica-utente</url-pattern>
+    </servlet-mapping>
+    <!--COMMENT-->
+    <servlet>
+        <servlet-name>CreaCommento</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.CreaCommento</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreaCommento</servlet-name>
+        <url-pattern>/crea-commento</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>VisualizzaCommenti</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.VisualizzaCommento</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VisualizzaCommento</servlet-name>
+        <url-pattern>/visualizza-commento</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EliminaCommento</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.EliminaCommento</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EliminaCommento</servlet-name>
+        <url-pattern>/elimina-commento</url-pattern>
+    </servlet-mapping>
+
+    <!-- SEARCH -->
+    <servlet>
+        <servlet-name>Ricerca</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.ricerca.Ricerca</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Ricerca</servlet-name>
+        <url-pattern>/ricerca</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Error</servlet-name>
+        <servlet-class>it.mp3ow.ex.collectors_site.controller.Error</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Error</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <error-code>400</error-code>
+        <location>/templates/errore/400.html</location>
+    </error-page>
+    <error-page>
+        <error-code>401</error-code>
+        <location>/templates/errore/401.html</location>
+    </error-page>
+    <error-page>
+        <error-code>403</error-code>
+        <location>/templates/errore/403.html</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/templates/errore/404.html</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/templates/errore/500.html</location>
+    </error-page>
+    <error-page>
+        <error-code>503</error-code>
+        <location>/templates/errore/503.html</location>
+    </error-page>
+
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
+    <resource-ref>
+        <res-ref-name>jdbc/nft_site</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+    
 </web-app>
