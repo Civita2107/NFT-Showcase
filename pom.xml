@@ -12,6 +12,7 @@
   <name>demo Maven Webapp</name>
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+    <war_dir>${project.build.directory}/war</war_dir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -65,7 +66,9 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.3.1</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                  <failOnMissingWebXml>false</failOnMissingWebXml>
+                  <warName>NftShowcase</warName>
+                  <outputDirectory>${war_dir}</outputDirectory>
                 </configuration>
             </plugin>
             <plugin>
