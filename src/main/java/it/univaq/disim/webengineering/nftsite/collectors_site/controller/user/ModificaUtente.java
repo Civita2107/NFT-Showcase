@@ -1,8 +1,12 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.user;
 
-import jdk.jshell.execution.Util;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
@@ -13,9 +17,6 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
-
-import java.io.IOException;
-import java.util.Objects;
 
 public class ModificaUtente extends CollectorsBaseController {
     /**
@@ -113,7 +114,7 @@ public class ModificaUtente extends CollectorsBaseController {
             userDAO.storeUser(user);
             response.sendRedirect("visualizza-user?id=" + user.getKey());
 
-        } catch (DataException ex) {
+        } catch (DataException | SQLException ex) {
             request.setAttribute("error", ex.getMessage());
             action_default(request, response);
         }
