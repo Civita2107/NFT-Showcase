@@ -1,5 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -14,7 +15,7 @@ public interface UserDAO {
 
     User getUser(int user_key) throws DataException;
 
-    void storeUser(User user) throws DataException;
+    void storeUser(User user) throws DataException, SQLException;
 
     List<User> getUsersByKeyword(String keyword) throws DataException;
 

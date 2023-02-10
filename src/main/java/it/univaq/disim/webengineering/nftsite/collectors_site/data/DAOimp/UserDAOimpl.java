@@ -36,20 +36,20 @@ public class UserDAOimpl extends DAO implements UserDAO{
         try {
             super.init();
 
-            sUser = connection.prepareStatement("SELECT * FROM User WHERE ID=?");
-            sUserByEmail = connection.prepareStatement("SELECT * FROM User WHERE email=?");
-            sUserByUsername = connection.prepareStatement("SELECT * FROM User WHERE username=?");
-            identityCheck = connection.prepareStatement("SELECT * FROM User WHERE Username=? AND Password=?");
+            sUser = connection.prepareStatement("SELECT * FROM users WHERE ID=?");
+            sUserByEmail = connection.prepareStatement("SELECT * FROM users WHERE email=?");
+            sUserByUsername = connection.prepareStatement("SELECT * FROM users WHERE username=?");
+            identityCheck = connection.prepareStatement("SELECT * FROM users WHERE Username=? AND Password=?");
 
-            sUsers = connection.prepareStatement("SELECT ID AS userId FROM User");
-            sUsersByKeyword = connection.prepareStatement("SELECT ID AS userId FROM User WHERE Username LIKE ?");
+            sUsers = connection.prepareStatement("SELECT ID AS userId FROM users");
+            sUsersByKeyword = connection.prepareStatement("SELECT ID AS userId FROM users WHERE Username LIKE ?");
 
-            iUser = connection.prepareStatement("INSERT INTO User (nome,cognome,username,email,password) VALUES(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uUser = connection.prepareStatement("UPDATE User SET nome=?,cognome=?,username=?,email=?,password=?,versione=? WHERE ID=?");
-            dUser = connection.prepareStatement("DELETE FROM User WHERE ID=?");
+            iUser = connection.prepareStatement("INSERT INTO users (username,email,password) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            uUser = connection.prepareStatement("UPDATE users SET username=?,email=?,password=? WHERE id=?");
+            dUser = connection.prepareStatement("DELETE FROM users WHERE ID=?");
 
             //Statistiche --> User più attivo per numero di nft posseduti
-            UsersMostAttivi = connection.prepareStatement("SELECT User.ID as userId,COUNT(User.ID) as Occorrenze From User INNER JOIN Disco ON User.ID=Disco.IDUser GROUP BY User.ID ORDER BY COUNT(User.ID) DESC LIMIT 3");
+            UsersMostAttivi = connection.prepareStatement("SELECT users.ID as userId,COUNT(User.ID) as Occorrenze From User INNER JOIN Disco ON User.ID=Disco.IDUser GROUP BY User.ID ORDER BY COUNT(User.ID) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -86,7 +86,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
         try {
             UserProxy a = (UserProxy) createUser();
 
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("id"));
             a.setUsername(rs.getString("username"));
             a.setEmail(rs.getString("email"));
             a.setPassword(rs.getString("password"));
@@ -98,32 +98,28 @@ public class UserDAOimpl extends DAO implements UserDAO{
     }
 
     @Override
-    public void storeUser(User User) throws DataException {
+    public void storeUser(User User) throws DataException, SQLException {
+System.out.println(User.getKey());
         try {
             if (User.getKey() != null && User.getKey() > 0) {
                 if (User instanceof DataItemProxy && !((DataItemProxy) User).isModified()) {
                     return;
                 }
-                uUser.setString(3, User.getUsername());
-                uUser.setString(4, User.getEmail());
-                uUser.setString(5, User.getPassword());
+                uUser.setString(1, User.getUsername());
+                uUser.setString(2, User.getEmail());
+                uUser.setString(3, User.getPassword());
 
-                long current_version = User.getVersion();
-                long next_version = current_version + 1;
 
-                uUser.setLong(6, next_version);
-                uUser.setLong(7, User.getKey());
+                uUser.setLong(4, User.getKey());
 
+                //Tolto versione
                 if (uUser.executeUpdate() == 0) {
                     throw new OptimisticLockException(User);
-                } else {
-                    User.setVersion(next_version);
                 }
             } else {
-            
-                iUser.setString(3, User.getUsername());
-                iUser.setString(4, User.getEmail());
-                iUser.setString(5, User.getPassword());
+                iUser.setString(1, User.getUsername());
+                iUser.setString(2, User.getEmail());
+                iUser.setString(3, User.getPassword());
 
                 if (iUser.executeUpdate() == 1) {
                     try (ResultSet keys = iUser.getGeneratedKeys()) {

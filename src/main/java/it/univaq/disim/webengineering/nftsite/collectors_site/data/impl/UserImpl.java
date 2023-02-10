@@ -18,10 +18,11 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
 
     public UserImpl(){}
 
-    public UserImpl(int id, String username, String password, String email) {
-        this.id = id;
+    public UserImpl(String username, String password, String email) {
+        super();
         this.username = username;
         this.email = email;
+        this.password=password;
     }
 
     @Override
