@@ -4,6 +4,31 @@
 
   <display-name>Nft Application</display-name>
 
+<!--<context-param>
+        <param-name>view.date_format</param-name>
+        <param-value>dd/MM/yyyy hh:mm:ss</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.debug</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.template_directory</param-name>
+        <param-value>templates</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.assets_directory</param-name>
+        <param-value>assets</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.data.static.homepage_url</param-name>
+        <param-value>index.ftl</param-value>
+    </context-param>
+    <context-param>
+        <param-name>view.encoding</param-name>
+        <param-value>ISO-8859-1</param-value>
+    </context-param>-->
+
   <!-- SERVLET -->
   <servlet>
         <servlet-name>Homepage</servlet-name>
@@ -153,7 +178,7 @@
 
     <servlet>
         <servlet-name>Error</servlet-name>
-        <servlet-class>it.mp3ow.ex.collectors_site.controller.Error</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.Error</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Error</servlet-name>
@@ -193,8 +218,15 @@
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
+
+    <context-param>
+        <param-name>data.source</param-name>
+        <!-- qui configuriamo in nome della data source da usare nel codice -->
+        <param-value>jdbc/NftShowcase</param-value>
+    </context-param>
+
     <resource-ref>
-        <res-ref-name>jdbc/nft_site</res-ref-name>
+        <res-ref-name>jdbc/NftShowcase</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
