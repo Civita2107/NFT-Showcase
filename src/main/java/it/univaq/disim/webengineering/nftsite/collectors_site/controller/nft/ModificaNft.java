@@ -66,7 +66,7 @@ public class ModificaNft extends CollectorsBaseController {
             request.setAttribute("condivisa", "privata");
         }
 
-        result.activate("nft/modifica.tpl", request, response);
+        result.activate("nft/modifica.ftl", request, response);
 
     }
 

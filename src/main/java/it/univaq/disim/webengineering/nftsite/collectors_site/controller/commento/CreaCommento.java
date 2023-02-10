@@ -1,5 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento;
 
+import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +18,6 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreaCommento extends CollectorsBaseController {
     /**
@@ -62,7 +60,7 @@ public class CreaCommento extends CollectorsBaseController {
         request.setAttribute("nft", nft);
         request.setAttribute("user", user);
 
-        result.activate("collezione/crea.ftl", request, response);
+        result.activate("commento/crea.ftl", request, response);
     }
 
     private void action_crea(HttpServletRequest request, HttpServletResponse response) {

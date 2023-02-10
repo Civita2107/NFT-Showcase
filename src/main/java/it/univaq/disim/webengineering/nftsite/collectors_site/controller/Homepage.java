@@ -52,7 +52,7 @@ public class Homepage extends CollectorsBaseController {
  //       nfts = nftDAO.getNfts(user);
         users = userDAO.usersMostNft();
         
-        result.activate("index.tpl", request, response);
+        result.activate("index.ftl", request, response);
     }
 
 

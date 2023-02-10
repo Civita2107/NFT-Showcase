@@ -23,7 +23,7 @@ public class Registration extends CollectorsBaseController {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
         request.setAttribute("outline_tpl", "");
-        result.activate("registration.tpl", request, response);
+        result.activate("registration.ftl", request, response);
     }
 
     private void action_registration(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
