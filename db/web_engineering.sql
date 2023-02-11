@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jun 25, 2022 at 04:14 PM
--- Server version: 10.4.18-MariaDB
--- PHP Version: 8.0.3
+-- Host: db
+-- Creato il: Feb 11, 2023 alle 16:53
+-- Versione del server: 8.0.32
+-- Versione PHP: 8.0.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,111 +18,102 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `web_engineering`
+-- Database: `db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `collection`
+-- Struttura della tabella `collection`
 --
 
 CREATE TABLE `collection` (
-  `contract_address` varchar(40) NOT NULL,
-  `wallet_address` varchar(40) NOT NULL,
-  `name` varchar(512) NOT NULL,
-  `total_supply` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` bigint UNSIGNED NOT NULL,
+  `user` bigint UNSIGNED NOT NULL,
+  `nome` varchar(256) NOT NULL,
+  `public` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `comment`
+-- Struttura della tabella `comment`
 --
 
 CREATE TABLE `comment` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `nft_id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `nft_id` bigint UNSIGNED NOT NULL,
   `text` varchar(1024) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `follow`
+-- Struttura della tabella `follow`
 --
 
 CREATE TABLE `follow` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `follower` bigint(20) UNSIGNED NOT NULL,
-  `following` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `id` bigint UNSIGNED NOT NULL,
+  `follower` bigint UNSIGNED NOT NULL,
+  `following` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `likes`
---
-
-CREATE TABLE `likes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `nft_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `nft`
+-- Struttura della tabella `nft`
 --
 
 CREATE TABLE `nft` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
   `token_id` varchar(64) NOT NULL,
   `contract_address` varchar(40) NOT NULL,
+  `wallet_address` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `collection` bigint UNSIGNED DEFAULT NULL,
   `title` varchar(256) NOT NULL,
   `description` varchar(1024) NOT NULL,
   `metadata` longtext NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struttura della tabella `users`
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
   `username` varchar(128) NOT NULL,
   `email` varchar(512) NOT NULL,
-  `password` varchar(512) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `password` varchar(512) NOT NULL,
+  `foto` longblob NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wallet`
+-- Struttura della tabella `wallet`
 --
 
 CREATE TABLE `wallet` (
   `wallet_address` varchar(40) NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `user_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Indexes for dumped tables
+-- Indici per le tabelle scaricate
 --
 
 --
--- Indexes for table `collection`
+-- Indici per le tabelle `collection`
 --
 ALTER TABLE `collection`
-  ADD PRIMARY KEY (`contract_address`),
-  ADD KEY `wallet_address` (`wallet_address`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user` (`user`);
 
 --
--- Indexes for table `comment`
+-- Indici per le tabelle `comment`
 --
 ALTER TABLE `comment`
   ADD PRIMARY KEY (`id`),
@@ -130,7 +121,7 @@ ALTER TABLE `comment`
   ADD KEY `nft_id` (`nft_id`);
 
 --
--- Indexes for table `follow`
+-- Indici per le tabelle `follow`
 --
 ALTER TABLE `follow`
   ADD PRIMARY KEY (`id`),
@@ -139,23 +130,15 @@ ALTER TABLE `follow`
   ADD KEY `following` (`following`);
 
 --
--- Indexes for table `likes`
---
-ALTER TABLE `likes`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id` (`user_id`,`nft_id`);
-
---
--- Indexes for table `nft`
+-- Indici per le tabelle `nft`
 --
 ALTER TABLE `nft`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `token_id_2` (`token_id`,`contract_address`),
-  ADD KEY `contract_address` (`contract_address`),
-  ADD KEY `token_id` (`token_id`);
+  ADD KEY `contract_address` (`wallet_address`),
+  ADD KEY `collection` (`collection`);
 
 --
--- Indexes for table `users`
+-- Indici per le tabelle `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
@@ -163,81 +146,82 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `wallet`
+-- Indici per le tabelle `wallet`
 --
 ALTER TABLE `wallet`
   ADD PRIMARY KEY (`wallet_address`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT per le tabelle scaricate
 --
 
 --
--- AUTO_INCREMENT for table `comment`
---
-ALTER TABLE `comment`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `follow`
---
-ALTER TABLE `follow`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `likes`
---
-ALTER TABLE `likes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `nft`
---
-ALTER TABLE `nft`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `collection`
+-- AUTO_INCREMENT per la tabella `collection`
 --
 ALTER TABLE `collection`
-  ADD CONSTRAINT `collection_ibfk_1` FOREIGN KEY (`wallet_address`) REFERENCES `wallet` (`wallet_address`) ON DELETE CASCADE ON UPDATE CASCADE;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for table `comment`
+-- AUTO_INCREMENT per la tabella `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `follow`
+--
+ALTER TABLE `follow`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `nft`
+--
+ALTER TABLE `nft`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT per la tabella `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Limiti per le tabelle scaricate
+--
+
+--
+-- Limiti per la tabella `collection`
+--
+ALTER TABLE `collection`
+  ADD CONSTRAINT `collection_ibfk_1` FOREIGN KEY (`id`) REFERENCES `nft` (`collection`) ON UPDATE CASCADE;
+
+--
+-- Limiti per la tabella `comment`
 --
 ALTER TABLE `comment`
   ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`nft_id`) REFERENCES `nft` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `follow`
+-- Limiti per la tabella `follow`
 --
 ALTER TABLE `follow`
   ADD CONSTRAINT `follow_ibfk_1` FOREIGN KEY (`follower`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `follow_ibfk_2` FOREIGN KEY (`following`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `nft`
+-- Limiti per la tabella `users`
 --
-ALTER TABLE `nft`
-  ADD CONSTRAINT `nft_ibfk_1` FOREIGN KEY (`contract_address`) REFERENCES `collection` (`contract_address`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`id`) REFERENCES `collection` (`user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `wallet`
+-- Limiti per la tabella `wallet`
 --
 ALTER TABLE `wallet`
-  ADD CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `wallet_ibfk_2` FOREIGN KEY (`wallet_address`) REFERENCES `nft` (`wallet_address`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
