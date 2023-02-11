@@ -123,7 +123,7 @@
 
     <servlet>
         <servlet-name>VisualizzaUtente</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.VisualizzaUtenti</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.VisualizzaUtente</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VisualizzaUtente</servlet-name>
@@ -149,12 +149,12 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>VisualizzaCommento</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.VisualizzaCommento</servlet-class>
+        <servlet-name>VisualizzaCommenti</servlet-name>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.VisualizzaCommenti</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>VisualizzaCommento</servlet-name>
-        <url-pattern>/visualizza-commento</url-pattern>
+        <servlet-name>VisualizzaCommenti</servlet-name>
+        <url-pattern>/visualizza-commenti</url-pattern>
     </servlet-mapping>
 
     <servlet>
