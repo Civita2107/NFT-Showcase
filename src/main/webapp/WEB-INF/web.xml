@@ -69,7 +69,7 @@
     <!-- COLLEZIONE -->
     <servlet>
         <servlet-name>CreaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.CreaCollezione</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.CreaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreaCollezione</servlet-name>
@@ -78,7 +78,7 @@
 
     <servlet>
         <servlet-name>VisualizzaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.VisualizzaCollezione</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.VisualizzaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VisualizzaCollezione</servlet-name>
@@ -87,7 +87,7 @@
 
     <servlet>
         <servlet-name>ListaCollezioni</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.ListaCollezioni</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ListaCollezioni</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ListaCollezioni</servlet-name>
@@ -96,7 +96,7 @@
 
     <servlet>
         <servlet-name>EliminaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.EliminaCollezione</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.EliminaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EliminaCollezione</servlet-name>
@@ -105,7 +105,7 @@
 
     <servlet>
         <servlet-name>ModificaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collection.ModificaCollezione</servlet-class>
+        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ModificaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ModificaCollezione</servlet-name>
