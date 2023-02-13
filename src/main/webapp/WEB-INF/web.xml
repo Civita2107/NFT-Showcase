@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
-  <display-name>Nft Application</display-name>
+    <display-name>Nft Application</display-name>
 
-<!--<context-param>
+    <!--<context-param>
         <param-name>view.date_format</param-name>
         <param-value>dd/MM/yyyy hh:mm:ss</param-value>
     </context-param>
@@ -29,8 +30,8 @@
         <param-value>ISO-8859-1</param-value>
     </context-param>-->
 
-  <!-- SERVLET -->
-  <servlet>
+    <!-- SERVLET -->
+    <servlet>
         <servlet-name>Homepage</servlet-name>
         <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.Homepage</servlet-class>
     </servlet>
@@ -39,18 +40,20 @@
         <url-pattern>/home</url-pattern>
     </servlet-mapping>
 
-  <servlet>
-    <servlet-name>Login</servlet-name>
-    <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Login</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Login</servlet-name>
-    <url-pattern>/login</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Login</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
 
-  <servlet>
+    <servlet>
         <servlet-name>Logout</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Logout</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Logout</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Logout</servlet-name>
@@ -59,7 +62,8 @@
 
     <servlet>
         <servlet-name>Registration</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Registration</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.authentication.Registration</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Registration</servlet-name>
@@ -69,7 +73,8 @@
     <!-- COLLEZIONE -->
     <servlet>
         <servlet-name>CreaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.CreaCollezione</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.CreaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreaCollezione</servlet-name>
@@ -78,7 +83,8 @@
 
     <servlet>
         <servlet-name>VisualizzaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.VisualizzaCollezione</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.VisualizzaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VisualizzaCollezione</servlet-name>
@@ -87,7 +93,8 @@
 
     <servlet>
         <servlet-name>ListaCollezioni</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ListaCollezioni</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ListaCollezioni</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ListaCollezioni</servlet-name>
@@ -96,7 +103,8 @@
 
     <servlet>
         <servlet-name>EliminaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.EliminaCollezione</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.EliminaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EliminaCollezione</servlet-name>
@@ -105,7 +113,8 @@
 
     <servlet>
         <servlet-name>ModificaCollezione</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ModificaCollezione</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione.ModificaCollezione</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ModificaCollezione</servlet-name>
@@ -114,7 +123,8 @@
     <!-- USER -->
     <servlet>
         <servlet-name>ListaUtenti</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ListaUtenti</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ListaUtenti</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ListaUtenti</servlet-name>
@@ -123,7 +133,8 @@
 
     <servlet>
         <servlet-name>VisualizzaUtente</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.VisualizzaUtente</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.VisualizzaUtente</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VisualizzaUtente</servlet-name>
@@ -132,7 +143,8 @@
 
     <servlet>
         <servlet-name>ModificaUtente</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ModificaUtente</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.user.ModificaUtente</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ModificaUtente</servlet-name>
@@ -141,7 +153,8 @@
     <!--COMMENT-->
     <servlet>
         <servlet-name>CreaCommento</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.CreaCommento</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.CreaCommento</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreaCommento</servlet-name>
@@ -150,7 +163,8 @@
 
     <servlet>
         <servlet-name>VisualizzaCommenti</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.VisualizzaCommenti</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.VisualizzaCommenti</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>VisualizzaCommenti</servlet-name>
@@ -159,7 +173,8 @@
 
     <servlet>
         <servlet-name>EliminaCommento</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.EliminaCommento</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.commento.EliminaCommento</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EliminaCommento</servlet-name>
@@ -169,7 +184,8 @@
     <!-- SEARCH -->
     <servlet>
         <servlet-name>Ricerca</servlet-name>
-        <servlet-class>it.univaq.disim.webengineering.nftsite.collectors_site.controller.ricerca.Ricerca</servlet-class>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.ricerca.Ricerca</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Ricerca</servlet-name>
@@ -185,7 +201,7 @@
         <url-pattern>/error</url-pattern>
     </servlet-mapping>
 
-<!--<error-page>
+    <!--<error-page>
         <error-code>400</error-code>
         <location>/templates/errore/400.html</location>
     </error-page>
@@ -231,5 +247,5 @@
         <res-auth>Container</res-auth>
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
-    
+
 </web-app>
