@@ -3,6 +3,7 @@ package it.univaq.disim.webengineering.nftsite.collectors_site.controller.authen
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,7 @@ public class Registration extends CollectorsBaseController {
                 } else {
                     throw new DataException("Registrazione fallita");
                 }
-            } catch (Exception e) {
+            } catch (DataException | IOException | SQLException e) {
                 request.setAttribute("error", "Username o email già in uso");
                 action_default(request, response);
             }
