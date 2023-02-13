@@ -13,7 +13,7 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
     private String metadata;
     private String walletAddress;
     private boolean pubblica;
-
+  
     public NftImpl() {
         super();
         this.title = "";
@@ -21,15 +21,29 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
         this.contractAddress = "";
         this.description = "";
         this.metadata = "";
+       
     }
 
-    public NftImpl(String title, String tokenId, String contractAddress, String description, String metadata) {
+    
+   
+
+    public NftImpl(String tokenId, String contractAddress,String walletAddress) {
+        this.tokenId = tokenId;
+        this.contractAddress = contractAddress;
+        this.walletAddress=walletAddress;
+    }
+
+
+
+
+    public NftImpl(String title, String tokenId, String contractAddress, String description, String metadata,String walletAddress) {
         super();
         this.title = title;
         this.tokenId = tokenId;
         this.contractAddress = contractAddress;
         this.description = description;
         this.metadata = metadata;
+        this.walletAddress=walletAddress;
     }
 
     @Override
@@ -94,4 +108,9 @@ public class NftImpl extends DataItemImpl<Integer> implements Nft {
         this.pubblica = pubblica;
     }
 
+
+
+
+
 }
+

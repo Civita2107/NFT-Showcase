@@ -7,7 +7,7 @@ import freemarker.core.ReturnInstruction.Return;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemImpl;
 
-public class UserImpl extends DataItemImpl<Integer> implements User{
+public class UserImpl extends DataItemImpl<Integer> implements User {
 
     private int id;
     private String username;
@@ -16,13 +16,14 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     private List<User> follow;
     private List<User> followers;
 
-    public UserImpl(){}
+    public UserImpl() {
+    }
 
     public UserImpl(String username, String password, String email) {
         super();
         this.username = username;
         this.email = email;
-        this.password=password;
+        this.password = password;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
     @Override
     public String getPassword() {
         return password;
@@ -72,7 +73,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
 
     @Override
     public void addFollower(User follower) {
-       this.followers.add(follower);
+        this.followers.add(follower);
     }
 
     @Override
@@ -82,6 +83,6 @@ public class UserImpl extends DataItemImpl<Integer> implements User{
 
     @Override
     public void addFollowing(User following) {
-       this.follow.add(following);
+        this.follow.add(following);
     }
 }

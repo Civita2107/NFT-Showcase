@@ -15,6 +15,19 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     private Array nfts;
     private int userId;
 
+    
+
+
+
+    public WalletImpl(String address, int userId) {
+        super();
+        this.address = address;
+        this.userId = userId;
+    }
+
+
+    public WalletImpl() {
+    }
 
 
     @Override
@@ -47,6 +60,6 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
         this.userId = userId;
     }
 
-
+   
     
 }

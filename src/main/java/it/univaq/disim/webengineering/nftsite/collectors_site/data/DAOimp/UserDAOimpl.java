@@ -36,7 +36,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
         try {
             super.init();
 
-            sUser = connection.prepareStatement("SELECT * FROM users WHERE ID=?");
+            sUser = connection.prepareStatement("SELECT * FROM users WHERE id=?");
             sUserByEmail = connection.prepareStatement("SELECT * FROM users WHERE email=?");
             sUserByUsername = connection.prepareStatement("SELECT * FROM users WHERE username=?");
             identityCheck = connection.prepareStatement("SELECT * FROM users WHERE Username=? AND Password=?");
