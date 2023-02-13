@@ -24,7 +24,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
     private PreparedStatement identityCheck, sUserByEmail, sUserByUsername;
     private PreparedStatement sUsers, sUsersByKeyword;
     private PreparedStatement iUser, uUser, dUser;
-    private PreparedStatement UsersMostAttivi;
+    //private PreparedStatement UsersMostAttivi;
 
   
     public UserDAOimpl(DataLayer d) {
@@ -49,7 +49,6 @@ public class UserDAOimpl extends DAO implements UserDAO{
             dUser = connection.prepareStatement("DELETE FROM users WHERE ID=?");
 
             //Statistiche --> User più attivo per numero di nft posseduti
-            UsersMostAttivi = connection.prepareStatement("SELECT users.ID as userId,COUNT(User.ID) as Occorrenze From User INNER JOIN Disco ON User.ID=Disco.IDUser GROUP BY User.ID ORDER BY COUNT(User.ID) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -70,7 +69,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             uUser.close();
             dUser.close();
 
-            UsersMostAttivi.close();
+            //UsersMostAttivi.close();
 
         } catch (SQLException ex) {
         }
@@ -99,7 +98,6 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
     @Override
     public void storeUser(User User) throws DataException, SQLException {
-System.out.println(User.getKey());
         try {
             if (User.getKey() != null && User.getKey() > 0) {
                 if (User instanceof DataItemProxy && !((DataItemProxy) User).isModified()) {
@@ -248,31 +246,7 @@ System.out.println(User.getKey());
         return null;
     }
 
-    @Override
-    public List<User> usersMostNft() throws DataException {
-        List<User> result = new ArrayList();
-        try (ResultSet rs = UsersMostAttivi.executeQuery()) {
-            while (rs.next()) {
-                result.add((User) getUser(rs.getInt("userId")));
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load Best Users", ex);
-        }
-        return result;
-    }
-
-    @Override
-    public List<Integer> CountusersMostNft() throws DataException {
-        List<Integer> result = new ArrayList();
-        try (ResultSet rs = UsersMostAttivi.executeQuery()) {
-            while (rs.next()) {
-                result.add(rs.getInt("Occorrenze"));
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load Best Users", ex);
-        }
-        return result;
-    }
+   
 
     @Override
     public User getFollower(User user) throws DataException {
@@ -285,6 +259,7 @@ System.out.println(User.getKey());
         // TODO Auto-generated method stub
         return null;
     }
+
 
 
  
