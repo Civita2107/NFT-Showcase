@@ -27,7 +27,7 @@ public class Login extends CollectorsBaseController{
     }
 
     private void action_login(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException {
-        String username = request.getParameter("user");
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         if (username.isBlank() || password.isBlank()) {
