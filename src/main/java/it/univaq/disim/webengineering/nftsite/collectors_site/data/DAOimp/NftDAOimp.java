@@ -24,8 +24,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class NftDAOimp extends DAO implements NftDAO {
 
-    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment,iNft;
-
+    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment,iNft,sNftByRandom;
+    
     public NftDAOimp(DataLayer d) {
         super(d);
     }
@@ -44,6 +44,8 @@ public class NftDAOimp extends DAO implements NftDAO {
             sNftByComment = connection.prepareStatement("SELECT * FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
             iNft = connection.prepareStatement("INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
             Statement.RETURN_GENERATED_KEYS); 
+            
+            sNftByRandom = connection.prepareStatement("SELECT * FROM Nft ORDER BY NEWID() LIMIT 20");
             
 
         } catch (SQLException ex) {
@@ -205,6 +207,26 @@ public class NftDAOimp extends DAO implements NftDAO {
         }
 
         return result;
+    }
+
+    /**
+     * Returns a list of <i>at most</i> 20 Nfts randomly choosen and ordered
+     *
+     * @return list = list of Nfts
+     * @throws DataException 
+     */
+    public List<Nft> getRandomNfts() throws DataException {
+        try {
+            try (ResultSet rs = sNftByRandom.executeQuery()) {
+                List<Nft> result = new ArrayList();
+                while (rs.next()) {
+                    result.add(createNft(rs));
+                }
+                return result;
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load random Nfts", ex);
+        }
     }
 
     @Override

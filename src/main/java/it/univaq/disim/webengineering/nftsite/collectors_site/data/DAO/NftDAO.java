@@ -25,6 +25,8 @@ public interface NftDAO {
     List<Nft> getNftByKeyword(String keyword) throws DataException;
 
     List<Nft> getNft(User user) throws DataException;
+
+    List<Nft> getRandomNfts() throws DataException;
     
     void storeNft(List<Nft> nft) throws DataException;
 }

@@ -49,6 +49,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             dUser = connection.prepareStatement("DELETE FROM users WHERE ID=?");
 
             //Statistiche --> User più attivo per numero di nft posseduti
+            //UsersMostAttivi = connection.prepareStatement("SELECT users.id as userId,COUNT(users.id) as Occorrenze From users INNER JOIN wallet ON users.id=wallet.user_id INNER JOIN nft ON nft.wallet_address=wallet.wallet_address GROUP BY users.id ORDER BY COUNT(users.id) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
