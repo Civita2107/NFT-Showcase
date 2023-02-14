@@ -71,7 +71,6 @@ public class CreaCollezione extends CollectorsBaseController {
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             User user = Utility.getUser(request);
-            List<Nft> nfts = new ArrayList<>();
             List<User> users = new ArrayList<>();
 
             String nome = request.getParameter("nome");
@@ -80,7 +79,7 @@ public class CreaCollezione extends CollectorsBaseController {
                 pubblica = false;
             }
 
-            Collection collection = new CollectionImpl(nome, pubblica, user, nfts);
+            Collection collection = new CollectionImpl(nome, pubblica, user);
             dataLayer.getCollectionDAO().storeCollection(collection);
             response.sendRedirect("lista-collezioni");
         } catch (Exception e) {

@@ -49,9 +49,9 @@ public class Homepage extends CollectorsBaseController {
         NftDAO nftDAO = dataLayer.getNftDAO();
         UserDAO userDAO = dataLayer.getUserDAO();
 
- //       nfts = nftDAO.getNfts(user);
-        users = userDAO.usersMostNft();
+        nfts = nftDAO.getRandomNfts();
         
+        request.setAttribute("nfts", nfts);
         result.activate("index.ftl", request, response);
     }
 

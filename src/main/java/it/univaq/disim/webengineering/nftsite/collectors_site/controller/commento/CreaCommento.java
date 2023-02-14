@@ -55,7 +55,7 @@ public class CreaCommento extends CollectorsBaseController {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-        Nft nft = dataLayer.getNftDAO().getNft(Utility.getUser(request));
+        Nft nft = dataLayer.getNftDAO().getNft(Integer.parseInt(request.getParameter("id")));
         User user = Utility.getUser(request);
         request.setAttribute("nft", nft);
         request.setAttribute("user", user);
