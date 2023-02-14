@@ -16,6 +16,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.CollectionProxy;
@@ -29,8 +30,9 @@ import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockExcep
 
 public class CollectionDAOimpl extends DAO implements CollectionDAO {
     private PreparedStatement sCollectionByID, sUser;
-    private PreparedStatement sCollections, sCollectionsPubbliche, sNftsByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza;
+    private PreparedStatement sCollections, sCollectionsPubbliche, sNftsByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza,sNftCollection;
     private PreparedStatement iCollection, dNftsByCollection, sCollectionsCondiviseByCollection, iVisualizza, iNftCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
+    private List<Nft> a;
 
     public CollectionDAOimpl(DataLayer d) {
         super(d);
@@ -41,27 +43,28 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         try {
             super.init();
 
-            sCollections = connection.prepareStatement("SELECT ID AS collectionID FROM Collection where pubblica = 1");
-            sCollectionsPubbliche = connection.prepareStatement("SELECT ID AS collectionID FROM Collection where pubblica = 1 AND IDuser = ?");
-            sCollectionByID = connection.prepareStatement("SELECT * FROM Collection WHERE ID=?");
+            sCollections = connection.prepareStatement("SELECT * FROM collection where public = 1");
+            sCollectionsPubbliche = connection.prepareStatement("SELECT ID AS collectionID FROM collection where public = 1 AND user = ?");
+            sCollectionByID = connection.prepareStatement("SELECT * FROM collection WHERE id=?");
             sCollectionsByUser = connection.prepareStatement("SELECT ID AS collectionID FROM Collection WHERE IDuser=?");
-            sCollectionsByKeyword = connection.prepareStatement("SELECT ID AS collectionID FROM Collection WHERE pubblica = 1 AND nome LIKE ?");
+            sCollectionsByKeyword = connection.prepareStatement("SELECT * FROM collection WHERE public = 1 AND nome LIKE ?");
 
-            sUser = connection.prepareStatement("SELECT * FROM user WHERE ID=?");
+            sUser = connection.prepareStatement("SELECT * FROM users WHERE ID=?");
 
-            sCollectionsCondivise = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN User ON User.ID = visualizza.IDUser WHERE User.ID=?");
-            sCollectionsCondiviseByCollection = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN User ON User.ID = visualizza.IDUser WHERE Collection.ID=?");
+            sCollectionsCondivise = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN users ON users.ID = visualizza.IDUser WHERE users.ID=?");
+            sCollectionsCondiviseByCollection = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN users ON users.ID = visualizza.IDUser WHERE Collection.ID=?");
 
-            iCollection = connection.prepareStatement("INSERT INTO Collection (nome,pubblica,IDuser) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            iCollection = connection.prepareStatement("INSERT INTO collection (nome,public,user) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uCollection = connection.prepareStatement("UPDATE Collection SET nome=?,pubblica=?,IDuser=?,versione=? WHERE ID=?");
-            uPubblica = connection.prepareStatement("UPDATE Collection SET pubblica=?,versione=? WHERE ID=?");
-            dCollection = connection.prepareStatement("DELETE FROM Collection WHERE ID=?");
+            uPubblica = connection.prepareStatement("UPDATE collection SET public=? WHERE id=?");
+            dCollection = connection.prepareStatement("DELETE FROM collection WHERE id=?");
 
             sVisualizza = connection.prepareStatement("SELECT IDUser FROM visualizza WHERE IDCollection=?");
             iVisualizza = connection.prepareStatement("INSERT INTO visualizza (IDUser,IDCollection) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
             dVisualizza = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=?");
             dVisualizzaUser = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=? AND IDUser=?");
 
+            sNftCollection = connection.prepareStatement("Select n.id,n.token_id,n.contract_address,n.wallet_address,n.collection,n.title,n.description,n.metadata From collection as c INNER JOIN nft as n ON n.collection=c.id where c.id=?");
             sNftsByCollection = connection.prepareStatement("SELECT Nft.ID AS NftID FROM Nft INNER JOIN Nft_collection ON Nft.ID = Nft_collection.ID_Nft INNER JOIN Collection ON Collection.ID = Nft_collection.IDCollection WHERE Collection.ID=?");
             iNftCollection = connection.prepareStatement("INSERT INTO Nft_collection (ID_Nft,IDCollection) VALUES(?,?) ", Statement.RETURN_GENERATED_KEYS);
             dNftsByCollection = connection.prepareStatement("DELETE FROM Nft_collection WHERE ID_Nft=? AND IDCollection=?");
@@ -111,17 +114,47 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
     private CollectionProxy createCollection(ResultSet rs) throws DataException {
         CollectionProxy a = (CollectionProxy) createCollection();
         try {
-            a.setKey(rs.getInt("ID"));
+            a.setKey(rs.getInt("id"));
             a.setNome(rs.getString("nome"));
-            a.setPubblica(rs.getBoolean("pubblica"));
-            a.setUserKey((rs.getInt("IDuser")));
-            a.setVersion(rs.getLong("versione"));
+            a.setPubblica(rs.getBoolean("public"));
+            a.setUserKey((rs.getInt("user")));
+            //a.setVersion(rs.getLong("versione"));
         } catch (SQLException ex) {
             throw new DataException("Unable to create collection object form ResultSet", ex);
         }
         return a;
     }
 
+    @Override
+    public List<Nft> showNft(int collection_key) throws DataException {
+        List<Nft> a  = new ArrayList<>();
+        if (dataLayer.getCache().has(Collection.class, collection_key)) {
+            a = (List<Nft>) dataLayer.getCache().get(Collection.class, collection_key);
+        } else {
+            try {
+                sNftCollection.setInt(1, collection_key);
+                try (ResultSet rs = sNftCollection.executeQuery()) {
+                    while (rs.next()) {
+                      Nft nft = new NftImpl();
+                      nft.setTitle(rs.getString("title"));
+                      nft.setTokenId(rs.getString("token_id"));
+                      nft.setContractAddress(rs.getString("contract_address"));
+                      nft.setDescription(rs.getString("description"));
+                      nft.setMetadata(rs.getString("metadata"));
+                      nft.setWalletAddress(rs.getString("wallet_address"));
+
+                      a.add(nft);
+                    }
+                }
+            } catch (SQLException ex) {
+                throw new DataException("Unable to load nft by collection", ex);
+            }
+        }
+        return a;
+    }
+
+
+//Funziona
     @Override
     public Collection getCollection(int collection_key) throws DataException {
         Collection a = null;
@@ -142,21 +175,21 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return a;
     }
-
+//Funziona
     @Override
     public List<Collection> getCollections() throws DataException {
         List<Collection> result = new ArrayList();
 
         try (ResultSet rs = sCollections.executeQuery()) {
             while (rs.next()) {
-                result.add((Collection) getCollection(rs.getInt("collectionID")));
+                result.add((Collection) getCollection(rs.getInt("id")));
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load Collections", ex);
         }
         return result;
     }
-
+//Funziona
     @Override
     public List<Collection> getCollections(User user) throws DataException {
         List<Collection> result = new ArrayList();
@@ -173,7 +206,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-
+//TODO
     @Override
     public List<Integer> getUsersVisualizza(Collection collection) throws DataException {
         List<Integer> result = new ArrayList();
@@ -190,7 +223,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-
+//TODO
     @Override
     public List<Collection> getCollectionsCondivise(User user) throws DataException {
         List<Collection> result = new ArrayList();
@@ -207,7 +240,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-
+//Funziona
     @Override
     public List<Collection> getCollectionsPubbliche(User user) throws DataException {
         List<Collection> result = new ArrayList();
@@ -224,7 +257,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-
+//??
     @Override
     public boolean getCollectionsCondivise(Collection collection) throws DataException {
         List<Collection> result = new ArrayList();
@@ -241,21 +274,18 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return b;
     }
-
+//Funziona
     @Override
     public void setPubblica(Collection collection, Boolean stato) throws DataException {
         try {
             uPubblica.setBoolean(1, stato);
-            long current_version = collection.getVersion();
-            long next_version = current_version + 1;
-            uPubblica.setLong(2, next_version);
-            uPubblica.setInt(3, collection.getKey());
+            uPubblica.setInt(2, collection.getKey());
             uPubblica.executeUpdate();
         } catch (SQLException ex) {
             throw new DataException("Unable to set pubblica", ex);
         }
     }
-
+//Funziona
     @Override
     public void storeCollection(Collection collection) throws DataException {
         try {
@@ -268,18 +298,11 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                 uCollection.setBoolean(2, collection.isPubblica());
                 uCollection.setInt(3, collection.getUser().getKey());
 
-                long current_version = collection.getVersion();
-                long next_version = current_version + 1;
-
-                uCollection.setLong(4, next_version);
-                uCollection.setInt(5, collection.getKey());
+                uCollection.setInt(4, collection.getKey());
 
                 if (uCollection.executeUpdate() == 0) {
                     throw new OptimisticLockException(collection);
-                } else {
-                    collection.setVersion(next_version);
-                }
-
+                } 
             } else {
                 iCollection.setString(1, collection.getNome());
                 iCollection.setBoolean(2, collection.isPubblica());
@@ -297,17 +320,13 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 
             }
 
-            for (Nft d : collection.getNfts()) {
-                iNftCollection.setInt(1, d.getKey());
-                iNftCollection.setInt(2, collection.getKey());
-                iNftCollection.executeUpdate();
-            }
             dataLayer.getCache().add(Collection.class, collection);
         } catch (SQLException ex) {
             throw new DataException("Unable to store Collection", ex);
         }
     }
 
+    //TODO
     @Override
     public void storeVisualizza(Collection collection, User user) throws DataException {
         try {
@@ -319,7 +338,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new DataException("Unable to store Visualizza", ex);
         }
     }
-
+//Funziona
     @Override
     public List<Collection> getCollectionsByKeyword(String keyword) throws DataException {
         try {
@@ -327,7 +346,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             try (ResultSet rs = sCollectionsByKeyword.executeQuery()) {
                 List<Collection> result = new ArrayList();
                 while (rs.next()) {
-                    result.add((Collection) getCollection(rs.getInt("collectionID")));
+                    result.add((Collection) getCollection(rs.getInt("id")));
                 }
                 return result;
             } catch (DataException e) {
@@ -337,7 +356,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new DataException("Unable to load Collections by keyword", ex);
         }
     }
-
+//Funziona
     @Override
     public void deleteCollection(Collection collection) throws SQLException {
         try {
@@ -347,7 +366,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new SQLException("Unable to delete Collection", ex);
         }
     }
-
+//TODO
     @Override
     public void deleteVisualizza(Collection collection) throws SQLException {
         try {
@@ -357,7 +376,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new SQLException("Unable to delete Visualizza", ex);
         }
     }
-
+//TODO
     @Override
     public void deleteVisualizza(Collection collection, User user) throws SQLException {
         try {
@@ -370,7 +389,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new SQLException("Unable to delete Visualizza", ex);
         }
     }
-
+//?? TODO
     @Override
     public void deleteNftsCollection(Collection collection, List<Nft> Nfts) throws SQLException {
         try {
