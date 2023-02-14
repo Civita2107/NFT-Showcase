@@ -45,4 +45,6 @@ public interface CollectionDAO {
   List<Collection> getCollectionsByKeyword(String keyword) throws DataException;
 
   void deleteNftsCollection(Collection collection, List<Nft> nfts) throws SQLException;
+  
+  List<Nft> showNft(int collection_key) throws DataException;
 }

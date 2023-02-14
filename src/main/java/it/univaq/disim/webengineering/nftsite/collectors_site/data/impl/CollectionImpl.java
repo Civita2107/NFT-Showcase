@@ -26,12 +26,11 @@ public class CollectionImpl extends DataItemImpl<Integer> implements Collection 
         this.nfts = null;
     }
 
-    public CollectionImpl(String nome, boolean pubblica, User user, List<Nft> nfts) {
+    public CollectionImpl(String nome, boolean pubblica, User user) {
         super();
         this.nome = nome;
         this.pubblica = pubblica;
         this.user = user;
-        this.nfts = nfts;
     }
 
     @Override
