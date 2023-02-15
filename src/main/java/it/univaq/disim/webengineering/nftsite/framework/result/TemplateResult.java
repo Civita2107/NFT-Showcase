@@ -15,15 +15,6 @@
  */
 package it.univaq.disim.webengineering.nftsite.framework.result;
 
-import freemarker.core.HTMLOutputFormat;
-import freemarker.core.JSONOutputFormat;
-import freemarker.core.XMLOutputFormat;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapperBuilder;
-import freemarker.template.Template;
-import freemarker.template.TemplateDateModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -38,9 +29,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import freemarker.core.HTMLOutputFormat;
+import freemarker.core.JSONOutputFormat;
+import freemarker.core.XMLOutputFormat;
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapperBuilder;
+import freemarker.template.Template;
+import freemarker.template.TemplateDateModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 
 /**
  *
@@ -250,18 +252,11 @@ public class TemplateResult {
         //impostiamo il tipo di output: in questo modo freemarker abiliterà il necessario escaping
         //set the output format, so that freemarker will enable the correspondoing escaping
         switch (contentType) {
-            case "text/html":
-                cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
-                break;
-            case "text/xml":
-            case "application/xml":
-                cfg.setOutputFormat(XMLOutputFormat.INSTANCE);
-                break;
-            case "application/json":
-                cfg.setOutputFormat(JSONOutputFormat.INSTANCE);
-                break;
-            default:
-                break;
+            case "text/html" -> cfg.setOutputFormat(HTMLOutputFormat.INSTANCE);
+            case "text/xml" -> { break; }
+            case "application/xml" -> cfg.setOutputFormat(XMLOutputFormat.INSTANCE);
+            case "application/json" -> cfg.setOutputFormat(JSONOutputFormat.INSTANCE);
+            default -> { break; }
         }
 
     }

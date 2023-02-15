@@ -1,7 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -28,9 +27,10 @@ public class CreaCollezione extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
      */
     @Override
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, DataException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         if (request.getMethod().equals("POST")) {
             action_crea(request, response);
         } else {
@@ -71,7 +71,6 @@ public class CreaCollezione extends CollectorsBaseController {
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             User user = Utility.getUser(request);
-            List<User> users = new ArrayList<>();
 
             String nome = request.getParameter("nome");
             boolean pubblica = request.getParameter("pubblica").equals("pubblica");
@@ -82,7 +81,7 @@ public class CreaCollezione extends CollectorsBaseController {
             Collection collection = new CollectionImpl(nome, pubblica, user);
             dataLayer.getCollectionDAO().storeCollection(collection);
             response.sendRedirect("lista-collezioni");
-        } catch (Exception e) {
+        } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
     }

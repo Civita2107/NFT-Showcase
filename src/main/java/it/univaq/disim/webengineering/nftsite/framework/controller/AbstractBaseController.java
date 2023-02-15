@@ -6,6 +6,8 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -86,7 +88,7 @@ public abstract class AbstractBaseController extends HttpServlet {
                 accessCheckFailed(request, response);
             }
         } catch (Exception ex) {
-            ex.printStackTrace(); //for debugging only
+            Logger.getLogger(AbstractBaseController.class.getName()).log(Level.SEVERE,"ERROR IN processBaseRequest",ex);
             handleError(ex, request, response);
         }
     }

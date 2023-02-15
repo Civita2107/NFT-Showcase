@@ -26,6 +26,7 @@ public class Logout extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {

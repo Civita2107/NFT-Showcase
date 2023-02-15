@@ -130,7 +130,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
                     }
                 }
             }
-            if (User instanceof DataItemProxy) {
+            if ((User instanceof DataItemProxy)) {
                 ((DataItemProxy) User).setModified(false);
             }
         } catch (SQLException | OptimisticLockException ex) {

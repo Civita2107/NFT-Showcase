@@ -1,7 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.http.HttpSession;
 
@@ -67,7 +68,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             Response response = future.get();
             nftData = response.getResponseBody();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getNft",e);
         } finally {
             client.close();
         }
@@ -89,7 +90,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             Response response = future.get();
             nftMetaData = response.getResponseBody();
         } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getNftsMetdata",e);
         } finally {
             client.close();
         }
@@ -101,7 +102,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         int userId = (int) session.getAttribute("userId");
         List<Wallet> userWallets = new ArrayList<>();
 
-        ResultSet rs = null;
+        ResultSet rs;
         try {
 
             SWallets.setInt(1, userId);
@@ -119,7 +120,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             }
         } catch (SQLException e) {
             // Gestione dell'errore
-            e.printStackTrace();
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN searchWalletByStringsLogged",e);
         }
 
         return userWallets;
@@ -128,7 +129,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     @Override
     public Wallet searchWalletByStrings(String address) throws DataException {
 
-        Wallet wallet = null;
+        Wallet wallet = new WalletImpl();
 
         try {
             SWalletAddress.setString(1, address);
@@ -156,7 +157,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         // Connessione al database e recupero dei dati
         // Connection conn = null;
         // Statement stmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
         try {
             // Apertura della connessione
             // conn = dbWallet.getConnection();
@@ -178,7 +179,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             }
         } catch (SQLException e) {
             // Gestione dell'errore
-            e.printStackTrace();
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getWallets()",e);
         }
 
         return wallets;
@@ -186,9 +187,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     @Override
     public List<Wallet> getWallets(int userId) throws DataException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
         List<Wallet> wallets = new ArrayList<>();
         try {
             // conn = dbWallet.getConnection(); TODO
@@ -203,7 +202,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
                 wallets.add(wallet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getWallets(int userId)",e);
         }
         return wallets;
 

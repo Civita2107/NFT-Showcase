@@ -23,7 +23,9 @@ public class Utility {
     }
 
     /**
+     * @param request
      * @return l'utente che ha effettuato il login
+     * @throws DataException
      */
     public static User getUser(HttpServletRequest request) throws DataException{
         User user;
@@ -40,7 +42,9 @@ public class Utility {
     }
 
     /**
+     * @param request
      * @return la lista degli utenti i cui dati contengono la keyword passata come parametro nella request
+     * @throws DataException
      */
     public static List<User> getUsers(HttpServletRequest request) throws DataException {
         List<User> users;
@@ -53,7 +57,9 @@ public class Utility {
     }
 
     /**
+     * @param request
      * @return la lista delle collezioni i cui dati contengono la keyword passata come parametro nella request
+     * @throws DataException
      */
     public static List<Collection> getCollections(HttpServletRequest request) throws DataException {
         List<Collection> collections;
@@ -66,7 +72,9 @@ public class Utility {
     }
 
     /**
+     * @param request
      * @return la lista dei wallets associati ad un utente
+     * @throws DataException
      */
     public static List<Wallet> getWallets(HttpServletRequest request) throws DataException {
         List<Wallet> wallets;
@@ -84,7 +92,9 @@ public class Utility {
     }
 
     /**
+     * @param request
      * @return la lista degli nfts i cui dati contengono la keyword passata come parametro nella request
+     * @throws DataException
      */
     public static List<Nft> getNfts(HttpServletRequest request) throws DataException {
         List<Nft> nfts;

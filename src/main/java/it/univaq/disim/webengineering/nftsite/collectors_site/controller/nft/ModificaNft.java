@@ -26,6 +26,9 @@ public class ModificaNft extends CollectorsBaseController {
      *
      * @param request servlet request
      * @param response servlet response
+     * @throws ServletException
+     * @throws DataException
+     * @throws IOException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, DataException, IOException {
@@ -55,10 +58,10 @@ public class ModificaNft extends CollectorsBaseController {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-        User user = Utility.getUser(request);
+        //User user = Utility.getUser(request);
 
         NftDAO nftDAO = dataLayer.getNftDAO();
-        Nft nft = nftDAO.getNft((Integer.parseInt(request.getParameter("id"))));
+        Nft nft = nftDAO.getNft((int) Integer.parseInt(request.getParameter("id")));
 
         if (nft.isPubblica()) {
             request.setAttribute("condivisa", "pubblica");
@@ -75,7 +78,7 @@ public class ModificaNft extends CollectorsBaseController {
         try {
 
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-            User user = Utility.getUser(request);
+            //User user = Utility.getUser(request);
             NftDAO nftDAO = dataLayer.getNftDAO();
             int id = Integer.parseInt(request.getParameter("id"));
             Nft nft = nftDAO.getNft(id);
@@ -90,7 +93,7 @@ public class ModificaNft extends CollectorsBaseController {
          //   nftDAO.storeNft(nft); TODO manca metodo
             
             response.sendRedirect("visualizza-nft?id=" + nft.getKey());
-        } catch (Exception e) {
+        } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
     }

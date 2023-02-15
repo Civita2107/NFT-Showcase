@@ -26,6 +26,9 @@ public class CreaCommento extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
+     * @throws DataException
+     * @throws IOException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, DataException, IOException {
@@ -74,7 +77,7 @@ public class CreaCommento extends CollectorsBaseController {
             Comment comment = new CommentImpl(text, user, nft);
             dataLayer.getCommentDAO().storeComment(comment);
             response.sendRedirect("visualizza-commenti");
-        } catch (Exception e) {
+        } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
     }

@@ -1,20 +1,5 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
-import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
-import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
-import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
-import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
-
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +9,22 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
+import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
+import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
+import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
+import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
+
 public class ListaCollezioni extends CollectorsBaseController {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,6 +32,9 @@ public class ListaCollezioni extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
+     * @throws TemplateManagerException
+     * @throws IOException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, TemplateManagerException, IOException {

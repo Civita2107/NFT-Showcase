@@ -52,7 +52,7 @@ public class FailureResult {
         //ma per sicurezza controlliamo comunque il tipo effettivo dell'oggetto
         //we assume that the exception has been passed using the request attributes        
         //but we always check the real object type
-        if (request.getAttribute("exception") instanceof Exception) {
+        if ((request.getAttribute("exception") instanceof Exception)) {
             activate((Exception) request.getAttribute("exception"), request, response);
         } else {
             activate("Unknown error", request, response);
@@ -80,7 +80,7 @@ public class FailureResult {
                 //otherwise, use HTTP errors
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, message);
             }
-        } catch (Exception ex) {
+        } catch (IOException | TemplateManagerException ex) {
             //se qualcosa va male inviamo un errore HTTP
             //if anything goue wrong, sent an HTTP error
             message += ". In addition, the following exception was generated while trying to display the error page: " + ex.getMessage();

@@ -9,10 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
@@ -42,12 +40,10 @@ public class Homepage extends CollectorsBaseController {
         request.setAttribute("referrer", encodedRequestURL);
 
         List<Nft> nfts;
-        List<User> users;
         
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
 
         NftDAO nftDAO = dataLayer.getNftDAO();
-        UserDAO userDAO = dataLayer.getUserDAO();
 
         nfts = nftDAO.getRandomNfts();
         

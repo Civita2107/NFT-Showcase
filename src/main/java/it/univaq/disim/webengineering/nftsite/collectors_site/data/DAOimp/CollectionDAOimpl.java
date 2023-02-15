@@ -1,38 +1,28 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
-import java.util.logging.Logger;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
-
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.UserImpl;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.CollectionProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
-import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
-import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockException;
 
 public class CollectionDAOimpl extends DAO implements CollectionDAO {
     private PreparedStatement sCollectionByID, sUser;
     private PreparedStatement sCollections, sCollectionsPubbliche, sNftsByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza,sNftCollection;
     private PreparedStatement iCollection, dNftsByCollection, sCollectionsCondiviseByCollection, iVisualizza, iNftCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
-    private List<Nft> a;
 
     public CollectionDAOimpl(DataLayer d) {
         super(d);
@@ -260,7 +250,6 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //??
     @Override
     public boolean getCollectionsCondivise(Collection collection) throws DataException {
-        List<Collection> result = new ArrayList();
         boolean b = false;
         try {
             sCollectionsCondiviseByCollection.setInt(1, collection.getKey());

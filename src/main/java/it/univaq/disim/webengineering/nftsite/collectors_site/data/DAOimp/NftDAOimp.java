@@ -1,13 +1,11 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Statement;
-
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
@@ -17,7 +15,6 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.NftProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
-import it.univaq.disim.webengineering.nftsite.framework.data.DB;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
@@ -62,7 +59,7 @@ public class NftDAOimp extends DAO implements NftDAO {
             a.setDescription(rs.getString("description"));
             a.setMetadata(rs.getString("metadata"));
             a.setWalletAddress(rs.getString("walletAddress"));
-           // a.setPubblica(rs.getBoolean("pubblica"));
+            //a.setPubblica(rs.getBoolean("pubblica"));
             //a.setVersion(rs.getLong("versione"));
 
 
@@ -78,12 +75,10 @@ public class NftDAOimp extends DAO implements NftDAO {
         Nft nft=null;
         title=null;
         contractAddress=null;
-        try (Connection connection = DB.getConnection()) {// TODO Da correggere
-            try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM nft where title="+title+" or "+"contractAddress="+contractAddress)) {
-                try (ResultSet rset = ps.executeQuery()) {
-                    if (rset.next()) {
-                        nft = (Nft)rset;
-                    }
+        try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM nft where title="+title+" or "+"contractAddress="+contractAddress)) {
+            try (ResultSet rset = ps.executeQuery()) {
+                if (rset.next()) {
+                    nft = (Nft)rset;
                 }
             }
         } catch (SQLException e) {
@@ -215,6 +210,7 @@ public class NftDAOimp extends DAO implements NftDAO {
      * @return list = list of Nfts
      * @throws DataException 
      */
+     @Override
     public List<Nft> getRandomNfts() throws DataException {
         try {
             try (ResultSet rs = sNftByRandom.executeQuery()) {

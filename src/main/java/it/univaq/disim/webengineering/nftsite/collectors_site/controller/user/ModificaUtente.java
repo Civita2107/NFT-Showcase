@@ -25,6 +25,10 @@ public class ModificaUtente extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
+     * @throws TemplateManagerException
+     * @throws IOException
+     * @throws DataException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, TemplateManagerException, IOException, DataException {

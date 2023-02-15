@@ -71,7 +71,7 @@ public class UserProxy extends UserImpl implements DataItemProxy {
         this.modified = true;
     }
 
- /**   @Override
+ /*   @Override
     public void getWallets() {
         if (super.getWallets() == null) {
             try {

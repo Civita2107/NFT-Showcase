@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,9 +26,10 @@ public class EliminaCollezione extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
      */
     @Override
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, TemplateManagerException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             HttpSession s = SecurityHelpers.checkSession(request);
             String https_redirect_url = SecurityHelpers.checkHttps(request);

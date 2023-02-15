@@ -1,7 +1,13 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
@@ -13,11 +19,6 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-
 public class VisualizzaCollezione extends CollectorsBaseController {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -25,6 +26,7 @@ public class VisualizzaCollezione extends CollectorsBaseController {
      *
      * @param request  servlet request
      * @param response servlet response
+     * @throws ServletException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {

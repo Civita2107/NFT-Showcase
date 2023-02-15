@@ -1,6 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,9 @@ public class ModificaCollezione extends CollectorsBaseController {
      *
      * @param request servlet request
      * @param response servlet response
+     * @throws ServletException
+     * @throws DataException
+     * @throws IOException
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, DataException, IOException {
@@ -124,7 +128,7 @@ public class ModificaCollezione extends CollectorsBaseController {
             }
 
             response.sendRedirect("visualizza-collezione?id=" + collection.getKey());
-        } catch (Exception e) {
+        } catch (IOException | DataException | SQLException e) {
             handleError(e, request, response);
         }
 
