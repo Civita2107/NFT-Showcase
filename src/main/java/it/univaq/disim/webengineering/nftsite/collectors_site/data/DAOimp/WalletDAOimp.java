@@ -68,7 +68,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             Response response = future.get();
             nftData = response.getResponseBody();
         } catch (InterruptedException | ExecutionException e) {
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getNft",e);
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN getNft", e);
         } finally {
             client.close();
         }
@@ -90,7 +90,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             Response response = future.get();
             nftMetaData = response.getResponseBody();
         } catch (InterruptedException | ExecutionException e) {
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getNftsMetdata",e);
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN getNftsMetdata", e);
         } finally {
             client.close();
         }
@@ -120,7 +120,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             }
         } catch (SQLException e) {
             // Gestione dell'errore
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN searchWalletByStringsLogged",e);
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN searchWalletByStringsLogged", e);
         }
 
         return userWallets;
@@ -133,14 +133,12 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
         try {
             SWalletAddress.setString(1, address);
-            try (PreparedStatement ps = SWalletAddress) {// TODO connection.prepareStatement("SELECT * from wallet WHERE
-                                                         // address=?"))
+            try (PreparedStatement ps = SWalletAddress) {
                 try (ResultSet rset = ps.executeQuery()) {
                     while (rset.next()) {
                         wallet.setAddress(rset.getString("wallet_address"));
                         wallet.setUserId(rset.getInt("user_id"));
-                        // wallet.setNfts(rset.getArray("nfts")); //TODO trovare un modo di converitre
-                        // List in array
+
                     }
                 }
             }
@@ -154,20 +152,9 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     public List<Wallet> getWallets() throws DataException {
         List<Wallet> wallets = new ArrayList<>();
 
-        // Connessione al database e recupero dei dati
-        // Connection conn = null;
-        // Statement stmt = null;
         ResultSet rs;
         try {
-            // Apertura della connessione
-            // conn = dbWallet.getConnection();
 
-            // Creazione della query per recuperare tutti i wallet
-            // String query = "SELECT * FROM wallets";
-            // stmt = conn.createStatement();
-
-            // Esecuzione della query
-            // rs = stmt.executeQuery(query); TODO
             rs = SWallets.executeQuery();
 
             // Aggiunta dei wallet alla lista
@@ -179,7 +166,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             }
         } catch (SQLException e) {
             // Gestione dell'errore
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getWallets()",e);
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN getWallets()", e);
         }
 
         return wallets;
@@ -190,8 +177,6 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         ResultSet rs;
         List<Wallet> wallets = new ArrayList<>();
         try {
-            // conn = dbWallet.getConnection(); TODO
-            // stmt = conn.prepareStatement("SELECT * FROM wallets WHERE userId = ?"); TODO
 
             SWalletbyId.setInt(1, userId);
             rs = SWalletbyId.executeQuery();
@@ -202,7 +187,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
                 wallets.add(wallet);
             }
         } catch (SQLException e) {
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE,"ERROR IN getWallets(int userId)",e);
+            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN getWallets(int userId)", e);
         }
         return wallets;
 
@@ -259,7 +244,8 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
             for (int i = 0; i < nftList.size(); i++) {
 
-                String nftMeta = dbWallet.getNftsMetdata(nftList.get(i).getContractAddress(), nftList.get(i).getTokenId());
+                String nftMeta = dbWallet.getNftsMetdata(nftList.get(i).getContractAddress(),
+                        nftList.get(i).getTokenId());
                 JsonObject jsonObjectMeta = gson.fromJson(nftMeta, JsonObject.class);
 
                 JsonObject nftJson = jsonObjectMeta.getAsJsonObject();
@@ -281,7 +267,6 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         } catch (IOException | DataException e) {
             throw new DataException("ERRORE", e);
         }
-        
 
     }
 

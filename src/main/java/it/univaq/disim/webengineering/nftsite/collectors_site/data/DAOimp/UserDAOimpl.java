@@ -24,6 +24,8 @@ public class UserDAOimpl extends DAO implements UserDAO{
     private PreparedStatement identityCheck, sUserByEmail, sUserByUsername;
     private PreparedStatement sUsers, sUsersByKeyword;
     private PreparedStatement iUser, uUser, dUser;
+    private PreparedStatement sFollower,sFollowing;
+    private PreparedStatement iMedia;
     //private PreparedStatement UsersMostAttivi;
 
   
@@ -35,6 +37,11 @@ public class UserDAOimpl extends DAO implements UserDAO{
     public void init() throws DataException {
         try {
             super.init();
+
+            iMedia = connection.prepareStatement("INSERT INTO media (foto) VALUES (?)");
+
+            sFollower = connection.prepareStatement("Select * FROM users as u INNER JOIN follow as f ON f.following = u.id where u.id = ?");
+            sFollowing = connection.prepareStatement("Select * FROM users as u INNER JOIN follow as f ON f.follower = u.id where u.id = ?");
 
             sUser = connection.prepareStatement("SELECT * FROM users WHERE id=?");
             sUserByEmail = connection.prepareStatement("SELECT * FROM users WHERE email=?");
@@ -144,7 +151,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
     @Override
     public List<User> getUsers() throws DataException {
-        List<User> result = new ArrayList();
+        List<User> result = new ArrayList<>();
 
         try (ResultSet rs = sUsers.executeQuery()) {
             while (rs.next()) {
@@ -247,18 +254,66 @@ public class UserDAOimpl extends DAO implements UserDAO{
         return null;
     }
 
-   
-
-    @Override
-    public User getFollower(User user) throws DataException {
-        // TODO Auto-generated method stub
-        return null;
+    public void storeMedia(byte[] media) throws DataException {
+        try (PreparedStatement ps = iMedia ) {
+            ps.setBytes(1, media);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataException("Unable to store media for user", e);
+        }
     }
 
     @Override
-    public User getFollowing(User user) throws DataException {
-        // TODO Auto-generated method stub
-        return null;
+    public List<User> getFollower(User user) throws DataException {
+        List<User> l = new ArrayList<>();
+
+        try {
+            sFollower.setInt(1, user.getKey());
+            try (ResultSet rs = sUser.executeQuery()) {
+                while(rs.next()){
+                if (rs.next()) {
+                   User a =  getUser(rs.getInt("follower"));
+                
+                    l.add(a);
+
+                }
+            }
+        }
+            
+        } catch (DataException ex) {
+            Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load follower", ex);
+        }
+    
+    return l;
+    
+}
+
+    @Override
+    public List<User> getFollowing(User user) throws DataException {
+        List<User> l = new ArrayList<>();
+
+        try {
+            sFollowing.setInt(1, user.getKey());
+            try (ResultSet rs = sUser.executeQuery()) {
+                while(rs.next()){
+                if (rs.next()) {
+                   User a =  getUser(rs.getInt("following"));
+                
+                    l.add(a);
+
+                }
+            }
+        }
+            
+        } catch (DataException ex) {
+            Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load follower", ex);
+        }
+    
+    return l;
     }
 
 
