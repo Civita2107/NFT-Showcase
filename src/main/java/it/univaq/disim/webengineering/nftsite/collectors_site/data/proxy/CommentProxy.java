@@ -15,7 +15,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 public class CommentProxy extends CommentImpl implements DataItemProxy {
 
     protected boolean modified;
-    protected int userKey = 0;
+    protected int userKey;
     protected DataLayer dataLayer;
 
     public CommentProxy(DataLayer dataLayer) {
@@ -81,6 +81,12 @@ public class CommentProxy extends CommentImpl implements DataItemProxy {
     @Override
     public boolean isModified() {
         return modified;
+    }
+
+    @Override
+    public void setKey(Integer key) {
+        super.setKey(key);
+        this.modified = true;
     }
     
 }
