@@ -269,7 +269,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
         try {
             sFollower.setInt(1, user.getKey());
-            try (ResultSet rs = sUser.executeQuery()) {
+            try (ResultSet rs = sFollower.executeQuery()) {
                 while(rs.next()){
                 if (rs.next()) {
                    User a =  getUser(rs.getInt("follower"));
@@ -296,7 +296,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
         try {
             sFollowing.setInt(1, user.getKey());
-            try (ResultSet rs = sUser.executeQuery()) {
+            try (ResultSet rs = sFollowing.executeQuery()) {
                 while(rs.next()){
                 if (rs.next()) {
                    User a =  getUser(rs.getInt("following"));

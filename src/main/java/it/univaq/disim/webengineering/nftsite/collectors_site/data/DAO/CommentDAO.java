@@ -4,16 +4,17 @@ import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 
 public interface CommentDAO {
 
-    List<Comment> getComments(Nft nft);
+    List<Comment> getComments(Nft nft) throws DataException;
 
-    void storeComment(Comment comment);
+    void storeComment(Comment comment) throws DataException;
 
-    Object getComment(int i);
+    Object getComment(int i) throws DataException;
 
-    void deleteComment(Object comment);
+    void deleteComment(Comment comment) throws DataException;
     
     
 }

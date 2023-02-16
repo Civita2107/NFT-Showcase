@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
@@ -118,9 +119,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
     @Override
     public List<Nft> showNft(int collection_key) throws DataException {
         List<Nft> a  = new ArrayList<>();
-        if (dataLayer.getCache().has(Collection.class, collection_key)) {
-            a = (List<Nft>) dataLayer.getCache().get(Collection.class, collection_key);
-        } else {
+
             try {
                 sNftCollection.setInt(1, collection_key);
                 try (ResultSet rs = sNftCollection.executeQuery()) {
@@ -139,7 +138,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             } catch (SQLException ex) {
                 throw new DataException("Unable to load nft by collection", ex);
             }
-        }
+        
         return a;
     }
 
@@ -168,7 +167,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //Funziona
     @Override
     public List<Collection> getCollections() throws DataException {
-        List<Collection> result = new ArrayList();
+        List<Collection> result = new ArrayList<>();
 
         try (ResultSet rs = sCollections.executeQuery()) {
             while (rs.next()) {
@@ -182,7 +181,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //Funziona
     @Override
     public List<Collection> getCollections(User user) throws DataException {
-        List<Collection> result = new ArrayList();
+        List<Collection> result = new ArrayList<>();
 
         try {
             sCollectionsByUser.setInt(1, user.getKey());
@@ -199,7 +198,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //TODO
     @Override
     public List<Integer> getUsersVisualizza(Collection collection) throws DataException {
-        List<Integer> result = new ArrayList();
+        List<Integer> result = new ArrayList<>();
 
         try {
             sVisualizza.setInt(1, collection.getKey());
@@ -216,7 +215,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //TODO
     @Override
     public List<Collection> getCollectionsCondivise(User user) throws DataException {
-        List<Collection> result = new ArrayList();
+        List<Collection> result = new ArrayList<>();
 
         try {
             sCollectionsCondivise.setInt(1, user.getKey());
@@ -233,7 +232,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 //Funziona
     @Override
     public List<Collection> getCollectionsPubbliche(User user) throws DataException {
-        List<Collection> result = new ArrayList();
+        List<Collection> result = new ArrayList<>();
 
         try {
             sCollectionsPubbliche.setInt(1, user.getKey());
@@ -333,7 +332,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         try {
             sCollectionsByKeyword.setString(1, "%" + keyword + "%");
             try (ResultSet rs = sCollectionsByKeyword.executeQuery()) {
-                List<Collection> result = new ArrayList();
+                List<Collection> result = new ArrayList<>();
                 while (rs.next()) {
                     result.add((Collection) getCollection(rs.getInt("id")));
                 }
