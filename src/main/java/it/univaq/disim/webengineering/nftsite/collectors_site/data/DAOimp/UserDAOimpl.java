@@ -266,29 +266,21 @@ public class UserDAOimpl extends DAO implements UserDAO{
     @Override
     public List<User> getFollower(User user) throws DataException {
         List<User> l = new ArrayList<>();
-
         try {
             sFollower.setInt(1, user.getKey());
             try (ResultSet rs = sFollower.executeQuery()) {
                 while(rs.next()){
-                if (rs.next()) {
-                   User a =  getUser(rs.getInt("follower"));
-                
+                    User a =  getUser(rs.getInt("follower"));
                     l.add(a);
-
                 }
-            }
-        }
-            
+            }            
         } catch (DataException ex) {
             Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             throw new DataException("Unable to load follower", ex);
         }
-    
-    return l;
-    
-}
+        return l;
+    }
 
     @Override
     public List<User> getFollowing(User user) throws DataException {
@@ -298,22 +290,16 @@ public class UserDAOimpl extends DAO implements UserDAO{
             sFollowing.setInt(1, user.getKey());
             try (ResultSet rs = sFollowing.executeQuery()) {
                 while(rs.next()){
-                if (rs.next()) {
-                   User a =  getUser(rs.getInt("following"));
-                
+                    User a =  getUser(rs.getInt("following"));
                     l.add(a);
-
                 }
             }
-        }
-            
         } catch (DataException ex) {
             Logger.getLogger(UserDAOimpl.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             throw new DataException("Unable to load follower", ex);
         }
-    
-    return l;
+        return l;
     }
 
 

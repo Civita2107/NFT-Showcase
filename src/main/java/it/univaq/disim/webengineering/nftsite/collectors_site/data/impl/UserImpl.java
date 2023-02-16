@@ -1,5 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -11,8 +12,8 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String username;
     private String email;
     private String password;
-    private List<User> follow;
-    private List<User> followers;
+    private final List<User> follow = new ArrayList();
+    private final List<User> followers = new ArrayList();
 
     public UserImpl() {
     }
