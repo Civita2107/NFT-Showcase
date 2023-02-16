@@ -55,7 +55,7 @@ public class CommentProxy extends CommentImpl implements DataItemProxy {
             try {
                 super.setNft(((NftDAO) dataLayer.getDAO(Nft.class)).getNft(this));
             } catch (DataException e) {
-                Logger.getLogger(CommentProxy.class.getName()).log(Level.SEVERE, null, e);
+                Logger.getLogger(NftProxy.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         return super.getNft();

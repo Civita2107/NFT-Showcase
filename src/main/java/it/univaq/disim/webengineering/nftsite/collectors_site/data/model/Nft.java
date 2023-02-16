@@ -12,7 +12,7 @@ public interface Nft extends DataItem<Integer> {
 
     void setTokenId(String tokenId);
 
-    String getContractAddress(); //da qui prendiamo il wallet del creatore
+    String getContractAddress(); //da qui prendiamo la collezione di appartenenza
 
     void setContractAddress(String contractAddress);
 

@@ -36,6 +36,18 @@ public class UserProxy extends UserImpl implements DataItemProxy {
     }
 
     @Override
+    public void setEmail(String email) {
+        super.setEmail(email);
+        this.modified = true;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        super.setPassword(password);
+        this.modified = true;
+    }
+
+    @Override
     public List<User> getFollower() {
         if (super.getFollower() == null) {
             try {
@@ -75,18 +87,6 @@ public class UserProxy extends UserImpl implements DataItemProxy {
         this.modified = true;
     }
 
- /*   @Override
-    public void getWallets() {
-        if (super.getWallets() == null) {
-            try {
-                super.setWallets((WalletDAO) dataLayer.getDAO(Wallet.class).getWallet(this)); // non esiste il metodo
-            } catch (Exception e) {
-                Logger.getLogger(UserProxy.class.getName()).log(System.Logger.Level.SEVERE, null, e);
-            }
-        }
-        return super.getWallets();
-    }
-*/
     @Override
     public void setModified(boolean dirty) {
         this.modified = dirty;
