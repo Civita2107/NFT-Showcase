@@ -42,7 +42,7 @@ public class NftDAOimp extends DAO implements NftDAO {
             iNft = connection.prepareStatement("INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
             Statement.RETURN_GENERATED_KEYS); 
             
-            sNftByRandom = connection.prepareStatement("SELECT * FROM Nft ORDER BY NEWID() LIMIT 20");
+            sNftByRandom = connection.prepareStatement("SELECT * FROM nft ORDER BY RAND() LIMIT 20");
             
 
         } catch (SQLException ex) {

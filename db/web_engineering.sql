@@ -87,7 +87,7 @@ CREATE TABLE `users` (
   `username` varchar(128) NOT NULL,
   `email` varchar(512) NOT NULL,
   `password` varchar(512) NOT NULL,
-  `foto` longblob NOT NULL
+  `foto` longblob
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

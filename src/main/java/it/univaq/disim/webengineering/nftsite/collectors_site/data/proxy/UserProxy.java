@@ -39,7 +39,10 @@ public class UserProxy extends UserImpl implements DataItemProxy {
     public List<User> getFollower() {
         if (super.getFollower() == null) {
             try {
-                super.addFollower(((UserDAO) dataLayer.getDAO(User.class)).getFollower(this));
+                List<User> followers = ((UserDAO) dataLayer.getDAO(User.class)).getFollower(this);
+                followers.forEach((User follower) -> {
+                    super.addFollower(follower);
+                });
             } catch (DataException e) {
                 Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
             }
@@ -57,7 +60,8 @@ public class UserProxy extends UserImpl implements DataItemProxy {
     public List<User> getFollowing() {
         if (super.getFollowing() == null) {
             try {
-                super.addFollowing(((UserDAO) dataLayer.getDAO(User.class)).getFollowing(this));
+                List<User> following = ((UserDAO) dataLayer.getDAO(User.class)).getFollowing(this);
+                following.forEach((User follower) -> super.addFollowing(follower));
             } catch (DataException e) {
                 Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
             }

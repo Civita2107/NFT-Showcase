@@ -11,6 +11,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Collect
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CommentDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
@@ -48,7 +49,7 @@ public class EliminaCommento extends CollectorsBaseController {
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         CommentDAO commentDAO = dataLayer.getCommentDAO();
-        commentDAO.deleteComment(commentDAO.getComment((Integer.parseInt(request.getParameter("id")))));
+        commentDAO.deleteComment((Comment) commentDAO.getComment((Integer.parseInt(request.getParameter("id")))));
         response.sendRedirect("lista-collezioni"); //TODO: ricorda l'eccezione
     }
 
