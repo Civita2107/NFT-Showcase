@@ -12,8 +12,8 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String username;
     private String email;
     private String password;
-    private final List<User> follow = new ArrayList();
-    private final List<User> followers = new ArrayList();
+    private final List<User> follow = new ArrayList<>();
+    private final List<User> followers = new ArrayList<>();
 
     public UserImpl() {
     }
