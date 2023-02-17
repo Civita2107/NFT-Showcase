@@ -16,34 +16,19 @@ public interface CollectionDAO {
 
   Collection getCollection(int collection_key) throws DataException;
 
-
   List<Collection> getCollections() throws DataException;
 
   List<Collection> getCollections(User user) throws DataException;
-
-  List<Collection> getCollectionsCondivise(User user) throws DataException;
-
-  List<Integer> getUsersVisualizza(Collection collection) throws DataException;
-
-  boolean getCollectionsCondivise(Collection collection) throws DataException;
 
   List<Collection> getCollectionsPubbliche(User user) throws DataException;
 
   void storeCollection(Collection collection) throws DataException;
 
-  void storeVisualizza(Collection collection, User user) throws DataException;
-
-  void deleteCollection(Collection collection) throws SQLException;
-
-  void deleteVisualizza(Collection collection) throws SQLException;
-
-  void deleteVisualizza(Collection collection, User user) throws SQLException;
-
   void setPubblica(Collection collection, Boolean stato) throws DataException;
 
   List<Collection> getCollectionsByKeyword(String keyword) throws DataException;
 
-  void deleteNftsCollection(Collection collection, List<Nft> nfts) throws SQLException;
-  
   List<Nft> showNft(int collection_key) throws DataException;
+
+  void deleteCollection(Collection collection) throws SQLException;
 }

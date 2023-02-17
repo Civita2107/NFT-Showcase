@@ -195,40 +195,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-//TODO
-    @Override
-    public List<Integer> getUsersVisualizza(Collection collection) throws DataException {
-        List<Integer> result = new ArrayList<>();
 
-        try {
-            sVisualizza.setInt(1, collection.getKey());
-            try (ResultSet rs = sVisualizza.executeQuery()) {
-                while (rs.next()) {
-                    result.add((int) rs.getInt("IDUser"));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load Users from Visualizza", ex);
-        }
-        return result;
-    }
-//TODO
-    @Override
-    public List<Collection> getCollectionsCondivise(User user) throws DataException {
-        List<Collection> result = new ArrayList<>();
-
-        try {
-            sCollectionsCondivise.setInt(1, user.getKey());
-            try (ResultSet rs = sCollectionsCondivise.executeQuery()) {
-                while (rs.next()) {
-                    result.add((Collection) getCollection(rs.getInt("collectionID")));
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load Collections condivise", ex);
-        }
-        return result;
-    }
 //Funziona
     @Override
     public List<Collection> getCollectionsPubbliche(User user) throws DataException {
@@ -246,22 +213,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
         return result;
     }
-//??
-    @Override
-    public boolean getCollectionsCondivise(Collection collection) throws DataException {
-        boolean b = false;
-        try {
-            sCollectionsCondiviseByCollection.setInt(1, collection.getKey());
-            try (ResultSet rs = sCollectionsCondiviseByCollection.executeQuery()) {
-                if (rs.next()) {
-                    b = true;
-                }
-            }
-        } catch (SQLException ex) {
-            throw new DataException("Unable to load Collections condivise", ex);
-        }
-        return b;
-    }
+
 //Funziona
     @Override
     public void setPubblica(Collection collection, Boolean stato) throws DataException {
@@ -314,18 +266,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         }
     }
 
-    //TODO
-    @Override
-    public void storeVisualizza(Collection collection, User user) throws DataException {
-        try {
-            iVisualizza.setInt(1, user.getKey());
-            iVisualizza.setInt(2, collection.getKey());
-            iVisualizza.executeUpdate();
-
-        } catch (SQLException ex) {
-            throw new DataException("Unable to store Visualizza", ex);
-        }
-    }
+   
 //Funziona
     @Override
     public List<Collection> getCollectionsByKeyword(String keyword) throws DataException {
@@ -354,41 +295,5 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             throw new SQLException("Unable to delete Collection", ex);
         }
     }
-//TODO
-    @Override
-    public void deleteVisualizza(Collection collection) throws SQLException {
-        try {
-            dVisualizza.setInt(1, collection.getKey());
-            dVisualizza.executeUpdate();
-        } catch (SQLException ex) {
-            throw new SQLException("Unable to delete Visualizza", ex);
-        }
-    }
-//TODO
-    @Override
-    public void deleteVisualizza(Collection collection, User user) throws SQLException {
-        try {
-
-            dVisualizzaUser.setInt(1, collection.getKey());
-            dVisualizzaUser.setInt(2, user.getKey());
-            dVisualizzaUser.executeUpdate();
-
-        } catch (SQLException ex) {
-            throw new SQLException("Unable to delete Visualizza", ex);
-        }
-    }
-//?? TODO
-    @Override
-    public void deleteNftsCollection(Collection collection, List<Nft> Nfts) throws SQLException {
-        try {
-            for (Nft d : Nfts) {
-                dNftsByCollection.setInt(1, d.getKey());
-                dNftsByCollection.setInt(2, collection.getKey());
-                dNftsByCollection.executeUpdate();
-            }
-        } catch (SQLException ex) {
-            throw new SQLException("Unable to delete Nfts", ex);
-        }
-    }
-
 }
+

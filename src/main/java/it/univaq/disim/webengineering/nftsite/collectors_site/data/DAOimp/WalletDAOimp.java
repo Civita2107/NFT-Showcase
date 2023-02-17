@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletImpl;
@@ -178,7 +177,6 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     public List<Wallet> getWallets(int userId) throws DataException {
         ResultSet rs;
         List<Wallet> wallets = new ArrayList<>();
-        UserDAO user = new UserDAOimpl(this.dataLayer);
         try {
 
             SWalletbyId.setInt(1, userId);
@@ -318,6 +316,8 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             throw new DataException("Unable to load Nft", ex);
         }
     }
+
+
 
     }
 

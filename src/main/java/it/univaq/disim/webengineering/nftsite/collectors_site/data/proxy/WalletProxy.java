@@ -1,17 +1,12 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy;
 
-import java.sql.Array;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
