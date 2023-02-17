@@ -273,7 +273,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     }
     
-<<<<<<< HEAD
+    @Override
     public List<Nft> getNftsObject(Wallet wallet) throws DataException, SQLException {
         List<Nft> nftList = new ArrayList<>();
         
@@ -290,29 +290,6 @@ public class WalletDAOimp extends DAO implements WalletDAO {
                 nft.setWalletAddress(rs.getString("wallet_address"));
                 
                 nftList.add(nft);
-=======
-    @Override
-    public List<Nft> getNftsObject(Wallet wallet) throws DataException {
-        try {
-            WalletDAOimp dbWallet = new WalletDAOimp(this.dataLayer); // connessione al dbWalletWallet
-            dbWallet.init();
-
-            String nftListJsonString = dbWallet.getNfts(wallet); // Prendo tutti gli nft in stringa
-
-            Gson gson = new Gson();
-
-            JsonObject jsonObject = gson.fromJson(nftListJsonString, JsonObject.class);
-            JsonArray nftArray = jsonObject.getAsJsonArray("ownedNfts"); // converto in json
-
-            List<Nft> nftList = new ArrayList<>();
-            for (int i = 0; i < nftArray.size(); i++) {
-                JsonObject nftJson = nftArray.get(i).getAsJsonObject();
-                String contractAddress = nftJson.get("contract").getAsJsonObject().get("address").getAsString();
-                String tokenId = nftJson.get("id").getAsJsonObject().get("tokenId").getAsString();
-
-                Nft nft = new NftImpl(tokenId, contractAddress, wallet.getAddress());
-                nftList.add(nft); // ho una list di nft solo con contractAddress e tokeid
->>>>>>> 7ec8f0c67a43aa29b476388a5a9968fb70ab3373
             }
         }
      }
