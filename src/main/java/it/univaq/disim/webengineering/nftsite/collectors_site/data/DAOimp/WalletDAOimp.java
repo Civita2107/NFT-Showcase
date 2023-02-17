@@ -33,7 +33,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 
 public class WalletDAOimp extends DAO implements WalletDAO {
 
-    private PreparedStatement SWalletbyId, SWalletAddress, SWallets, DWalletbyAddress, IWallet,sWalletNft;
+    private PreparedStatement SWalletbyId, SWalletAddress, SWallets, DWalletbyAddress, IWallet,sWalletNft,sWalletByNft;
 
     public WalletDAOimp(DataLayer d) {
         super(d);
@@ -49,6 +49,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             DWalletbyAddress = connection.prepareStatement("DELETE from wallet where wallet_address=?");
             SWalletAddress = connection.prepareStatement("SELECT * from wallet WHERE wallet_address=?");
             sWalletNft = connection.prepareStatement("SELECT * FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
+            sWalletByNft = connection.prepareStatement("SELECT* FROM wallet as w INNER JOIN nft as n ON n.wallet_address=w.wallet_address WHERE w.wallet_address=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -299,5 +300,24 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         }
         return nftList;
     }
+
+    @Override
+    public Wallet getWalletByNft(Nft nft) throws DataException{
+        
+       try{ 
+        sWalletByNft.setString(1, nft.getWalletAddress());
+        try (ResultSet rs = sWalletByNft.executeQuery()) {
+                Wallet wallet = new WalletImpl();
+                wallet.setAddress(rs.getString("wallet_address"));
+                wallet.setUserId(rs.getInt("user_id"));   
+                return wallet;
+        }
+     }
+     
+     catch (SQLException ex) {
+            throw new DataException("Unable to load Nft", ex);
+        }
+    }
+
     }
 

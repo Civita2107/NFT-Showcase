@@ -6,6 +6,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collect
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
@@ -29,4 +30,6 @@ public interface NftDAO {
     List<Nft> getRandomNfts() throws DataException;
     
     void storeNft(List<Nft> nft) throws DataException;
+
+    List<Nft> getNftsByWallet(Wallet wallet) throws DataException;
 }

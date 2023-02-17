@@ -64,7 +64,7 @@ public class NftProxy extends NftImpl implements DataItemProxy{
     public String getWalletAddress() {
         if (super.getWalletAddress() == null) {
             try {
-                super.setWalletAddress(((WalletDAO) dataLayer.getDAO(Wallet.class)).getWalletAddress(this));
+                super.setWalletAddress(((WalletDAO) dataLayer.getDAO(Wallet.class)).getWalletByNft(this).getAddress());
             } catch(DataException e) {
                 Logger.getLogger(WalletProxy.class.getName()).log(Level.SEVERE, null, e);
             }

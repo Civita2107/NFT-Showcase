@@ -12,6 +12,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collect
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.NftProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
@@ -20,8 +21,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
 
 public class NftDAOimp extends DAO implements NftDAO {
 
-    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment,iNft,sNftByRandom,sNftByTitleOrCA;
-    
+    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment,iNft,sNftByRandom,sNftByTitleOrCA,sNftByWallet;
+
     public NftDAOimp(DataLayer d) {
         super(d);
     }
@@ -43,7 +44,7 @@ public class NftDAOimp extends DAO implements NftDAO {
             Statement.RETURN_GENERATED_KEYS); 
             
             sNftByRandom = connection.prepareStatement("SELECT * FROM nft ORDER BY RAND() LIMIT 20");
-            
+            sNftByWallet = connection.prepareStatement("SELECT * FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -249,6 +250,28 @@ public class NftDAOimp extends DAO implements NftDAO {
         } catch (SQLException ex) {
             throw new DataException("Unable to load Nft from", ex);
         }
+    }
+
+    @Override
+    public List<Nft> getNftsByWallet(Wallet wallet) throws DataException{
+        List<Nft> nftList = new ArrayList<>();
+        
+       try{ 
+        sNftByWallet.setString(1, wallet.getAddress());
+        try (ResultSet rs = sNftByWallet.executeQuery()) {
+            while (rs.next()) {
+                Nft nft = createNft(rs);
+             
+                
+                nftList.add(nft);
+            }
+        }
+     }
+     
+     catch (SQLException ex) {
+            throw new DataException("Unable to load Nft", ex);
+        }
+        return nftList;
     }
 
 }

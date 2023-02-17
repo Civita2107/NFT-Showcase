@@ -62,7 +62,7 @@ public class WalletProxy extends WalletImpl implements DataItemProxy {
     public List<Nft> getNfts() {
         if (super.getNfts() == null) {
             try {
-                super.setNfts(((WalletDAO) dataLayer.getDAO(Wallet.class)).getNftsObject(this));
+                super.setNfts(((NftDAO) dataLayer.getDAO(Nft.class)).getNftsByWallet(this));
             } catch (DataException e) {
                 Logger.getLogger(NftProxy.class.getName()).log(Level.SEVERE, null, e);
             }
