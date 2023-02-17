@@ -44,12 +44,13 @@ public class WalletProxy extends WalletImpl implements DataItemProxy {
         super.setUserId(id);
         this.modified = true;
     }
-
-    @Override
-    public void setUser(User user) {
-        super.setUser(user);
-        this.modified = true;
-    }
+    /*
+     * @Override
+     * public void setUser(User user) {
+     * super.setUser(user);
+     * this.modified = true;
+     * }
+     */
 
     @Override
     public void setNfts(List<Nft> nfts) {
@@ -58,17 +59,16 @@ public class WalletProxy extends WalletImpl implements DataItemProxy {
     }
 
     @Override
-    public List<Nft> getNfts() throws SQLException {
+    public List<Nft> getNfts() {
         if (super.getNfts() == null) {
             try {
                 super.setNfts(((WalletDAO) dataLayer.getDAO(Wallet.class)).getNftsObject(this));
-            } catch(DataException e) {
+            } catch (DataException e) {
                 Logger.getLogger(NftProxy.class.getName()).log(Level.SEVERE, null, e);
             }
         }
         return super.getNfts();
     }
-
 
     @Override
     public boolean isModified() {

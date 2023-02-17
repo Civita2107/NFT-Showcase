@@ -274,7 +274,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     }
     
     @Override
-    public List<Nft> getNftsObject(Wallet wallet) throws DataException, SQLException {
+    public List<Nft> getNftsObject(Wallet wallet) throws DataException{
         List<Nft> nftList = new ArrayList<>();
         
        try{ 

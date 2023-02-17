@@ -1,7 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -22,7 +21,7 @@ public interface WalletDAO {
 
     void deleteWallet(Wallet wallet_address) throws DataException;
 
-    List<Nft> getNftsObject(Wallet wallet) throws DataException, SQLException;
+    List<Nft> getNftsObject(Wallet wallet) throws DataException;
 
     void storeWallet(Wallet wallet) throws DataException;
 
