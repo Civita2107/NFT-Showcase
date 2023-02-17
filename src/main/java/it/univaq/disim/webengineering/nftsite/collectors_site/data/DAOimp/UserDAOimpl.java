@@ -48,15 +48,15 @@ public class UserDAOimpl extends DAO implements UserDAO{
             sUserByUsername = connection.prepareStatement("SELECT * FROM users WHERE username=?");
             identityCheck = connection.prepareStatement("SELECT * FROM users WHERE Username=? AND Password=?");
 
-            sUsers = connection.prepareStatement("SELECT ID AS userId FROM users");
-            sUsersByKeyword = connection.prepareStatement("SELECT ID AS userId FROM users WHERE Username LIKE ?");
+            sUsers = connection.prepareStatement("SELECT ID AS user_id FROM users");
+            sUsersByKeyword = connection.prepareStatement("SELECT ID AS user_id FROM users WHERE Username LIKE ?");
 
             iUser = connection.prepareStatement("INSERT INTO users (username,email,password) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
             uUser = connection.prepareStatement("UPDATE users SET username=?,email=?,password=? WHERE id=?");
             dUser = connection.prepareStatement("DELETE FROM users WHERE ID=?");
 
             //Statistiche --> User più attivo per numero di nft posseduti
-            //UsersMostAttivi = connection.prepareStatement("SELECT users.id as userId,COUNT(users.id) as Occorrenze From users INNER JOIN wallet ON users.id=wallet.user_id INNER JOIN nft ON nft.wallet_address=wallet.wallet_address GROUP BY users.id ORDER BY COUNT(users.id) DESC LIMIT 3");
+            //UsersMostAttivi = connection.prepareStatement("SELECT users.id as user_id,COUNT(users.id) as Occorrenze From users INNER JOIN wallet ON users.id=wallet.user_id INNER JOIN nft ON nft.wallet_address=wallet.wallet_address GROUP BY users.id ORDER BY COUNT(users.id) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -155,7 +155,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
         try (ResultSet rs = sUsers.executeQuery()) {
             while (rs.next()) {
-                result.add(getUser(rs.getInt("userId")));
+                result.add(getUser(rs.getInt("user_id")));
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load Users", ex);
@@ -227,7 +227,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             try (ResultSet rs = sUsersByKeyword.executeQuery()) {
                 List<User> result = new ArrayList<>();
                 while (rs.next()) {
-                    result.add((User) getUser(rs.getInt("userId")));
+                    result.add((User) getUser(rs.getInt("user_id")));
                 }
                 return result;
             }

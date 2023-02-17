@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletImpl;
@@ -32,7 +33,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 
 public class WalletDAOimp extends DAO implements WalletDAO {
 
-    private PreparedStatement SWalletbyId, SWalletAddress, SWallets, DWalletbyAddress, IWallet;
+    private PreparedStatement SWalletbyId, SWalletAddress, SWallets, DWalletbyAddress, IWallet,sWalletNft;
 
     public WalletDAOimp(DataLayer d) {
         super(d);
@@ -47,7 +48,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             IWallet = connection.prepareStatement("INSERT INTO wallet (wallet_address,user_id) VALUES(?,?)");
             DWalletbyAddress = connection.prepareStatement("DELETE from wallet where wallet_address=?");
             SWalletAddress = connection.prepareStatement("SELECT * from wallet WHERE wallet_address=?");
-
+            sWalletNft = connection.prepareStatement("SELECT * FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -99,7 +100,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     @Override
     public List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataException {
-        int userId = (int) session.getAttribute("userId");
+        int userId = (int) session.getAttribute("user_id");
         List<Wallet> userWallets = new ArrayList<>();
 
         ResultSet rs;
@@ -160,7 +161,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             // Aggiunta dei wallet alla lista
             while (rs.next()) {
                 Wallet wallet = new WalletImpl();
-                wallet.setUserId(rs.getInt("userId"));
+                wallet.setUserId(rs.getInt("user_id"));
                 wallet.setAddress(rs.getString("address"));
                 wallets.add(wallet);
             }
@@ -176,14 +177,16 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     public List<Wallet> getWallets(int userId) throws DataException {
         ResultSet rs;
         List<Wallet> wallets = new ArrayList<>();
+        UserDAO user = new UserDAOimpl(this.dataLayer);
         try {
 
             SWalletbyId.setInt(1, userId);
             rs = SWalletbyId.executeQuery();
             while (rs.next()) {
                 Wallet wallet = new WalletImpl();
-                wallet.setUserId(rs.getInt("userId"));
-                wallet.setAddress(rs.getString("address"));
+                wallet.setUserId(rs.getInt("user_id"));
+                wallet.setAddress(rs.getString("wallet_address"));
+                wallet.setNfts(getNftsObject(wallet));
                 wallets.add(wallet);
             }
         } catch (SQLException e) {
@@ -270,57 +273,30 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     }
     
-    public List<Nft> getNftsObject(Wallet wallet) throws DataException {
-        try {
-            WalletDAOimp dbWallet = new WalletDAOimp(this.dataLayer); // connessione al dbWalletWallet
-            dbWallet.init();
-
-            String nftListJsonString = dbWallet.getNfts(wallet); // Prendo tutti gli nft in stringa
-
-            Gson gson = new Gson();
-
-            JsonObject jsonObject = gson.fromJson(nftListJsonString, JsonObject.class);
-            JsonArray nftArray = jsonObject.getAsJsonArray("ownedNfts"); // converto in json
-
-            List<Nft> nftList = new ArrayList<>();
-            for (int i = 0; i < nftArray.size(); i++) {
-                JsonObject nftJson = nftArray.get(i).getAsJsonObject();
-                String contractAddress = nftJson.get("contract").getAsJsonObject().get("address").getAsString();
-                String tokenId = nftJson.get("id").getAsJsonObject().get("tokenId").getAsString();
-
-                Nft nft = new NftImpl(tokenId, contractAddress, wallet.getAddress());
-                nftList.add(nft); // ho una list di nft solo con contractAddress e tokeid
+    public List<Nft> getNftsObject(Wallet wallet) throws DataException, SQLException {
+        List<Nft> nftList = new ArrayList<>();
+        
+       try{ 
+        sWalletNft.setString(1, wallet.getAddress());
+        try (ResultSet rs = sWalletNft.executeQuery()) {
+            while (rs.next()) {
+                Nft nft = new NftImpl();
+                nft.setKey(rs.getInt("token_id"));
+                nft.setTitle(rs.getString("title"));
+                nft.setContractAddress(rs.getString("contract_address"));
+                nft.setDescription(rs.getString("description"));
+                nft.setMetadata(rs.getString("metadata"));
+                nft.setWalletAddress(rs.getString("wallet_address"));
+                
+                nftList.add(nft);
             }
-
-            List<Nft> nftListMeta = new ArrayList<>(); // creo un array per contenere gli nft con tutti i meta dati
-
-            for (int i = 0; i < nftList.size(); i++) {
-
-                String nftMeta = dbWallet.getNftsMetdata(nftList.get(i).getContractAddress(),
-                        nftList.get(i).getTokenId());
-                JsonObject jsonObjectMeta = gson.fromJson(nftMeta, JsonObject.class);
-
-                JsonObject nftJson = jsonObjectMeta.getAsJsonObject();
-                String contractAddress = nftJson.get("contract").getAsJsonObject().get("address").getAsString();
-                String tokenId = nftJson.get("id").getAsJsonObject().get("tokenId").getAsString();
-                String title = nftJson.get("title").getAsString();
-                String description = nftJson.get("description").getAsString();
-                String metadata = nftJson.get("media").getAsJsonArray().get(0).getAsJsonObject().get("gateway")
-                        .getAsString();
-
-                Nft nft = new NftImpl(title, tokenId, contractAddress, description, metadata, wallet.getAddress());
-                nftListMeta.add(nft); // ho una list con gli nft con tutti metadati per creare la calsse Nft
-
-            }
-
-            NftDAOimp snft = new NftDAOimp(this.dataLayer); // salvo gli nft sul db
-            snft.init();
-            return nftListMeta;
-
-        } catch (IOException | DataException e) {
-            throw new DataException("ERRORE", e);
         }
-
+     }
+     
+     catch (SQLException ex) {
+            throw new DataException("Unable to load Nft", ex);
+        }
+        return nftList;
+    }
     }
 
-}
