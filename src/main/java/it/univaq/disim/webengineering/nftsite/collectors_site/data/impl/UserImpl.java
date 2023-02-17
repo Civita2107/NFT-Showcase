@@ -12,6 +12,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String username;
     private String email;
     private String password;
+    private String foto;
     private final List<User> follow = new ArrayList<>();
     private final List<User> followers = new ArrayList<>();
 
@@ -84,4 +85,15 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     public void addFollowing(User following) {
         this.follow.add(following);
     }
+
+    @Override
+    public String getFoto() {
+        return this.foto;
+    }
+
+    @Override
+    public void setFoto(String foto) {
+        this.foto = foto;        
+    }
+    
 }

@@ -29,5 +29,9 @@ public interface User extends DataItem<Integer>  {
     List<User> getFollowing();
 
     void addFollowing(User following);
+
+    String getFoto();
+
+    void setFoto(String foto);
     
 }
