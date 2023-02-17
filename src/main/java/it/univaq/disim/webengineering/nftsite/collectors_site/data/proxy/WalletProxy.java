@@ -1,14 +1,17 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy;
 
 import java.sql.Array;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
@@ -55,10 +58,10 @@ public class WalletProxy extends WalletImpl implements DataItemProxy {
     }
 
     @Override
-    public List<Nft> getNfts() {
+    public List<Nft> getNfts() throws SQLException {
         if (super.getNfts() == null) {
             try {
-                super.setNfts(((NftDAO) dataLayer.getDAO(Nft.class)).getNfts(this));
+                super.setNfts(((WalletDAO) dataLayer.getDAO(Wallet.class)).getNftsObject(this));
             } catch(DataException e) {
                 Logger.getLogger(NftProxy.class.getName()).log(Level.SEVERE, null, e);
             }

@@ -1,5 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
@@ -41,7 +42,7 @@ public class WalletImpl extends DataItemImpl<Integer> implements Wallet  {
     }
 
     @Override
-    public List<Nft> getNfts() {
+    public List<Nft> getNfts() throws SQLException {
         return nfts;
     }
 
