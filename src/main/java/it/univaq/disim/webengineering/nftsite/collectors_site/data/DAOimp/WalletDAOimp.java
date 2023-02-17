@@ -270,6 +270,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     }
     
+    @Override
     public List<Nft> getNftsObject(Wallet wallet) throws DataException {
         try {
             WalletDAOimp dbWallet = new WalletDAOimp(this.dataLayer); // connessione al dbWalletWallet
