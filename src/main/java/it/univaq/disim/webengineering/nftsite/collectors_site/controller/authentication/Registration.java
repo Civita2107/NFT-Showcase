@@ -52,6 +52,7 @@ public class Registration extends CollectorsBaseController {
                     SecurityHelpers.createSession(request, username, userId);
                     if (request.getParameter("referrer") != null) {
                         URLDecoder.decode(request.getParameter("referrer"), StandardCharsets.UTF_8);
+                        response.sendRedirect(request.getParameter("referrer"));
                     } else {
                         response.sendRedirect("home");
                     }

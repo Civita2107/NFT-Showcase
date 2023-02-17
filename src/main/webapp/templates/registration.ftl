@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,10 +8,10 @@
     <!--TAILWIND-->
     <script src="https://cdn.tailwindcss.com"></script>
     <!--STYLE-->
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="${assets}/style.css">
 
-    <link rel="icon" href="./assets/favicon.ico">
-    <title>NFT Showcase</title>
+    <link rel="icon" href="${assets}/favicon.ico">
+    <title>Registrazione</title>
 </head>
 <body>
     
