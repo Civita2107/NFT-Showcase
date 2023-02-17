@@ -1,6 +1,5 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
-import java.sql.Array;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
