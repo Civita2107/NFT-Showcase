@@ -23,7 +23,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockExcep
 public class CollectionDAOimpl extends DAO implements CollectionDAO {
     private PreparedStatement sCollectionByID, sUser;
     private PreparedStatement sCollections, sCollectionsPubbliche, sNftsByCollection, sCollectionsCondivise, sCollectionsByUser, sCollectionsByKeyword, sVisualizza,sNftCollection;
-    private PreparedStatement iCollection, dNftsByCollection, sCollectionsCondiviseByCollection, iVisualizza, iNftCollection, uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
+    private PreparedStatement iCollection, sCollectionsCondiviseByCollection, iVisualizza,uCollection, uPubblica, dCollection, dVisualizza, dVisualizzaUser;
 
     public CollectionDAOimpl(DataLayer d) {
         super(d);
@@ -37,28 +37,17 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             sCollections = connection.prepareStatement("SELECT * FROM collection where public = 1");
             sCollectionsPubbliche = connection.prepareStatement("SELECT ID AS collectionID FROM collection where public = 1 AND user = ?");
             sCollectionByID = connection.prepareStatement("SELECT * FROM collection WHERE id=?");
-            sCollectionsByUser = connection.prepareStatement("SELECT ID AS collectionID FROM Collection WHERE IDuser=?");
+            sCollectionsByUser = connection.prepareStatement("SELECT * FROM collection WHERE user=?");
             sCollectionsByKeyword = connection.prepareStatement("SELECT * FROM collection WHERE public = 1 AND nome LIKE ?");
 
-            sUser = connection.prepareStatement("SELECT * FROM users WHERE ID=?");
-
-            sCollectionsCondivise = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN users ON users.ID = visualizza.IDUser WHERE users.ID=?");
-            sCollectionsCondiviseByCollection = connection.prepareStatement("SELECT collection.ID AS collectionID FROM Collection INNER JOIN visualizza ON Collection.ID = visualizza.IDCollection INNER JOIN users ON users.ID = visualizza.IDUser WHERE Collection.ID=?");
+            sUser = connection.prepareStatement("SELECT * FROM users WHERE id=?");
 
             iCollection = connection.prepareStatement("INSERT INTO collection (nome,public,user) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uCollection = connection.prepareStatement("UPDATE Collection SET nome=?,pubblica=?,IDuser=?,versione=? WHERE ID=?");
+            uCollection = connection.prepareStatement("UPDATE collection SET nome=?,pubblica=?,user=? WHERE id=?");
             uPubblica = connection.prepareStatement("UPDATE collection SET public=? WHERE id=?");
             dCollection = connection.prepareStatement("DELETE FROM collection WHERE id=?");
 
-            sVisualizza = connection.prepareStatement("SELECT IDUser FROM visualizza WHERE IDCollection=?");
-            iVisualizza = connection.prepareStatement("INSERT INTO visualizza (IDUser,IDCollection) VALUES(?,?)", Statement.RETURN_GENERATED_KEYS);
-            dVisualizza = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=?");
-            dVisualizzaUser = connection.prepareStatement("DELETE FROM Visualizza WHERE IDCollection=? AND IDUser=?");
-
             sNftCollection = connection.prepareStatement("Select n.id,n.token_id,n.contract_address,n.wallet_address,n.collection,n.title,n.description,n.metadata From collection as c INNER JOIN nft as n ON n.collection=c.id where c.id=?");
-            sNftsByCollection = connection.prepareStatement("SELECT Nft.ID AS NftID FROM Nft INNER JOIN Nft_collection ON Nft.ID = Nft_collection.ID_Nft INNER JOIN Collection ON Collection.ID = Nft_collection.IDCollection WHERE Collection.ID=?");
-            iNftCollection = connection.prepareStatement("INSERT INTO Nft_collection (ID_Nft,IDCollection) VALUES(?,?) ", Statement.RETURN_GENERATED_KEYS);
-            dNftsByCollection = connection.prepareStatement("DELETE FROM Nft_collection WHERE ID_Nft=? AND IDCollection=?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -83,13 +72,11 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
 
             iCollection.close();
             iVisualizza.close();
-            iNftCollection.close();
             uCollection.close();
             uPubblica.close();
             dCollection.close();
             dVisualizza.close();
             dVisualizzaUser.close();
-            dNftsByCollection.close();
 
         } catch (SQLException ex) {
             throw new DataException("Error destroying collectors data layer", ex);
