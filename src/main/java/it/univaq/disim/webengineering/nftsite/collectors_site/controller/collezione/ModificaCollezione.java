@@ -101,7 +101,12 @@ public class ModificaCollezione extends CollectorsBaseController {
             }
 
             collection.setNfts(nfts);
-
+            if (request.getParameter("pubblica").equals("pubblica") && !collection.isPubblica()) {
+                collection.setPubblica(true);
+            }
+            if (request.getParameter("pubblica").equals("privata")) {
+                collection.setPubblica(false);
+            }
        
             collectionDAO.storeCollection(collection);
 
