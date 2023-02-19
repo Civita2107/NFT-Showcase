@@ -8,10 +8,10 @@
     <!--TAILWIND-->
     <script src="https://cdn.tailwindcss.com"></script>
     <!--STYLE-->
-    <link rel="stylesheet" href="./assets/style.css">
+    <link rel="stylesheet" href="${assets}/style.css">
 
-    <link rel="icon" href="./assets/favicon.ico">
-    <title>NFT Showcase</title>
+    <link rel="icon" href="${assets}/favicon.ico">
+    <title>Login</title>
 </head>
 <body>
     

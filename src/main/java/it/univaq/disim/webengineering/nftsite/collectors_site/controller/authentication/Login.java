@@ -22,7 +22,7 @@ public class Login extends CollectorsBaseController{
         TemplateResult result = new TemplateResult(getServletContext());
 
         request.setAttribute("referrer", request.getParameter("referrer"));
-        request.setAttribute("outline", result); //bisogna vedere se va implementato
+        request.setAttribute("outline_tpl", "");
         result.activate("login.ftl", request, response);
     }
 
