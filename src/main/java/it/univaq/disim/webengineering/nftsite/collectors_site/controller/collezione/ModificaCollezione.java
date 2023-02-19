@@ -1,3 +1,4 @@
+
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
@@ -14,7 +15,6 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Collect
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
@@ -25,7 +25,8 @@ import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
 
 public class ModificaCollezione extends CollectorsBaseController {
-    /**
+        /**
+
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -87,15 +88,13 @@ public class ModificaCollezione extends CollectorsBaseController {
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             CollectionDAO collectionDAO = dataLayer.getCollectionDAO();
-            UserDAO userDAO = dataLayer.getUserDAO();
             NftDAO nftDAO = dataLayer.getNftDAO();
             List<Nft> nfts = new ArrayList<>();
             int id = Integer.parseInt(request.getParameter("id"));
 
             Collection collection = collectionDAO.getCollection(id);
             collection.setNome(request.getParameter("nome"));
-            List<Nft> oldNfts = nftDAO.getNfts(collectionDAO.getCollection(id));
-            collectionDAO.deleteNftsCollection(collectionDAO.getCollection(id), oldNfts);
+            collectionDAO.deleteCollection(collectionDAO.getCollection(id));
 
             for (String nft : request.getParameterValues("nfts")) {
                 nfts.add(nftDAO.getNft(Integer.parseInt(nft)));
@@ -103,28 +102,14 @@ public class ModificaCollezione extends CollectorsBaseController {
 
             collection.setNfts(nfts);
 
-            if (request.getParameter("pubblica").equals("pubblica") && !collection.isPubblica()) {
-                collection.setPubblica(true);
-                collectionDAO.deleteVisualizza(collection);
-            }
-            if (request.getParameter("pubblica").equals("privata")) {
-                collection.setPubblica(false);
-                collectionDAO.deleteVisualizza(collection);
-            }
-
+       
             collectionDAO.storeCollection(collection);
 
             if (request.getParameter("pubblica").equals("condivisa")) {
                 collection.setPubblica(false);
                 collectionDAO.setPubblica(collection, false);
                 //controllo se è gia condivisa quindi query su visualizza
-                if (collectionDAO.getCollectionsCondivise(collection)) {
-                    collectionDAO.deleteVisualizza(collection);
-                }
-
-                for (String coll : request.getParameterValues("collezionisti")) {
-                    collectionDAO.storeVisualizza(collection, userDAO.getUser(Integer.parseInt(coll)));
-                }
+                
             }
 
             response.sendRedirect("visualizza-collezione?id=" + collection.getKey());
