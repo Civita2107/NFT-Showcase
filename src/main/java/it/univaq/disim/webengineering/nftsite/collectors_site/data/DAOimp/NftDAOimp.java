@@ -131,7 +131,7 @@ public class NftDAOimp extends DAO implements NftDAO {
     public void storeNft(List<Nft> lnft) throws DataException {
         try (PreparedStatement ps = iNft) {
             for(Nft nft: lnft){
-            ps.setInt(1, nft.getTokenId());
+            ps.setString(1, nft.getTokenId());
             ps.setString(2, nft.getContractAddress());
             ps.setString(3, nft.getWalletAddress());
             ps.setString(4, null);
