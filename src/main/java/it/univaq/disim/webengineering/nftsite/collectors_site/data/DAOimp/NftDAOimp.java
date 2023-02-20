@@ -57,7 +57,7 @@ public class NftDAOimp extends DAO implements NftDAO {
     private Nft createNft(ResultSet rs) throws DataException {
        NftProxy a = (NftProxy) createNft();
         try {
-            a.setKey(rs.getInt("token_id"));
+            a.setTokenId(rs.getString("token_id"));
             a.setTitle(rs.getString("title"));
             a.setContractAddress(rs.getString("contract_address"));
             a.setDescription(rs.getString("description"));
@@ -131,7 +131,7 @@ public class NftDAOimp extends DAO implements NftDAO {
     public void storeNft(List<Nft> lnft) throws DataException {
         try (PreparedStatement ps = iNft) {
             for(Nft nft: lnft){
-            ps.setInt(1, Integer.parseInt(nft.getTokenId().substring(2),16));
+            ps.setInt(1, nft.getTokenId());
             ps.setString(2, nft.getContractAddress());
             ps.setString(3, nft.getWalletAddress());
             ps.setString(4, null);
