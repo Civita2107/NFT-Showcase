@@ -26,6 +26,7 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.WalletImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.WalletProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
@@ -47,12 +48,33 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             IWallet = connection.prepareStatement("INSERT INTO wallet (wallet_address,user_id) VALUES(?,?)");
             DWalletbyAddress = connection.prepareStatement("DELETE from wallet where wallet_address=?");
             SWalletAddress = connection.prepareStatement("SELECT * from wallet WHERE wallet_address=?");
-            sWalletNft = connection.prepareStatement("SELECT * FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
-            sWalletByNft = connection.prepareStatement("SELECT* FROM wallet as w INNER JOIN nft as n ON n.wallet_address=w.wallet_address WHERE w.wallet_address=?");
+            sWalletNft = connection.prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
+            sWalletByNft = connection.prepareStatement("SELECT w.* FROM wallet as w INNER JOIN nft as n ON n.wallet_address=w.wallet_address WHERE w.wallet_address=?");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
     }
+
+
+    @Override
+    public Wallet createWallet() {
+        return new WalletProxy(getDataLayer());
+    }
+
+    private WalletProxy createWallet(ResultSet rs) throws DataException {
+        try {
+            WalletProxy a = (WalletProxy) createWallet();
+
+            a.setKey(rs.getInt("id"));
+            a.setAddress(rs.getString("wallet_address"));
+            a.setUserId(rs.getInt("user_id"));
+
+            return a;
+        } catch (SQLException ex) {
+            throw new DataException("Unable to create User object form ResultSet", ex);
+        }
+    }
+
 
     @Override
     public String getNfts(Wallet wallet) throws IOException {
@@ -114,9 +136,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
             // Recupero dei wallet
             while (rs.next()) {
-                Wallet wallet = new WalletImpl();
-                wallet.setAddress(rs.getString("address"));
-                wallet.setUserId(rs.getInt("userId"));
+                Wallet wallet = createWallet(rs);
                 userWallets.add(wallet);
             }
         } catch (SQLException e) {
@@ -137,8 +157,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             try (PreparedStatement ps = SWalletAddress) {
                 try (ResultSet rset = ps.executeQuery()) {
                     while (rset.next()) {
-                        wallet.setAddress(rset.getString("wallet_address"));
-                        wallet.setUserId(rset.getInt("user_id"));
+                        wallet = createWallet(rset);
 
                     }
                 }
@@ -160,9 +179,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
             // Aggiunta dei wallet alla lista
             while (rs.next()) {
-                Wallet wallet = new WalletImpl();
-                wallet.setUserId(rs.getInt("user_id"));
-                wallet.setAddress(rs.getString("address"));
+                Wallet wallet = createWallet(rs);
                 wallets.add(wallet);
             }
         } catch (SQLException e) {
@@ -182,10 +199,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             SWalletbyId.setInt(1, userId);
             rs = SWalletbyId.executeQuery();
             while (rs.next()) {
-                Wallet wallet = new WalletImpl();
-                wallet.setUserId(rs.getInt("user_id"));
-                wallet.setAddress(rs.getString("wallet_address"));
-                wallet.setNfts(getNftsObject(wallet));
+                Wallet wallet = createWallet(rs);
                 wallets.add(wallet);
             }
         } catch (SQLException e) {
@@ -305,9 +319,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
        try{ 
         sWalletByNft.setString(1, nft.getWalletAddress());
         try (ResultSet rs = sWalletByNft.executeQuery()) {
-                Wallet wallet = new WalletImpl();
-                wallet.setAddress(rs.getString("wallet_address"));
-                wallet.setUserId(rs.getInt("user_id"));   
+                Wallet wallet = createWallet(rs);
                 return wallet;
         }
      }

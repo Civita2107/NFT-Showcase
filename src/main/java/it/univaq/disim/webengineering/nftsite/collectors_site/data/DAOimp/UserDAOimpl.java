@@ -40,23 +40,21 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
             iMedia = connection.prepareStatement("INSERT INTO media (foto) VALUES (?)");
 
-            sFollower = connection.prepareStatement("Select * FROM users as u INNER JOIN follow as f ON f.following = u.id where u.id = ?");
-            sFollowing = connection.prepareStatement("Select * FROM users as u INNER JOIN follow as f ON f.follower = u.id where u.id = ?");
+            sFollower = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.following = u.id where f.following = ?");
+            sFollowing = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.follower = u.id where f.follower = ?");
 
             sUser = connection.prepareStatement("SELECT * FROM users WHERE id=?");
             sUserByEmail = connection.prepareStatement("SELECT * FROM users WHERE email=?");
             sUserByUsername = connection.prepareStatement("SELECT * FROM users WHERE username=?");
             identityCheck = connection.prepareStatement("SELECT * FROM users WHERE Username=? AND Password=?");
 
-            sUsers = connection.prepareStatement("SELECT ID AS user_id FROM users");
-            sUsersByKeyword = connection.prepareStatement("SELECT ID AS user_id FROM users WHERE Username LIKE ?");
+            sUsers = connection.prepareStatement("SELECT * FROM users");
+            sUsersByKeyword = connection.prepareStatement("SELECT * FROM users WHERE username LIKE ?");
 
             iUser = connection.prepareStatement("INSERT INTO users (username,email,password) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uUser = connection.prepareStatement("UPDATE users SET username=?,email=?,password=? WHERE id=?");
-            dUser = connection.prepareStatement("DELETE FROM users WHERE ID=?");
+            uUser = connection.prepareStatement("UPDATE users SET username=?,email=?,password=?,foto=? WHERE id=?");
+            dUser = connection.prepareStatement("DELETE FROM users WHERE id=?");
 
-            //Statistiche --> User più attivo per numero di nft posseduti
-            //UsersMostAttivi = connection.prepareStatement("SELECT users.id as user_id,COUNT(users.id) as Occorrenze From users INNER JOIN wallet ON users.id=wallet.user_id INNER JOIN nft ON nft.wallet_address=wallet.wallet_address GROUP BY users.id ORDER BY COUNT(users.id) DESC LIMIT 3");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -76,8 +74,6 @@ public class UserDAOimpl extends DAO implements UserDAO{
             iUser.close();
             uUser.close();
             dUser.close();
-
-            //UsersMostAttivi.close();
 
         } catch (SQLException ex) {
         }
@@ -114,9 +110,10 @@ public class UserDAOimpl extends DAO implements UserDAO{
                 uUser.setString(1, User.getUsername());
                 uUser.setString(2, User.getEmail());
                 uUser.setString(3, User.getPassword());
+                uUser.setString(4, User.getFoto());
 
 
-                uUser.setLong(4, User.getKey());
+                uUser.setLong(5, User.getKey());
 
                 //Tolto versione
                 if (uUser.executeUpdate() == 0) {
@@ -155,7 +152,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
         try (ResultSet rs = sUsers.executeQuery()) {
             while (rs.next()) {
-                result.add(getUser(rs.getInt("user_id")));
+                result.add(createUser(rs));
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load Users", ex);
@@ -227,7 +224,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             try (ResultSet rs = sUsersByKeyword.executeQuery()) {
                 List<User> result = new ArrayList<>();
                 while (rs.next()) {
-                    result.add((User) getUser(rs.getInt("user_id")));
+                    result.add(createUser(rs));
                 }
                 return result;
             }
@@ -270,7 +267,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             sFollower.setInt(1, user.getKey());
             try (ResultSet rs = sFollower.executeQuery()) {
                 while(rs.next()){
-                    User a =  getUser(rs.getInt("follower"));
+                    User a = createUser(rs);
                     l.add(a);
                 }
             }            
@@ -290,7 +287,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
             sFollowing.setInt(1, user.getKey());
             try (ResultSet rs = sFollowing.executeQuery()) {
                 while(rs.next()){
-                    User a =  getUser(rs.getInt("following"));
+                    User a = createUser(rs);
                     l.add(a);
                 }
             }

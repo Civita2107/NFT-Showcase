@@ -11,6 +11,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 
 public interface WalletDAO {
 
+    Wallet createWallet();
+
     List<Wallet> searchWalletByStringsLogged(HttpSession session) throws DataException;
 
     Wallet searchWalletByStrings(String value) throws DataException;

@@ -32,19 +32,19 @@ public class NftDAOimp extends DAO implements NftDAO {
         try {
             super.init();
 
-            sNftByCollection = connection.prepareStatement("SELECT * FROM Nft INNER JOIN nft_collection ON Nft.ID = Nft_collection.ID_nft INNER JOIN Collection ON Collection.ID = nft_collection.IDcollection WHERE Collection.ID = ? ");
+            sNftByCollection = connection.prepareStatement("SELECT nft.* FROM nft INNER JOIN collection ON nft.collection = collection.id WHERE collection.id = ?");
 
-            sNftByUser = connection.prepareStatement("Select * FROM users AS u INNER JOIN wallet as w On u.id = w.user_id INNER JOIN nft as n On w.wallet_address = n.wallet_address WHERE u.id = ?");
+            sNftByUser = connection.prepareStatement("Select n.* FROM users AS u INNER JOIN wallet as w On u.id = w.user_id INNER JOIN nft as n On w.wallet_address = n.wallet_address WHERE u.id = ?");
             sNftByTitleOrCA = connection.prepareStatement("SELECT * FROM nft where title=? or contract_address=?");
 
-            sNftByKeyword = connection.prepareStatement("SELECT * FROM nft WHERE title LIKE ? OR description LIKE ?");
-            sNft= connection.prepareStatement("SELECT * FROM nft WHERE id=?");
-            sNftByComment = connection.prepareStatement("SELECT * FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
+            sNftByKeyword = connection.prepareStatement("SELECT nft.* FROM nft WHERE title LIKE ? OR description LIKE ?");
+            sNft= connection.prepareStatement("SELECT nft.* FROM nft WHERE id=?");
+            sNftByComment = connection.prepareStatement("SELECT n.* FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
             iNft = connection.prepareStatement("INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
             Statement.RETURN_GENERATED_KEYS); 
             
             sNftByRandom = connection.prepareStatement("SELECT * FROM nft ORDER BY RAND() LIMIT 20");
-            sNftByWallet = connection.prepareStatement("SELECT * FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
+            sNftByWallet = connection.prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
@@ -57,6 +57,7 @@ public class NftDAOimp extends DAO implements NftDAO {
     private Nft createNft(ResultSet rs) throws DataException {
        NftProxy a = (NftProxy) createNft();
         try {
+            a.setKey(rs.getInt("id"));
             a.setTokenId(rs.getString("token_id"));
             a.setTitle(rs.getString("title"));
             a.setContractAddress(rs.getString("contract_address"));
