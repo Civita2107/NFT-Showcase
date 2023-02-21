@@ -57,6 +57,23 @@
       <artifactId>javaee-api</artifactId>
       <version>8.0.1</version>
     </dependency>
+
+    <!-- Needed for etereum signature validation -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.68</version>
+    </dependency>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>crypto</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.web3j</groupId>
+      <artifactId>utils</artifactId>
+      <version>5.0.0</version>
+    </dependency>
   </dependencies>
 
       <build>

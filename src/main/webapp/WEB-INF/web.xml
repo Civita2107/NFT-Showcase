@@ -155,6 +155,17 @@
         <servlet-name>ModificaUtente</servlet-name>
         <url-pattern>/modifica-utente</url-pattern>
     </servlet-mapping>
+
+    <!-- WALLET -->
+    <servlet>
+        <servlet-name>CreaWallet</servlet-name>
+        <servlet-class>
+            it.univaq.disim.webengineering.nftsite.collectors_site.controller.wallet.CreaWallet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CreaWallet</servlet-name>
+        <url-pattern>/aggiungi-wallet</url-pattern>
+    </servlet-mapping>
     <!--COMMENT-->
     <servlet>
         <servlet-name>CreaCommento</servlet-name>
