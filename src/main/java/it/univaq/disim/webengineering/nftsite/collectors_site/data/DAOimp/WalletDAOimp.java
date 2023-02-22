@@ -80,7 +80,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     public String getNfts(Wallet wallet) throws IOException {
         String API = "https://eth-mainnet.g.alchemy.com/nft/v2/jdPdLRvO7cZua3xEfIlcFO9lAAWpF3K1/getNFTs?owner="
                 + wallet.getAddress()
-                + "&pageSize=5&withMetadata=false&excludeFilters[]=SPAM&excludeFilters[]=AIRDROPS";
+                + "&pageSize=100&withMetadata=true&excludeFilters[]=SPAM";
         AsyncHttpClient client = new DefaultAsyncHttpClient();
         String nftData = "";
         try {
@@ -96,28 +96,6 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             client.close();
         }
         return nftData;
-    }
-
-    @Override
-    public String getNftsMetdata(String contractAddress, String tokenId) throws IOException {
-        String API = "https://eth-mainnet.g.alchemy.com/nft/v2/jdPdLRvO7cZua3xEfIlcFO9lAAWpF3K1/getNFTMetadata?contractAddress="
-                + contractAddress + "&tokenId=" + tokenId + "&refreshCache=false";
-
-        AsyncHttpClient client = new DefaultAsyncHttpClient();
-        String nftMetaData = "";
-        try {
-            Future<Response> future = client.prepareGet(API)
-                    .setHeader("accept", "application/json")
-                    .execute();
-
-            Response response = future.get();
-            nftMetaData = response.getResponseBody();
-        } catch (InterruptedException | ExecutionException e) {
-            Logger.getLogger(WalletDAOimp.class.getName()).log(Level.SEVERE, "ERROR IN getNftsMetdata", e);
-        } finally {
-            client.close();
-        }
-        return nftMetaData;
     }
 
     @Override
@@ -236,15 +214,13 @@ public class WalletDAOimp extends DAO implements WalletDAO {
     @Override
     public void saveNfts(Wallet wallet) throws DataException {
         try {
-            WalletDAOimp dbWallet = new WalletDAOimp(this.dataLayer); // connessione al dbWalletWallet
-            dbWallet.init();
 
-            String nftListJsonString = dbWallet.getNfts(wallet); // Prendo tutti gli nft in stringa
+            String nftListJsonString = getNfts(wallet); // Prendo tutti gli nft in stringa
 
             Gson gson = new Gson();
 
             JsonObject jsonObject = gson.fromJson(nftListJsonString, JsonObject.class);
-            JsonArray nftArray = jsonObject.getAsJsonArray("ownedNfts"); // converto in json
+            JsonArray nftArray = jsonObject.getAsJsonArray("ownedNfts"); // converto in jsonArray object
 
             List<Nft> nftList = new ArrayList<>();
             for (int i = 0; i < nftArray.size(); i++) {
@@ -252,34 +228,18 @@ public class WalletDAOimp extends DAO implements WalletDAO {
                 String contractAddress = nftJson.get("contract").getAsJsonObject().get("address").getAsString();
                 String tokenId = nftJson.get("id").getAsJsonObject().get("tokenId").getAsString();
 
-                Nft nft = new NftImpl(tokenId, contractAddress, wallet.getAddress());
-                nftList.add(nft); // ho una list di nft solo con contractAddress e tokeid
-            }
 
-            List<Nft> nftListMeta = new ArrayList<>(); // creo un array per contenere gli nft con tutti i meta dati
-
-            for (int i = 0; i < nftList.size(); i++) {
-
-                String nftMeta = dbWallet.getNftsMetdata(nftList.get(i).getContractAddress(),
-                        nftList.get(i).getTokenId());
-                JsonObject jsonObjectMeta = gson.fromJson(nftMeta, JsonObject.class);
-
-                JsonObject nftJson = jsonObjectMeta.getAsJsonObject();
-                String contractAddress = nftJson.get("contract").getAsJsonObject().get("address").getAsString();
-                String tokenId = nftJson.get("id").getAsJsonObject().get("tokenId").getAsString();
                 String title = nftJson.get("title").getAsString();
                 String description = nftJson.get("description").getAsString();
-                String metadata = nftJson.get("media").getAsJsonArray().get(0).getAsJsonObject().get("gateway")
-                        .getAsString();
+                String metadata = nftJson.get("media").getAsJsonArray().get(0).getAsJsonObject().get("gateway").getAsString();
 
                 Nft nft = new NftImpl(title, tokenId, contractAddress, description, metadata, wallet.getAddress());
-                nftListMeta.add(nft); // ho una list con gli nft con tutti metadati per creare la calsse Nft
-
+                nftList.add(nft); // ho una list di nft
             }
 
             NftDAOimp snft = new NftDAOimp(this.dataLayer); // salvo gli nft sul db
             snft.init();
-            snft.storeNft(nftListMeta);
+            snft.storeNft(nftList);
         } catch (IOException | DataException e) {
             throw new DataException("ERRORE", e);
         }

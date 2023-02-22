@@ -22,7 +22,10 @@ import org.web3j.utils.Numeric;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
@@ -96,11 +99,24 @@ public class CreaWallet extends CollectorsBaseController {
 
             if (validity) {
 
-                //TODO: createte wallet and add nfts in the DB
+                User user = Utility.getUser(request);
 
+                CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
+                WalletDAO WalletDAO = dataLayer.getWalletDAO();
+                Wallet wallet = WalletDAO.createWallet();
+
+                wallet.setAddress(pk);
+                wallet.setUserId(user.getKey());
+                WalletDAO.storeWallet(wallet);
+                WalletDAO.saveNfts(wallet);
+
+                request.setAttribute("nfts_addes", wallet.getNfts().size());
                 request.setAttribute("result", "valid");
             }
             else{
+                String new_message = generateRandomString(10);
+                s.setAttribute("random_msg", new_message);
+                request.setAttribute("random_msg", new_message);
                 request.setAttribute("result", "invalid");
             }
 

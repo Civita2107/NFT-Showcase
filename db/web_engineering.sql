@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Feb 21, 2023 at 06:03 PM
+-- Generation Time: Feb 22, 2023 at 06:24 PM
 -- Server version: 8.0.32
 -- PHP Version: 8.1.15
 
@@ -1106,6 +1106,7 @@ ALTER TABLE `follow`
 --
 ALTER TABLE `nft`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token_id` (`token_id`,`contract_address`),
   ADD KEY `contract_address` (`wallet_address`),
   ADD KEY `collection` (`collection`);
 

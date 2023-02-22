@@ -29,8 +29,6 @@ public interface WalletDAO {
 
     String getNfts(Wallet wallet) throws DataException, IOException;
 
-    String getNftsMetdata(String contractAddress, String tokenId) throws IOException;
-    
     void saveNfts(Wallet wallet) throws DataException;
     
     Wallet getWalletByNft(Nft nft) throws DataException;
