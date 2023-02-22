@@ -22,7 +22,7 @@
     </#if>
     <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <#list collezioni as collezione>
-            <a href="visualizza-collezione?id=${collezione.getKey()?c}" class="flex flex-col p-2 m-2 border rounded-lg shadow-lg">
+            <a href="visualizza-collezione?id=${collezione.getKey()?c}" class="flex flex-col p-2 m-2 border shadow-lg rounded-2xl">
                 <h1 class="font-bold">${collezione.getNome()}</h1>
                 <h2>Nfts: ${collezione.getNfts()?size}</h2>
             </a>
@@ -35,8 +35,8 @@
     </#if>
     <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <#list nfts as nft>
-            <a href="visualizza-commenti?id=${nft.getKey()?c}" class="flex flex-col m-2 border rounded-lg shadow-lg">
-                <img class="object-contain bg-gray-300 aspect-square" src="${nft.getMetadata()}" alt="${nft.getTitle()}">
+            <a href="visualizza-commenti?id=${nft.getKey()?c}" class="flex flex-col m-2 border shadow-lg rounded-2xl">
+                <img class="object-contain bg-gray-300 aspect-square rounded-t-2xl" src="${nft.getMetadata()}" alt="${nft.getTitle()}" onerror="this.src='${assets}/fallback.png'">
                 <h2 class="px-4 py-2 text-lg font-bold">${nft.getTitle()}</h2>
             </a>
         </#list>

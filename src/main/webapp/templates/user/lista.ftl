@@ -1,6 +1,6 @@
 <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
     <#list utenti as utente>
-        <a href="visualizza-utente?id=${utente.getKey()?c}" class="flex flex-row m-2 border rounded-lg shadow-lg">
+        <a href="visualizza-utente?id=${utente.getKey()?c}" class="flex flex-row m-2 border shadow-lg rounded-2xl">
             <#if utente.getFoto()??>
                 <img class="object-cover w-24 h-24 p-4 rounded-3xl" src="utente.getFoto()" alt="${utente.getUsername()}">
             <#else/>
