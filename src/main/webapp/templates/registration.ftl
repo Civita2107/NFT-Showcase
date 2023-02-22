@@ -29,10 +29,10 @@
             <label class="block w-full mt-4 text-lg font-semibold" for="password">Password</label>
             <input id="password" class="block w-full px-4 py-2 my-1 text-base border border-b-2 border-gray-500 rounded-md border-b-black" type="password" name="password">
             <#if error??>
-                <p class="m-3 text-red-700">${error!}</p>
+                <p class="m-3 text-red-700">${error!"Errore sconosciuto"}</p>
             </#if>
             <button class="block px-8 py-2 mx-auto my-8 text-xl font-bold text-white uppercase bg-gray-900 rounded-xl" type="submit">signup</button>
-            <small>Hai già un account?</small>
+            <small>Hai gia' un account?</small>
             <a class="underline underline-offset-4" href="./login">Accedi</a>
         </form>
     </div>

@@ -17,7 +17,7 @@
 
 <#include "outline_navbar.ftl">
 
-<div class="w-full h-screen p-2 min-h-fit">
+<div class="w-full min-h-screen p-2 h-fit">
     <#include content_tpl>
 </div>
 
