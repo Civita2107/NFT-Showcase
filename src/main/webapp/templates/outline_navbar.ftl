@@ -1,8 +1,8 @@
-<div class="flex flex-col items-center justify-between px-4 py-2 overflow-x-scroll md:flex-row">
+<div class="flex flex-col items-center justify-between px-4 py-2 md:flex-row">
     <div class="flex flex-row justify-start mr-4">
         <a href="home" class="mx-2">Home</a>
         <a href="lista-utenti" class="mx-2">Utenti</a>
-        <a href="ricerca" class="mx-2">Ricerca</a>
+        <a href="ricerca?keyword=" class="mx-2">Ricerca</a>
     </div>
     <div class="flex flex-row justify-end">
         <#if logininfo??>

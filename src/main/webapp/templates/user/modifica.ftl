@@ -1,7 +1,7 @@
 <div class="relative flex flex-col justify-center">
     <form method="post" action="modifica-utente" class="w-full px-8 mx-auto mt-10 mb-24 lg:w-96" enctype="multipart/form-data">
         <h1 class="text-2xl font-bold text-center underline uppercase underline-offset-4">Modifica</h1>
-        <#if user.getFotoAsDataURI()??>
+       <#if user.getFoto()??>
             <img class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${user.getFotoAsDataURI()}" alt="${user.getUsername()}">
         <#else/>
             <img class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${assets}/account.png" alt="${user.getUsername()}">
