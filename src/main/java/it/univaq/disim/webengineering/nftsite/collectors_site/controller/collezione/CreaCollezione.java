@@ -52,7 +52,9 @@ public class CreaCollezione extends CollectorsBaseController {
             }
         }
     }
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
+
+    private void action_default(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, TemplateManagerException, DataException {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
 
@@ -73,11 +75,12 @@ public class CreaCollezione extends CollectorsBaseController {
             User user = Utility.getUser(request);
 
             String nome = request.getParameter("nome");
-            boolean pubblica = request.getParameter("pubblica").equals("pubblica");
-            if (request.getParameter("pubblica").equals("privata")) {
-                pubblica = false;
+            boolean pubblica = false;
+            String pubblicaValue = request.getParameter("pubblica");
+            if (pubblicaValue != null && pubblicaValue.equals("pubblica")) {
+                pubblica = true;
             }
-
+            
             Collection collection = new CollectionImpl(nome, pubblica, user);
             dataLayer.getCollectionDAO().storeCollection(collection);
             response.sendRedirect("lista-collezioni");
@@ -86,7 +89,8 @@ public class CreaCollezione extends CollectorsBaseController {
         }
     }
 
-    private void action_notLogged(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, ServletException {
+    private void action_notLogged(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, TemplateManagerException, ServletException {
         accessCheckFailed(request, response);
     }
 }
