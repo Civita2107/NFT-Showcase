@@ -31,7 +31,7 @@ public class Utility {
         User user;
         HttpSession s = request.getSession(false);
         if (s != null) {
-            int userId = (int) s.getAttribute("userid");
+            int userId = (int) s.getAttribute("id");
             CollectorsDataLayer datalayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             UserDAO userDAO = datalayer.getUserDAO();
             user = userDAO.getUser(userId);
@@ -106,8 +106,18 @@ public class Utility {
         return nfts;
     }
 
-    public static Nft getNft(HttpServletRequest request) {
-        return null;
+    public static Nft getNft(HttpServletRequest request) throws DataException {
+        Nft nft;
+        HttpSession s = request.getSession(false);
+        if (s != null) {
+            int nftId = (int) s.getAttribute("id");
+            CollectorsDataLayer datalayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
+            NftDAO nftDAO = datalayer.getNftDAO();
+            nft = nftDAO.getNft(nftId);
+            return nft;
+        } else {
+            return null;
+        }    
     }
 
 }
