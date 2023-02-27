@@ -55,6 +55,11 @@ public class Ricerca extends CollectorsBaseController {
                 List<Nft> nfts = Utility.getNfts(request);
                 List<Wallet> wallets = Utility.getWallets(request);
 
+                request.setAttribute("filtro", request.getParameter("filtro"));
+                if (request.getParameter("filtro") == null) {
+                    request.setAttribute("filtro", "tutto");
+                }
+
                 request.setAttribute("keyword", request.getParameter("keyword"));
                 request.setAttribute("users", users);
                 request.setAttribute("collections", collections);

@@ -39,7 +39,7 @@
             <div class="flex items-center justify-center max-w-lg mx-auto mt-56 mb-4 shadow-lg">
                 <form method="post" class="w-full max-w-xl px-4 pt-2 bg-white rounded-lg" action="crea-commento?nft_id=${nft.getKey()?c}">
                     <div class="flex flex-wrap mb-6 -mx-3">
-                        <h2 class="px-4 pt-3 pb-2 text-lg text-gray-800">Scrivi una commento</h2>
+                        <h2 class="px-4 pt-3 pb-2 text-lg text-gray-800">Scrivi un commento</h2>
                         <div class="w-full px-3 mt-2 mb-2 md:w-full">
                             <textarea class="w-full h-20 px-3 py-2 font-medium leading-normal placeholder-gray-700 bg-gray-100 border border-gray-400 rounded resize-none focus:outline-none focus:bg-white" name="text" value="Scrivi qui..." required></textarea>
                         </div>
@@ -56,11 +56,11 @@
             <!-- commenti -->
             <#list user_comment as uc>
                 <div class="relative grid grid-cols-1 gap-4 p-4 mb-8 bg-white border rounded-lg shadow-lg">
-                    <div class="relative flex gap-4">
+                    <div class="relative flex gap-4 py-4">
                         <#if uc.getUser().getFotoAsDataURI()??>
-                            <img class="relative w-20 h-20 -mb-4 rounded-lg -top-4" src="${uc.getUser().getFotoAsDataURI()}" alt="" loading="lazy">
-                            <#else />
-                            <img class="relative w-20 h-20 -mb-4 rounded-lg -top-4" src="${assets}/account.png" alt="" loading="lazy">
+                            <img class="relative h-16 rounded-lg square" src="${uc.getUser().getFotoAsDataURI()}" alt="" loading="lazy">
+                        <#else />
+                            <img class="relative h-16 rounded-lg square" src="${assets}/account.png" alt="" loading="lazy">
                         </#if>
                         <br>
                         <div class="flex flex-col w-full">

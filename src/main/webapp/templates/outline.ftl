@@ -23,31 +23,4 @@
 <#include "outline_footer.ftl">
 
 </body>
-             <script>
-  const filtro = document.getElementById('filtro');
-  const utenti = document.getElementById('utenti');
-  const nft = document.getElementById('nft');
-  const collezioni = document.getElementById('collezioni');
-
-
-  
-  filtro.addEventListener('change', () => {
-    if (filtro.value === 'utenti') {
-      utenti.classList.remove('hidden');
-      nft.classList.add('hidden');
-      collezioni.classList.add('hidden');
-    } else if (filtro.value === 'nft') {
-      utenti.classList.add('hidden');
-      nft.classList.remove('hidden');
-      collezioni.classList.add('hidden');
-    } else if (filtro.value === 'collezioni') {
-      utenti.classList.add('hidden');
-      nft.classList.add('hidden');
-      collezioni.classList.remove('hidden');
-    } else{    
-      utenti.classList.remove('hidden');
-      nft.classList.remove('hidden');
-      collezioni.classList.remove('hidden');}
-  });
-</script>
 </html>
