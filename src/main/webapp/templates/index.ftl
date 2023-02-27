@@ -6,3 +6,4 @@
         </a>
     </#list>
 </div>
+<a href="./" class="block mx-auto mt-6 mb-4 text-lg font-bold w-fit">Carica altri nft</a>

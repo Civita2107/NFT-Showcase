@@ -20,6 +20,11 @@ public class DataException extends Exception {
 
     @Override
     public String getMessage() {
-        return super.getMessage() + (getCause().getMessage() != null ? " (" + getCause().getMessage() + ")" : "");
+        if (getCause() != null && getCause().getMessage() != null) {
+            return super.getMessage() + " (" + getCause().getMessage() + ")";
+        }
+        else{
+            return super.getMessage();
+        }
     }
 }
