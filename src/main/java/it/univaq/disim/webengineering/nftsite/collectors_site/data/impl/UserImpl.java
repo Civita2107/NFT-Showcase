@@ -1,6 +1,11 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -12,7 +17,7 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     private String username;
     private String email;
     private String password;
-    private String foto;
+    private byte[] foto;
     private final List<User> follow = new ArrayList<>();
     private final List<User> followers = new ArrayList<>();
 
@@ -87,13 +92,43 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     }
 
     @Override
-    public String getFoto() {
+    public String getFotoAsDataURI() {
+        if (this.foto == null){
+            return null;
+        }
+        try {
+            InputStream is = new ByteArrayInputStream(this.foto);
+            String mimeType = URLConnection.guessContentTypeFromStream(is);
+            String base64 = Base64.getEncoder().encodeToString(this.foto);
+            return "data:"+mimeType+";base64," + base64;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        /*if (this.foto == null){
+            return null;
+        }
+        try {
+            // genero il dataURI per la sua visualizzazione
+            byte[] data = new byte[this.foto.available()];// = this.foto.readAllBytes();
+            System.out.println("a");
+            this.foto.read(data);
+            System.out.println("b");
+            String base64 = Base64.getEncoder().encodeToString(data);
+            return "data:image/png;base64," + base64;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }*/
+    }
+
+    @Override
+    public byte[] getFoto() {
         return this.foto;
     }
 
     @Override
-    public void setFoto(String foto) {
+    public void setFoto(byte[] foto) {
         this.foto = foto;        
     }
-    
 }

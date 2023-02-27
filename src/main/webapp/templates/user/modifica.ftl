@@ -2,11 +2,12 @@
     <form method="post" action="modifica-utente" class="w-full px-8 mx-auto mt-10 mb-24 lg:w-96" enctype="multipart/form-data">
         <h1 class="text-2xl font-bold text-center underline uppercase underline-offset-4">Modifica</h1>
         <#if user.getFotoAsDataURI()??>
-            <img class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${user.getFotoAsDataURI()}" alt="${user.getUsername()}">
+            <img id="preview" class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${user.getFotoAsDataURI()}" alt="${user.getUsername()}">
         <#else/>
-            <img class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${assets}/account.png" alt="${user.getUsername()}">
+            <img id="preview" class="block object-cover p-4 mx-auto w-36 h-36 rounded-3xl" src="${assets}/account.png" alt="${user.getUsername()}">
         </#if>
-        <input class="block w-full px-4 py-2 my-1 text-base border border-b-2 border-gray-500 rounded-md border-b-black" type="file" name="foto" id="foto">
+        <input class="block w-full px-4 py-2 my-1 text-base border border-b-2 border-gray-500 rounded-md border-b-black" type="file" name="foto" id="foto"
+        onchange="document.getElementById('preview').src = window.URL.createObjectURL(this.files[0])">
 
         <label class="block w-full mt-4 text-lg font-semibold" for="username">Username</label>
         <input id="username" class="block w-full px-4 py-2 my-1 text-base border border-b-2 border-gray-500 rounded-md border-b-black" type="text" name="username" value="${user.getUsername()}">

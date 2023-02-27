@@ -1,12 +1,19 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.user;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
@@ -32,25 +39,26 @@ public class ModificaUtente extends CollectorsBaseController {
      */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, TemplateManagerException, IOException, DataException {
-        if (request.getMethod().equals("POST")) {
-            action_modifica(request, response);
-        } else{
-            try{
-                HttpSession s = SecurityHelpers.checkSession(request);
-                String https_redirect_url = SecurityHelpers.checkHttps(request);
-                request.setAttribute("https-redirect", https_redirect_url);
-                if(s == null){
-                    action_notLogged(request,response);
+        try{
+            HttpSession s = SecurityHelpers.checkSession(request);
+            String https_redirect_url = SecurityHelpers.checkHttps(request);
+            request.setAttribute("https-redirect", https_redirect_url);
+            if(s == null){
+                action_notLogged(request,response);
+            } else{
+                User user = Utility.getUser(request);
+                if(user != null){
+                    request.setAttribute("user", user);
+                }
+
+                if (request.getMethod().equals("POST")) {
+                    action_modifica(request, response);
                 } else{
-                    User user = Utility.getUser(request);
-                    if(user != null){
-                        request.setAttribute("user", user);
-                    }
                     action_default(request, response);
                 }
-            } catch (TemplateManagerException | DataException | IOException ex) {
-                handleError(ex, request, response);
             }
+        } catch (TemplateManagerException | DataException | IOException ex) {
+            handleError(ex, request, response);
         }
     }
 
@@ -63,63 +71,100 @@ public class ModificaUtente extends CollectorsBaseController {
     }
 
     private void action_modifica(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
-        String username = request.getParameter("username");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        String nuovaPassword = request.getParameter("nuovaPassword");
 
-        User user = Utility.getUser(request);
-        CollectorsDataLayer dataLayer = (CollectorsDataLayer) request.getAttribute("datalayer");
-        UserDAO userDAO = dataLayer.getUserDAO();
-        request.setAttribute("user",user);
         try {
-            if (password != null && !password.isEmpty()) {
+            byte[] foto = null;
+            String username = null;
+            String email = null;
+            String password = null;
+            String nuovaPassword = null;
+            String value;
 
-                if (SecurityHelpers.encryptPassword(password).equals(user.getPassword())) {
-
-                    if (username != null && !username.isEmpty()) {
-                        if (userDAO.getUserByUsername(username) == null) {
-                            user.setUsername(username);
-                            SecurityHelpers.createSession(request, username, user.getKey());
-                        } else {
-                            request.setAttribute("error", "Username già in uso");
-                            throw new DataException("Username già in uso");
-                        }
+            ServletFileUpload upload = new ServletFileUpload();
+            FileItemIterator iterator = upload.getItemIterator(request);
+            while (iterator.hasNext()) {
+                FileItemStream item = iterator.next();
+                if (item.isFormField()) {
+                    value = new BufferedReader(new InputStreamReader(item.openStream())).readLine();
+                    if (item.getFieldName().equals("username")) {
+                        username = value;
                     }
-                    user.setUsername(user.getUsername());
-                    if (email != null && !email.isEmpty()) {
-                        if (userDAO.getUserByEmail(email) == null) {
-                            user.setEmail(email);
-                        } else {
-                            request.setAttribute("error", "Email già in uso");
-                            throw new DataException("Email già in uso");
-                        }
+                    if (item.getFieldName().equals("email")) {
+                        email = value;
                     }
-                    user.setEmail(user.getEmail());
-                    if (nuovaPassword != null && !nuovaPassword.isEmpty()) {
-
-                        if (!nuovaPassword.equals(password)) {
-                            user.setPassword(SecurityHelpers.encryptPassword(nuovaPassword));
-                        } else {
-                            request.setAttribute("error", "La nuova password deve essere diversa da quella attuale");
-                            throw new DataException("La nuova password deve essere diversa da quella attuale");
+                    if (item.getFieldName().equals("password")) {
+                        password = value;
+                    }
+                    if (item.getFieldName().equals("nuovaPassword")) {
+                        nuovaPassword = value;
+                    }
+                } else if (item.getFieldName().equals("foto")) {
+                    if (!item.getName().equals("")) {    
+                        if (!item.getContentType().equals("image/png") && !item.getContentType().equals("image/jpeg")) {
+                            throw new DataException("Formato file non supportato. (formati supportati: PNG, JPG, JPEG)");
                         }
+                        foto = item.openStream().readAllBytes();
+                    }
                 }
-             } else {
-                    request.setAttribute("error", "Password errata");
-                    throw new DataException("Password errata");
-                }
+            }
+            
+            User user = Utility.getUser(request);
+            CollectorsDataLayer dataLayer = (CollectorsDataLayer) request.getAttribute("datalayer");
+            UserDAO userDAO = dataLayer.getUserDAO();
 
-            } else {
-                request.setAttribute("error", "Password errata");
+            if (password == null || password.isEmpty()) {
+                throw new DataException("Password mancante");
+            }
+
+            if (!SecurityHelpers.encryptPassword(password).equals(user.getPassword())) {
                 throw new DataException("Password errata");
             }
 
-            userDAO.storeUser(user);
-            response.sendRedirect("visualizza-user?id=" + user.getKey());
+            if (nuovaPassword != null && nuovaPassword.equals(password)) {
+                throw new DataException("La nuova password deve essere diversa da quella attuale");
+            }
 
-        } catch (DataException | SQLException ex) {
-            request.setAttribute("error", ex.getMessage());
+            if (nuovaPassword == null || nuovaPassword.isEmpty()) {
+                nuovaPassword = password;
+            }
+
+            if (username == null || username.isEmpty()) {
+                throw new DataException("È richiesto uno username");
+            }
+
+            if (!username.equals(user.getUsername()) && userDAO.getUserByUsername(username) != null) {
+                throw new DataException("Username già in uso");
+            }
+            
+            if (email == null || email.isEmpty()) {
+                throw new DataException("È richiesta un'email");
+            }
+
+            if (!email.equals(user.getEmail()) && userDAO.getUserByEmail(email) != null) {
+                throw new DataException("Email già in uso");
+            }
+
+            if (foto != null) {
+                user.setFoto(foto);
+            }
+            
+            user.setPassword(SecurityHelpers.encryptPassword(nuovaPassword));
+            user.setUsername(username);
+            user.setEmail(email);
+            userDAO.storeUser(user);
+
+            SecurityHelpers.createSession(request, username, user.getKey());
+            response.sendRedirect("visualizza-utente?id=" + user.getKey());
+
+        } catch (DataException e) {
+            System.out.println("e1");
+            System.out.println(e.getMessage());
+            request.setAttribute("error", e.getMessage());
+            action_default(request, response);
+        }
+        catch (SQLException | FileUploadException ex){
+            System.out.println("e2");
+            request.setAttribute("error", "Si è verificato un errore inaspettato, siamo spiacenti");
             action_default(request, response);
         }
     }

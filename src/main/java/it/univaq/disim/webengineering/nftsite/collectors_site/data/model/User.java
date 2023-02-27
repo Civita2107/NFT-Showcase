@@ -30,8 +30,10 @@ public interface User extends DataItem<Integer>  {
 
     void addFollowing(User following);
 
-    String getFoto();
+    byte[] getFoto();
 
-    void setFoto(String foto);
+    String getFotoAsDataURI();
+
+    void setFoto(byte[] foto);
     
 }

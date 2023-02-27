@@ -1,5 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -93,6 +96,10 @@ public class UserDAOimpl extends DAO implements UserDAO{
             a.setUsername(rs.getString("username"));
             a.setEmail(rs.getString("email"));
             a.setPassword(rs.getString("password"));
+            Blob foto = rs.getBlob("foto");
+            if (foto != null) {
+                a.setFoto(foto.getBytes(1,(int) foto.length()));
+            }
 
             return a;
         } catch (SQLException ex) {
@@ -110,7 +117,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
                 uUser.setString(1, User.getUsername());
                 uUser.setString(2, User.getEmail());
                 uUser.setString(3, User.getPassword());
-                uUser.setString(4, User.getFoto());
+                uUser.setBlob(4, new SerialBlob(User.getFoto()));
 
 
                 uUser.setLong(5, User.getKey());
