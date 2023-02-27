@@ -58,8 +58,8 @@ public class CreaCommento extends CollectorsBaseController {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
-        Nft nft = dataLayer.getNftDAO().getNft(Integer.parseInt(request.getParameter("id")));
-        User user = Utility.getUser(request);
+        Nft nft = dataLayer.getNftDAO().getNft(Integer.parseInt(request.getParameter("nft_id")));
+        User user = dataLayer.getUserDAO().getUser((Integer.parseInt(request.getParameter("user_id"))));
         request.setAttribute("nft", nft);
         request.setAttribute("user", user);
 
@@ -70,13 +70,12 @@ public class CreaCommento extends CollectorsBaseController {
 
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
+            Nft nft = dataLayer.getNftDAO().getNft(Integer.parseInt(request.getParameter("nft_id")));
             User user = Utility.getUser(request);
-            Nft nft = Utility.getNft(request);
-
-            String text = request.getParameter("nome");
+            String text = request.getParameter("text");
             Comment comment = new CommentImpl(text, user, nft);
             dataLayer.getCommentDAO().storeComment(comment);
-            response.sendRedirect("visualizza-commenti");
+            response.sendRedirect("visualizza-nft?id="+nft.getKey());
         } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
