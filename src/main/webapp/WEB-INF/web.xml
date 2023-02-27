@@ -196,7 +196,16 @@
         <servlet-name>EliminaCommento</servlet-name>
         <url-pattern>/elimina-commento</url-pattern>
     </servlet-mapping>
-
+<!-- NFT -->
+<servlet>
+    <servlet-name>VisualizzaNft</servlet-name>
+    <servlet-class>
+        it.univaq.disim.webengineering.nftsite.collectors_site.controller.nft.VisualizzaNft</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>VisualizzaNft</servlet-name>
+    <url-pattern>/visualizza-nft</url-pattern>
+</servlet-mapping>
     <!-- SEARCH -->
     <servlet>
         <servlet-name>Ricerca</servlet-name>

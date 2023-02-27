@@ -49,7 +49,7 @@ public class WalletDAOimp extends DAO implements WalletDAO {
             DWalletbyAddress = connection.prepareStatement("DELETE from wallet where wallet_address=?");
             SWalletAddress = connection.prepareStatement("SELECT * from wallet WHERE wallet_address=?");
             sWalletNft = connection.prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
-            sWalletByNft = connection.prepareStatement("SELECT w.* FROM wallet as w INNER JOIN nft as n ON n.wallet_address=w.wallet_address WHERE w.wallet_address=?");
+            sWalletByNft = connection.prepareStatement("SELECT w.* FROM wallet as w INNER JOIN nft as n ON n.wallet_address=w.wallet_address WHERE w.wallet_address=? LIMIT 1");
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
@@ -65,13 +65,12 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         try {
             WalletProxy a = (WalletProxy) createWallet();
 
-            a.setKey(rs.getInt("id"));
             a.setAddress(rs.getString("wallet_address"));
             a.setUserId(rs.getInt("user_id"));
 
             return a;
         } catch (SQLException ex) {
-            throw new DataException("Unable to create User object form ResultSet", ex);
+            throw new DataException("Unable to create Wallet object form ResultSet", ex);
         }
     }
 
@@ -255,7 +254,8 @@ public class WalletDAOimp extends DAO implements WalletDAO {
         try (ResultSet rs = sWalletNft.executeQuery()) {
             while (rs.next()) {
                 Nft nft = new NftImpl();
-                nft.setKey(rs.getInt("token_id"));
+                nft.setKey(rs.getInt("id"));
+                nft.setTokenId(rs.getString("token_id"));
                 nft.setTitle(rs.getString("title"));
                 nft.setContractAddress(rs.getString("contract_address"));
                 nft.setDescription(rs.getString("description"));
@@ -275,18 +275,21 @@ public class WalletDAOimp extends DAO implements WalletDAO {
 
     @Override
     public Wallet getWalletByNft(Nft nft) throws DataException{
-        
+        Wallet wallet =null;
        try{ 
         sWalletByNft.setString(1, nft.getWalletAddress());
         try (ResultSet rs = sWalletByNft.executeQuery()) {
-                Wallet wallet = createWallet(rs);
-                return wallet;
+            if(rs.next()){
+                 wallet = createWallet(rs);
+            }
         }
      }
      
      catch (SQLException ex) {
-            throw new DataException("Unable to load Nft", ex);
+            throw new DataException("Unable to load Wallet", ex);
         }
+        return wallet;
+
     }
 
 

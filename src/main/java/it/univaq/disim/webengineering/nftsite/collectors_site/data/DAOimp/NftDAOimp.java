@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.NftImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
@@ -38,7 +39,7 @@ public class NftDAOimp extends DAO implements NftDAO {
             sNftByTitleOrCA = connection.prepareStatement("SELECT * FROM nft where title=? or contract_address=?");
 
             sNftByKeyword = connection.prepareStatement("SELECT nft.* FROM nft WHERE title LIKE ? OR description LIKE ?");
-            sNft= connection.prepareStatement("SELECT nft.* FROM nft WHERE id=?");
+            sNft= connection.prepareStatement("SELECT * FROM nft WHERE id=?");
             sNftByComment = connection.prepareStatement("SELECT n.* FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
             iNft = connection.prepareStatement("INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
             Statement.RETURN_GENERATED_KEYS); 
@@ -159,7 +160,7 @@ public class NftDAOimp extends DAO implements NftDAO {
 
     @Override
     public Nft getNft(int key) throws DataException {
-        Nft d = null;
+        Nft d = new NftImpl();
         if (dataLayer.getCache().has(Nft.class, key)) {
             d = dataLayer.getCache().get(Nft.class, key);
         } else {
@@ -167,10 +168,8 @@ public class NftDAOimp extends DAO implements NftDAO {
                 sNft.setInt(1, key);
                 try (ResultSet rs = sNft.executeQuery()) {
                     if (rs.next()) {
-                        Nft nft = createNft(rs);
+                         d = createNft(rs);
                         //dataLayer.getCache().add(Nft.class, d);
-                        return nft;
-
                     }
                 }
             } catch (SQLException ex) {
