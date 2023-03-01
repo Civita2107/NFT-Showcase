@@ -41,8 +41,8 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
             sCollectionsByKeyword = connection.prepareStatement("SELECT * FROM collection WHERE public = 1 AND nome LIKE ?");
 
             iCollection = connection.prepareStatement("INSERT INTO collection (nome,public,user) VALUES(?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            uCollection = connection.prepareStatement("UPDATE collection SET nome=?,pubblica=?,user=? WHERE id=?");
-            uPubblica = connection.prepareStatement("UPDATE collection SET public=? WHERE id=?");
+            uCollection = connection.prepareStatement("UPDATE collection SET nome=?,public=?,user=? WHERE id=?");
+            uPubblica = connection.prepareStatement("UPDATE collection SET public=?, nome=? WHERE id=?");
             dCollection = connection.prepareStatement("DELETE FROM collection WHERE id=?");
 
             //sNftCollection = connection.prepareStatement("Select n.id,n.token_id,n.contract_address,n.wallet_address,n.collection,n.title,n.description,n.metadata From collection as c INNER JOIN nft as n ON n.collection=c.id where c.id=?");
@@ -115,6 +115,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                             rs.getString("description"), 
                             rs.getString("metadata"),
                             rs.getString("wallet_address"));
+                            nft.setKey(rs.getInt("id"));
                         a.add(nft);
                     }
                 }
@@ -124,8 +125,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         
         return a;
     }
-
-
+   
 //Funziona
     @Override
     public Collection getCollection(int collection_key) throws DataException {
@@ -203,6 +203,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         try {
             uPubblica.setBoolean(1, stato);
             uPubblica.setInt(2, collection.getKey());
+            uPubblica.setString(3, collection.getNome());
             uPubblica.executeUpdate();
         } catch (SQLException ex) {
             throw new DataException("Unable to set pubblica", ex);

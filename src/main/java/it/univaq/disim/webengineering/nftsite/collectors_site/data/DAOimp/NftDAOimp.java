@@ -17,12 +17,15 @@ import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.proxy.NftProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DAO;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
+import it.univaq.disim.webengineering.nftsite.framework.data.DataItemProxy;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayerException;
+import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockException;
 
 public class NftDAOimp extends DAO implements NftDAO {
 
-    private PreparedStatement sNftByCollection,sNftByUser,sNftByKeyword,sNft,sNftByComment,iNft,sNftByRandom,sNftByTitleOrCA,sNftByWallet;
+    private PreparedStatement sNftByCollection, sNftByUser, sNftByKeyword, sNft, sNftByComment, iNft, sNftByRandom,
+            sNftByTitleOrCA, sNftByWallet, uNftColl;
 
     public NftDAOimp(DataLayer d) {
         super(d);
@@ -33,30 +36,37 @@ public class NftDAOimp extends DAO implements NftDAO {
         try {
             super.init();
 
-            sNftByCollection = connection.prepareStatement("SELECT nft.* FROM nft INNER JOIN collection ON nft.collection = collection.id WHERE collection.id = ?");
+            sNftByCollection = connection.prepareStatement(
+                    "SELECT nft.* FROM nft INNER JOIN collection ON nft.collection = collection.id WHERE collection.id = ?");
 
-            sNftByUser = connection.prepareStatement("Select n.* FROM users AS u INNER JOIN wallet as w On u.id = w.user_id INNER JOIN nft as n On w.wallet_address = n.wallet_address WHERE u.id = ?");
+            sNftByUser = connection.prepareStatement(
+                    "Select n.* FROM users AS u INNER JOIN wallet as w On u.id = w.user_id INNER JOIN nft as n On w.wallet_address = n.wallet_address WHERE u.id = ?");
             sNftByTitleOrCA = connection.prepareStatement("SELECT * FROM nft where title=? or contract_address=?");
 
-            sNftByKeyword = connection.prepareStatement("SELECT nft.* FROM nft WHERE title LIKE ? OR description LIKE ?");
-            sNft= connection.prepareStatement("SELECT * FROM nft WHERE id=?");
-            sNftByComment = connection.prepareStatement("SELECT n.* FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
-            iNft = connection.prepareStatement("INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
-            Statement.RETURN_GENERATED_KEYS); 
-            
+            sNftByKeyword = connection
+                    .prepareStatement("SELECT nft.* FROM nft WHERE title LIKE ? OR description LIKE ?");
+            sNft = connection.prepareStatement("SELECT * FROM nft WHERE id=?");
+            sNftByComment = connection.prepareStatement(
+                    "SELECT n.* FROM comment as c INNER JOIN wallet as w ON c.userId = w.userId INNER JOIN nft as n ON w.Address = n.contractAddress where c.text =?");
+            iNft = connection.prepareStatement(
+                    "INSERT INTO nft (token_id,contract_address,wallet_address,collection,title,description,metadata) VALUES(?,?,?,?,?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            uNftColl = connection.prepareStatement("UPDATE nft SET collection=? WHERE id=?");
             sNftByRandom = connection.prepareStatement("SELECT * FROM nft ORDER BY RAND() LIMIT 20");
-            sNftByWallet = connection.prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
+            sNftByWallet = connection
+                    .prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
 
         } catch (SQLException ex) {
             throw new DataException("Error initializing collectors data layer", ex);
         }
     }
-    
+
     public Nft createNft() {
         return new NftProxy(getDataLayer());
     }
+
     private Nft createNft(ResultSet rs) throws DataException {
-       NftProxy a = (NftProxy) createNft();
+        NftProxy a = (NftProxy) createNft();
         try {
             a.setKey(rs.getInt("id"));
             a.setTokenId(rs.getString("token_id"));
@@ -65,10 +75,15 @@ public class NftDAOimp extends DAO implements NftDAO {
             a.setDescription(rs.getString("description"));
             a.setMetadata(rs.getString("metadata"));
             a.setWalletAddress(rs.getString("wallet_address"));
-            
-            //a.setPubblica(rs.getBoolean("pubblica"));
-            //a.setVersion(rs.getLong("versione"));
+            if (rs.getInt("collection")!= 0) {
+                a.setCollection(rs.getInt("collection"));
 
+            } else {
+                a.setCollection(null);
+            }
+
+            // a.setPubblica(rs.getBoolean("pubblica"));
+            // a.setVersion(rs.getLong("versione"));
 
         } catch (SQLException ex) {
             throw new DataException("Unable to create nft object form ResultSet", ex);
@@ -77,9 +92,9 @@ public class NftDAOimp extends DAO implements NftDAO {
     }
 
     @Override
-    public Nft searchNft(String title,String contractAddress) throws DataLayerException, DataException {
-        
-        try  {
+    public Nft searchNft(String title, String contractAddress) throws DataLayerException, DataException {
+
+        try {
             sNftByTitleOrCA.setString(1, title);
             sNftByTitleOrCA.setString(2, contractAddress);
 
@@ -97,6 +112,33 @@ public class NftDAOimp extends DAO implements NftDAO {
     }
 
     @Override
+    public void updateNftColl(Nft nft) throws DataException {
+        try {
+            if (nft.getKey() != null && nft.getKey() > 0) {
+
+                if (nft instanceof DataItemProxy && !((DataItemProxy) nft).isModified()) {
+                    return;
+                }
+
+
+                if (nft.getCollection() != null) {
+                    uNftColl.setInt(1, nft.getCollection());
+
+                } else {
+                    uNftColl.setNull(1, java.sql.Types.INTEGER);
+                }
+                uNftColl.setInt(2, nft.getKey());
+
+                if (uNftColl.executeUpdate() == 0) {
+                    throw new OptimisticLockException(nft);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to store Collection", ex);
+        }
+    }
+
+    @Override
     public List<Nft> getNfts(Collection collection) throws DataException {
         try {
             sNftByCollection.setInt(1, collection.getKey());
@@ -111,7 +153,6 @@ public class NftDAOimp extends DAO implements NftDAO {
             throw new DataException("Unable to load Nft from" + collection.getNome(), ex);
         }
     }
-
 
     @Override
     public List<Nft> getNfts(User user) throws DataException {
@@ -132,30 +173,29 @@ public class NftDAOimp extends DAO implements NftDAO {
     @Override
     public void storeNft(List<Nft> lnft) throws DataException {
         try (PreparedStatement ps = iNft) {
-            for(Nft nft: lnft){
-            ps.setString(1, nft.getTokenId());
-            ps.setString(2, nft.getContractAddress());
-            ps.setString(3, nft.getWalletAddress());
-            ps.setString(4, null);
-            ps.setString(5, nft.getTitle());
-            ps.setString(6, nft.getDescription());
-            ps.setString(7, nft.getMetadata());
+            for (Nft nft : lnft) {
+                ps.setString(1, nft.getTokenId());
+                ps.setString(2, nft.getContractAddress());
+                ps.setString(3, nft.getWalletAddress());
+                ps.setString(4, null);
+                ps.setString(5, nft.getTitle());
+                ps.setString(6, nft.getDescription());
+                ps.setString(7, nft.getMetadata());
 
-
-            if (iNft.executeUpdate() == 1) {
-                try (ResultSet keys = iNft.getGeneratedKeys()) {
-                    if (keys.next()) {
-                        int key = keys.getInt(1);
-                        nft.setKey(key);
-                        dataLayer.getCache().add(Nft.class, nft);
+                if (iNft.executeUpdate() == 1) {
+                    try (ResultSet keys = iNft.getGeneratedKeys()) {
+                        if (keys.next()) {
+                            int key = keys.getInt(1);
+                            nft.setKey(key);
+                            dataLayer.getCache().add(Nft.class, nft);
+                        }
                     }
                 }
             }
-        }
         } catch (SQLException ex) {
             throw new DataException("Errore", ex);
         }
-        
+
     }
 
     @Override
@@ -168,8 +208,8 @@ public class NftDAOimp extends DAO implements NftDAO {
                 sNft.setInt(1, key);
                 try (ResultSet rs = sNft.executeQuery()) {
                     if (rs.next()) {
-                         d = createNft(rs);
-                        //dataLayer.getCache().add(Nft.class, d);
+                        d = createNft(rs);
+                        // dataLayer.getCache().add(Nft.class, d);
                     }
                 }
             } catch (SQLException ex) {
@@ -185,17 +225,16 @@ public class NftDAOimp extends DAO implements NftDAO {
             sNftByComment.setInt(1, comment.getKey());
             try (ResultSet rs = sNftByComment.executeQuery()) {
                 Nft list = createNft(rs);
-               return list;
+                return list;
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load Nft from" + comment.getText(), ex);
         }
     }
 
-
     @Override
     public List<Nft> getNftByKeyword(String keyword) throws DataException {
-       List<Nft> result = new ArrayList<>();
+        List<Nft> result = new ArrayList<>();
         try {
             sNftByKeyword.setString(1, "%" + keyword + "%");
             sNftByKeyword.setString(2, "%" + keyword + "%");
@@ -215,9 +254,9 @@ public class NftDAOimp extends DAO implements NftDAO {
      * Returns a list of <i>at most</i> 20 Nfts randomly choosen and ordered
      *
      * @return list = list of Nfts
-     * @throws DataException 
+     * @throws DataException
      */
-     @Override
+    @Override
     public List<Nft> getRandomNfts() throws DataException {
         try {
             try (ResultSet rs = sNftByRandom.executeQuery()) {
@@ -242,7 +281,7 @@ public class NftDAOimp extends DAO implements NftDAO {
                 while (rs.next()) {
                     Nft nft = createNft(rs);
 
-                    //popola l'oggetto NFT con i dati del ResultSet
+                    // popola l'oggetto NFT con i dati del ResultSet
                     nftList.add(nft);
                 }
                 return nftList;
@@ -253,35 +292,24 @@ public class NftDAOimp extends DAO implements NftDAO {
     }
 
     @Override
-    public List<Nft> getNftsByWallet(Wallet wallet) throws DataException{
+    public List<Nft> getNftsByWallet(Wallet wallet) throws DataException {
         List<Nft> nftList = new ArrayList<>();
-        
-       try{ 
-        sNftByWallet.setString(1, wallet.getAddress());
-        try (ResultSet rs = sNftByWallet.executeQuery()) {
-            while (rs.next()) {
-                Nft nft = createNft(rs);
-             
-                
-                nftList.add(nft);
+
+        try {
+            sNftByWallet.setString(1, wallet.getAddress());
+            try (ResultSet rs = sNftByWallet.executeQuery()) {
+                while (rs.next()) {
+                    Nft nft = createNft(rs);
+
+                    nftList.add(nft);
+                }
             }
         }
-     }
-     
-     catch (SQLException ex) {
+
+        catch (SQLException ex) {
             throw new DataException("Unable to load Nft", ex);
         }
         return nftList;
     }
 
 }
-
-    
-    
-
-   
-
-
-    
-    
-

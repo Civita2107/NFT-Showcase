@@ -32,4 +32,6 @@ public interface NftDAO {
     void storeNft(List<Nft> nft) throws DataException;
 
     List<Nft> getNftsByWallet(Wallet wallet) throws DataException;
+
+    void updateNftColl(Nft nft) throws DataException;
 }

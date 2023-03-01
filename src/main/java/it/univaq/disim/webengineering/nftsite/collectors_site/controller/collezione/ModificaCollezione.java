@@ -25,19 +25,20 @@ import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 import it.univaq.disim.webengineering.nftsite.framework.security.SecurityHelpers;
 
 public class ModificaCollezione extends CollectorsBaseController {
-        /**
-
+    /**
+     * 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request servlet request
+     * @param request  servlet request
      * @param response servlet response
      * @throws ServletException
      * @throws DataException
      * @throws IOException
      */
     @Override
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, DataException, IOException {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, DataException, IOException {
         if (request.getMethod().equals("POST")) {
             action_modifica(request, response);
         } else {
@@ -60,7 +61,8 @@ public class ModificaCollezione extends CollectorsBaseController {
         }
     }
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
+    private void action_default(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, TemplateManagerException, DataException {
         TemplateResult result = new TemplateResult(getServletContext());
         request.setAttribute("referrer", request.getParameter("referrer"));
 
@@ -71,14 +73,22 @@ public class ModificaCollezione extends CollectorsBaseController {
 
         Collection collection = dataLayer.getCollectionDAO().getCollection(id);
         List<Nft> nftsAll = dataLayer.getNftDAO().getNfts(Utility.getUser(request));
-        List<Nft> nftsSelected = dataLayer.getNftDAO().getNfts(collection);
         List<User> users = dataLayer.getUserDAO().getUsers();
         users.remove(dataLayer.getUserDAO().getUser(Utility.getUser(request).getKey()));
-        request.setAttribute("nftsAll", nftsAll);
-        request.setAttribute("nftsSelected", nftsSelected);
+
+        List<Nft> nftsSelected = new ArrayList<>();
+
+        for (Nft nft : nftsAll) {
+            if (nft.getCollection() == collection.getKey() || nft.getCollection() == null) {
+                nftsSelected.add(nft);
+            }
+        }
+
+        request.setAttribute("nftsAll", nftsSelected);
         request.setAttribute("users", users);
         request.setAttribute("collection", collection);
-        request.setAttribute("condivisa", "pubblica"); // rivedere questa riga come impostare se pubb o priv
+        // request.setAttribute("condivisa", "pubblica"); // rivedere questa riga come
+        // impostare se pubb o priv
         request.setAttribute("visualizzatori", usersVisualizzatori);
         result.activate("collezione/modifica.ftl", request, response);
     }
@@ -89,42 +99,44 @@ public class ModificaCollezione extends CollectorsBaseController {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             CollectionDAO collectionDAO = dataLayer.getCollectionDAO();
             NftDAO nftDAO = dataLayer.getNftDAO();
-            List<Nft> nfts = new ArrayList<>();
             int id = Integer.parseInt(request.getParameter("id"));
 
             Collection collection = collectionDAO.getCollection(id);
+            List<Nft> nfts = collectionDAO.showNft(id);
             collection.setNome(request.getParameter("nome"));
-            collectionDAO.deleteCollection(collectionDAO.getCollection(id));
 
-            for (String nft : request.getParameterValues("nfts")) {
-                nfts.add(nftDAO.getNft(Integer.parseInt(nft)));
+            for (Nft nft : nfts) {
+                nft.setCollection(null);
+                nftDAO.updateNftColl(nft);
             }
 
-            collection.setNfts(nfts);
-            if (request.getParameter("pubblica").equals("pubblica") && !collection.isPubblica()) {
+            nfts.clear();
+            if (request.getParameterValues("nfts") != null) {
+                for (String nft : request.getParameterValues("nfts")) {
+                    Nft nf = nftDAO.getNft(Integer.parseInt(nft));
+                    nfts.add(nf);
+                    nf.setCollection(collection.getKey());
+                    nftDAO.updateNftColl(nf);
+
+                }
+            }
+
+            if (request.getParameter("pubblica") != null) {
                 collection.setPubblica(true);
-            }
-            if (request.getParameter("pubblica").equals("privata")) {
+            } else
                 collection.setPubblica(false);
-            }
-       
+
             collectionDAO.storeCollection(collection);
 
-            if (request.getParameter("pubblica").equals("condivisa")) {
-                collection.setPubblica(false);
-                collectionDAO.setPubblica(collection, false);
-                //controllo se è gia condivisa quindi query su visualizza
-                
-            }
-
             response.sendRedirect("visualizza-collezione?id=" + collection.getKey());
-        } catch (IOException | DataException | SQLException e) {
+        } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
 
-    } 
+    }
 
-    private void action_notLogged(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, ServletException {
+    private void action_notLogged(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, TemplateManagerException, ServletException {
         accessCheckFailed(request, response);
     }
 
