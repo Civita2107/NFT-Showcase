@@ -98,7 +98,7 @@ public class CreaCollezione extends CollectorsBaseController {
             }
 
             
-            response.sendRedirect("lista-collezioni");
+            response.sendRedirect("visualizza-collezione?id="+key);
         } catch (IOException | DataException e) {
             handleError(e, request, response);
         }
