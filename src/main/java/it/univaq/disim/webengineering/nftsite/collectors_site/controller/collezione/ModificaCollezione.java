@@ -2,7 +2,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +78,7 @@ public class ModificaCollezione extends CollectorsBaseController {
         List<Nft> nftsSelected = new ArrayList<>();
 
         for (Nft nft : nftsAll) {
-            if (nft.getCollection() == collection.getKey() || nft.getCollection() == null) {
+            if (nft.getCollection() == null || nft.getCollection().equals(collection.getKey())) {
                 nftsSelected.add(nft);
             }
         }
