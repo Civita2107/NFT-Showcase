@@ -1,13 +1,17 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.sql.rowset.serial.SerialBlob;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
@@ -24,7 +28,7 @@ public class UserDAOimpl extends DAO implements UserDAO{
     private PreparedStatement identityCheck, sUserByEmail, sUserByUsername;
     private PreparedStatement sUsers, sUsersByKeyword;
     private PreparedStatement iUser, uUser, dUser;
-    private PreparedStatement sFollower,sFollowing;
+    private PreparedStatement sFollower,sFollowing,cFollow,iFollow,dFollow;
     private PreparedStatement iMedia;
     //private PreparedStatement UsersMostAttivi;
 
@@ -40,8 +44,12 @@ public class UserDAOimpl extends DAO implements UserDAO{
 
             iMedia = connection.prepareStatement("INSERT INTO media (foto) VALUES (?)");
 
-            sFollower = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.following = u.id where f.following = ?");
-            sFollowing = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.follower = u.id where f.follower = ?");
+            sFollower = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.follower = u.id where f.following = ?");
+            sFollowing = connection.prepareStatement("Select u.* FROM users as u INNER JOIN follow as f ON f.following = u.id where f.follower = ?");
+
+            cFollow = connection.prepareStatement("SELECT COUNT(f.id) as result FROM follow as f WHERE f.follower = ? AND f.following = ? LIMIT 1");
+            iFollow = connection.prepareStatement("INSERT INTO follow (follower,following) VALUES(?,?)");
+            dFollow = connection.prepareStatement("DELETE FROM follow WHERE follower = ? AND following = ?");
 
             sUser = connection.prepareStatement("SELECT * FROM users WHERE id=?");
             sUserByEmail = connection.prepareStatement("SELECT * FROM users WHERE email=?");
@@ -93,6 +101,10 @@ public class UserDAOimpl extends DAO implements UserDAO{
             a.setUsername(rs.getString("username"));
             a.setEmail(rs.getString("email"));
             a.setPassword(rs.getString("password"));
+            Blob foto = rs.getBlob("foto");
+            if (foto != null) {
+                a.setFoto(foto.getBytes(1,(int) foto.length()));
+            }
 
             return a;
         } catch (SQLException ex) {
@@ -110,15 +122,50 @@ public class UserDAOimpl extends DAO implements UserDAO{
                 uUser.setString(1, User.getUsername());
                 uUser.setString(2, User.getEmail());
                 uUser.setString(3, User.getPassword());
-                uUser.setString(4, User.getFoto());
+                if (User.getFoto() != null) {
+                    uUser.setBlob(4, new SerialBlob(User.getFoto()));
+                }
+                else{
+                    uUser.setNull(4, Types.BLOB);
+                }
 
 
                 uUser.setLong(5, User.getKey());
 
-                //Tolto versione
                 if (uUser.executeUpdate() == 0) {
                     throw new OptimisticLockException(User);
                 }
+
+                List<User> follower = User.getFollower();
+                List<Integer> followerKeys = new ArrayList<>();
+                follower.forEach((f) -> { followerKeys.add(f.getKey()); });
+
+                sFollower.setInt(1, User.getKey());
+                ResultSet rs = sFollower.executeQuery();
+
+                // rimuovo tutti i follower non più presenti
+                while (rs.next()) { // per ogni follower nel db
+                    if (!followerKeys.contains(rs.getInt("id"))){ // se il follower nel db NON è tra i follower di User
+                        // lo rimuovo
+                        dFollow.setLong(1, rs.getInt("id"));
+                        dFollow.setLong(2, User.getKey());
+                        dFollow.execute();
+                    }
+                }
+
+                // aggiunge tutti i nuovi follower
+                follower.forEach((f) -> {
+                    try {
+                        if (!this.isFollowing(f, User)) {
+                            iFollow.setLong(1, f.getKey());
+                            iFollow.setLong(2, User.getKey());
+                            iFollow.execute();
+                        }
+                    } catch (DataException | SQLException e) {
+                        System.err.println(e.getMessage());
+                    }
+                });
+
             } else {
                 iUser.setString(1, User.getUsername());
                 iUser.setString(2, User.getEmail());
@@ -299,7 +346,20 @@ public class UserDAOimpl extends DAO implements UserDAO{
         return l;
     }
 
-
+    @Override
+    public boolean  isFollowing(User follower, User followed) throws DataException{
+        try {
+            cFollow.setInt(1, follower.getKey());
+            cFollow.setInt(2, followed.getKey());
+            ResultSet rs = cFollow.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("result") == 1;
+            }
+            return false;
+        } catch (SQLException ex) {
+            throw new DataException("Impossibile verificare se l'utente è seguito", ex);
+        }
+    }
 
  
     

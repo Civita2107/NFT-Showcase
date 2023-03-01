@@ -79,12 +79,10 @@ public class CreaCollezione extends CollectorsBaseController {
             NftDAO nftDAO = dataLayer.getNftDAO();
 
             String nome = request.getParameter("nome");
-
-            boolean pubblica = false;
+            boolean pubblica;
             String pubblicaValue = request.getParameter("pubblica");
-            if (pubblicaValue != null) {
-                pubblica = true;
-            }
+            pubblica = pubblicaValue != null;
+       
             Collection collection = new CollectionImpl(nome, pubblica, user);
 
            int key = dataLayer.getCollectionDAO().storeCollection(collection);

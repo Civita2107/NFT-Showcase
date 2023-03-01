@@ -25,8 +25,9 @@ public interface UserDAO {
 
     User getUserByEmail(String email) throws DataException;
 
-    //Statistiche TOP
     List<User> getFollower(User user) throws DataException;
 
     List<User> getFollowing(User user) throws DataException;
+
+    boolean isFollowing(User follower, User followed) throws DataException;
 }

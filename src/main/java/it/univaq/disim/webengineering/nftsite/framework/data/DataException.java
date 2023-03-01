@@ -22,10 +22,11 @@ public class DataException extends Exception {
 
     @Override
     public String getMessage() {
-        String message = super.getMessage();
         if (getCause() != null && getCause().getMessage() != null) {
-            message += " (" + getCause().getMessage() + ")";
+            return super.getMessage() + " (" + getCause().getMessage() + ")";
         }
-        return message;
+        else{
+            return super.getMessage();
+        }
     }
 }
