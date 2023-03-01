@@ -18,8 +18,14 @@ public class DataException extends Exception {
         super(cause);
     }
 
+    
+
     @Override
     public String getMessage() {
-        return super.getMessage() + (getCause().getMessage() != null ? " (" + getCause().getMessage() + ")" : "");
+        String message = super.getMessage();
+        if (getCause() != null && getCause().getMessage() != null) {
+            message += " (" + getCause().getMessage() + ")";
+        }
+        return message;
     }
 }

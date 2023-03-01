@@ -22,7 +22,7 @@ public interface CollectionDAO {
 
   List<Collection> getCollectionsPubbliche(User user) throws DataException;
 
-  void storeCollection(Collection collection) throws DataException;
+  int storeCollection(Collection collection) throws DataException;
 
   void setPubblica(Collection collection, Boolean stato) throws DataException;
 

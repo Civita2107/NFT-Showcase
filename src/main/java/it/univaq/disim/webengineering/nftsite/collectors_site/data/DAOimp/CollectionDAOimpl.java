@@ -211,12 +211,12 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
     }
 //Funziona
     @Override
-    public void storeCollection(Collection collection) throws DataException {
+    public int storeCollection(Collection collection) throws DataException {
         try {
             if (collection.getKey() != null && collection.getKey() > 0) {
 
                 if (collection instanceof DataItemProxy && !((DataItemProxy) collection).isModified()) {
-                    return;
+                    return 0;
                 }
                 uCollection.setString(1, collection.getNome());
                 uCollection.setBoolean(2, collection.isPubblica());
@@ -238,6 +238,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
                             int key = keys.getInt(1);
                             collection.setKey(key);
                             dataLayer.getCache().add(Collection.class, collection);
+                            return key;
                         }
                     }
                 }
@@ -248,6 +249,7 @@ public class CollectionDAOimpl extends DAO implements CollectionDAO {
         } catch (SQLException ex) {
             throw new DataException("Unable to store Collection", ex);
         }
+        return 0;
     }
 
    

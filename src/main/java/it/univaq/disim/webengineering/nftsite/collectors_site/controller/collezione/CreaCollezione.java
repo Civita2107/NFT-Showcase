@@ -1,6 +1,7 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.impl.CollectionImpl;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
@@ -62,7 +64,7 @@ public class CreaCollezione extends CollectorsBaseController {
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(Utility.getUser(request));
         List<User> users = dataLayer.getUserDAO().getUsers();
         users.remove(dataLayer.getUserDAO().getUser(Utility.getUser(request).getKey()));
-        request.setAttribute("nfts", nfts);
+        request.setAttribute("nftsAll", nfts);
         request.setAttribute("users", users);
 
         result.activate("collezione/crea.ftl", request, response);
@@ -73,16 +75,31 @@ public class CreaCollezione extends CollectorsBaseController {
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             User user = Utility.getUser(request);
+            List<Nft> nftSelected = new ArrayList<>(); 
+            NftDAO nftDAO = dataLayer.getNftDAO();
 
             String nome = request.getParameter("nome");
+
             boolean pubblica = false;
             String pubblicaValue = request.getParameter("pubblica");
-            if (pubblicaValue != null && pubblicaValue.equals("pubblica")) {
+            if (pubblicaValue != null) {
                 pubblica = true;
             }
-            
             Collection collection = new CollectionImpl(nome, pubblica, user);
-            dataLayer.getCollectionDAO().storeCollection(collection);
+
+           int key = dataLayer.getCollectionDAO().storeCollection(collection);
+
+            if (request.getParameterValues("nfts") != null) {
+                for (String nft : request.getParameterValues("nfts")) {
+                    Nft nf = nftDAO.getNft(Integer.parseInt(nft));
+                    nftSelected.add(nf);
+                    nf.setCollection(key);
+                    nftDAO.updateNftColl(nf);
+
+                }
+            }
+
+            
             response.sendRedirect("lista-collezioni");
         } catch (IOException | DataException e) {
             handleError(e, request, response);
