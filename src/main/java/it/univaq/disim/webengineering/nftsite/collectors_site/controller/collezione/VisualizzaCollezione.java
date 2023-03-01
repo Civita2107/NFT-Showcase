@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.CollectorsBaseController;
 import it.univaq.disim.webengineering.nftsite.collectors_site.controller.Utility;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
@@ -46,17 +48,14 @@ public class VisualizzaCollezione extends CollectorsBaseController {
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         CollectionDAO collectionDAO = dataLayer.getCollectionDAO();
         Collection collection = collectionDAO.getCollection(Integer.parseInt(request.getParameter("id")));
-
+        UserDAO userDAO = dataLayer.getUserDAO();
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(collection);
-        
-        if(Utility.getUser(request) != null)
-            request.setAttribute("user", Utility.getUser(request).getKey());
-        else
-            request.setAttribute("user", 0);
 
+        User user = userDAO.getUser(collection.getUser().getKey()); 
 
         request.setAttribute("nfts", nfts);
         request.setAttribute("collection", collection);
+        request.setAttribute("user", user);
 
         result.activate("collezione/visualizza.ftl", request, response);
     }
