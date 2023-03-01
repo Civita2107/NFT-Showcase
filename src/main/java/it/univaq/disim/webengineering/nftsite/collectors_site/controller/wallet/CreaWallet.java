@@ -95,6 +95,13 @@ public class CreaWallet extends CollectorsBaseController {
             String pk = request.getParameter("pk");
             String signature = request.getParameter("signature");
 
+            if (!pk.substring(0, 2).equals("0x")) {
+                pk = "0x"+pk;
+            }
+            if (!signature.substring(0, 2).equals("0x")) {
+                signature = "0x"+signature;
+            }
+
             boolean validity = verifyEthereumSignature(pk, message, signature);
 
             if (validity) {
