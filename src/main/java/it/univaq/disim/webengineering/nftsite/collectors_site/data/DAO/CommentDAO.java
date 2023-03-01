@@ -1,11 +1,9 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO;
 
 import java.util.List;
-import java.util.Map;
 
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 
 public interface CommentDAO {
