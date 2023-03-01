@@ -28,6 +28,8 @@ public interface NftDAO {
     List<Nft> getNft(User user) throws DataException;
 
     List<Nft> getRandomNfts() throws DataException;
+
+    public List<Nft> getRandomFolloersNfts(User user) throws DataException;
     
     void storeNft(List<Nft> nft) throws DataException;
 

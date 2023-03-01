@@ -1,3 +1,15 @@
+<#if logininfo?? && follow_nfts??>
+    <h1 class="m-2 text-2xl font-bold">Dai tuoi seguiti:</h1>
+    <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <#list follow_nfts as nft>
+            <a href="visualizza-nft?id=${nft.getKey()?c}" class="flex flex-col m-2 border shadow-lg rounded-2xl">
+                <img class="object-contain bg-gray-300 aspect-square rounded-t-2xl" src="${nft.getMetadata()}" alt="${nft.getTitle()}" onerror="this.src='${assets}/fallback.png'">
+                <h2 class="px-4 py-2 text-lg font-bold">${nft.getTitle()}</h2>
+            </a>
+        </#list>
+    </div>
+    <h1 class="m-2 text-2xl font-bold">Altri nfts:</h1>
+</#if>
 <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
     <#list nfts as nft>
         <a href="visualizza-nft?id=${nft.getKey()?c}" class="flex flex-col m-2 border shadow-lg rounded-2xl">

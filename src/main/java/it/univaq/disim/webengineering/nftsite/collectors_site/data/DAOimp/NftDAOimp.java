@@ -25,7 +25,7 @@ import it.univaq.disim.webengineering.nftsite.framework.data.OptimisticLockExcep
 public class NftDAOimp extends DAO implements NftDAO {
 
     private PreparedStatement sNftByCollection, sNftByUser, sNftByKeyword, sNft, sNftByComment, iNft, sNftByRandom,
-            sNftByTitleOrCA, sNftByWallet, uNftColl;
+            sNftByTitleOrCA, sNftByWallet, uNftColl, sNftByFollowers;
 
     public NftDAOimp(DataLayer d) {
         super(d);
@@ -53,6 +53,7 @@ public class NftDAOimp extends DAO implements NftDAO {
                     Statement.RETURN_GENERATED_KEYS);
             uNftColl = connection.prepareStatement("UPDATE nft SET collection=? WHERE id=?");
             sNftByRandom = connection.prepareStatement("SELECT * FROM nft ORDER BY RAND() LIMIT 20");
+            sNftByFollowers = connection.prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w ON n.wallet_address = w.wallet_address INNER JOIN follow as f ON w.user_id = f.following WHERE f.follower = ? ORDER BY RAND() LIMIT 20");
             sNftByWallet = connection
                     .prepareStatement("SELECT n.* FROM nft as n INNER JOIN wallet as w WHERE n.wallet_address= ?");
 
@@ -268,6 +269,29 @@ public class NftDAOimp extends DAO implements NftDAO {
             }
         } catch (SQLException ex) {
             throw new DataException("Unable to load random Nfts", ex);
+        }
+    }
+
+    /**
+     * Returns a list of <i>at most</i> 20 Nfts randomly choosen and ordered from the user follow
+     *
+     * @param user = user from wich select his follow
+     * @return list = list of Nfts
+     * @throws DataException
+     */
+    @Override
+    public List<Nft> getRandomFolloersNfts(User user) throws DataException {
+        try {
+            sNftByFollowers.setLong(1, user.getKey());
+            try (ResultSet rs = sNftByFollowers.executeQuery()) {
+                List<Nft> result = new ArrayList<>();
+                while (rs.next()) {
+                    result.add(createNft(rs));
+                }
+                return result;
+            }
+        } catch (SQLException ex) {
+            throw new DataException("Unable to load random follows Nfts", ex);
         }
     }
 

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp.CollectorsDataLayer;
 import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerException;
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
@@ -46,6 +47,14 @@ public class Homepage extends CollectorsBaseController {
         NftDAO nftDAO = dataLayer.getNftDAO();
 
         nfts = nftDAO.getRandomNfts();
+
+        User loggedUser = Utility.getUser(request);
+        if (loggedUser != null) {
+            List<Nft> follow_nfts = nftDAO.getRandomFolloersNfts(loggedUser);
+            if (!follow_nfts.isEmpty()) {
+                request.setAttribute("follow_nfts", follow_nfts);
+            }
+        }
         
         request.setAttribute("nfts", nfts);
         result.activate("index.ftl", request, response);
