@@ -105,7 +105,7 @@ public class Utility {
 
         return nfts;
     }
-
+//TODO da cambiare
     public static Nft getNft(HttpServletRequest request) throws DataException {
         Nft nft;
         HttpSession s = request.getSession(false);
