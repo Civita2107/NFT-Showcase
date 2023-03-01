@@ -1,7 +1,6 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.controller.collezione;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -75,7 +74,6 @@ public class CreaCollezione extends CollectorsBaseController {
         try {
             CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
             User user = Utility.getUser(request);
-            List<Nft> nftSelected = new ArrayList<>(); 
             NftDAO nftDAO = dataLayer.getNftDAO();
 
             String nome = request.getParameter("nome");
@@ -90,7 +88,6 @@ public class CreaCollezione extends CollectorsBaseController {
             if (request.getParameterValues("nfts") != null) {
                 for (String nft : request.getParameterValues("nfts")) {
                     Nft nf = nftDAO.getNft(Integer.parseInt(nft));
-                    nftSelected.add(nf);
                     nf.setCollection(key);
                     nftDAO.updateNftColl(nf);
 
