@@ -1,9 +1,9 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.model;
+
 import it.univaq.disim.webengineering.nftsite.framework.data.DataItem;
 
-
 public interface Nft extends DataItem<Integer> {
-    
+
     String getTitle();
 
     void setTitle(String title);
@@ -12,7 +12,7 @@ public interface Nft extends DataItem<Integer> {
 
     void setTokenId(String tokenId);
 
-    String getContractAddress(); //da qui prendiamo la collezione di appartenenza
+    String getContractAddress(); // da qui prendiamo la collezione di appartenenza
 
     void setContractAddress(String contractAddress);
 
@@ -22,14 +22,18 @@ public interface Nft extends DataItem<Integer> {
 
     String getMetadata();
 
-    void setMetadata(String metadata); //bytecode della foto
+    void setMetadata(String metadata); // bytecode della foto
 
-    String getWalletAddress(); //da qui prendiamo il wallet del possessore
+    String getWalletAddress(); // da qui prendiamo il wallet del possessore
 
     void setWalletAddress(String walletAddress);
 
     boolean isPubblica();
 
     void setPubblica(boolean pubblica);
+
+    Integer getCollection();
+
+    void setCollection(Integer collection);
 
 }
