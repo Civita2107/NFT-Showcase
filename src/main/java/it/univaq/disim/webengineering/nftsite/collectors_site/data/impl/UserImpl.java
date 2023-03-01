@@ -82,6 +82,11 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     }
 
     @Override
+    public void removeFollower(User follower){
+        this.followers.removeIf((u) -> {return u.getKey().equals(follower.getKey());});
+    }
+
+    @Override
     public List<User> getFollowing() {
         return this.follow;
     }

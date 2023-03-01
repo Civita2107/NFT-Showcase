@@ -14,6 +14,8 @@ import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 public class UserProxy extends UserImpl implements DataItemProxy {
     
     protected boolean modified;
+    protected boolean followInizialized = false;
+    protected boolean followersInizialized = false;
 
     protected DataLayer dataLayer;
 
@@ -49,13 +51,14 @@ public class UserProxy extends UserImpl implements DataItemProxy {
 
     @Override
     public List<User> getFollower() {
-        if (super.getFollower().isEmpty()) {
+        if (!followersInizialized) {
             try {
                 List<User> followers = ((UserDAO) dataLayer.getDAO(User.class)).getFollower(this);
                 followers.forEach((User follower) -> addFollower(follower));
             } catch (DataException e) {
                 Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
             }
+            followersInizialized = true;
         }
         return super.getFollower();
     }
@@ -67,14 +70,21 @@ public class UserProxy extends UserImpl implements DataItemProxy {
     }
 
     @Override
+    public void removeFollower(User user) {
+        super.removeFollower(user);
+        this.modified = true;
+    }
+
+    @Override
     public List<User> getFollowing() {
-        if (super.getFollowing().isEmpty()) {
+        if (followInizialized) {
             try {
                 List<User> following = ((UserDAO) dataLayer.getDAO(User.class)).getFollowing(this);
                 following.forEach((User follower) -> addFollowing(follower));
             } catch (DataException e) {
                 Logger.getLogger(UserProxy.class.getName()).log(Level.SEVERE, null, e);
             }
+            followInizialized = true;
         }
         return super.getFollowing();
     }

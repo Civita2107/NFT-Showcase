@@ -10,9 +10,19 @@
             <h2>Seguiti: ${user.getFollower()?size!"error"}</h2>
             <h2>Segue: ${user.getFollowing()?size!"error"}</h2>
         </div>
-        <a class="p-2 w-fit mr-auto" href="mailto:${user.getEmail()}">${user.getEmail()}</a>
-        <#if logininfo?? && (user.getKey() == logininfo.userid)>
-            <a class="px-4 py-2 ml-2 mr-auto font-bold text-white duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" href="modifica-utente">modifica</a>
+        <a class="p-2 mr-auto w-fit" href="mailto:${user.getEmail()}">${user.getEmail()}</a>
+        <#if logininfo??>
+            <#if user.getKey() == logininfo.userid>
+                <a class="px-4 py-2 ml-2 mr-auto font-bold text-white duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" href="modifica-utente">modifica</a>
+            <#else/>
+                <form action="visualizza-utente?id=${user.getKey()?c}" method="post">
+                    <#if following>
+                        <input name="follow_action" type="submit" class="px-4 py-2 ml-2 mr-auto font-bold text-white capitalize duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" value="unfollow">
+                    <#else/>
+                        <input name="follow_action" type="submit" class="px-4 py-2 ml-2 mr-auto font-bold text-white capitalize duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" value="follow">
+                    </#if>
+                </form>
+            </#if>
         </#if>
     </div>
 </div>
