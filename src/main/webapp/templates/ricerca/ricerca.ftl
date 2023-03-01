@@ -55,4 +55,16 @@
   </div>
 </#if>
 
-<!-- TODO collezioni -->
+<#if (filtro=="tutto" || filtro=="collezioni")>
+  <div class="collezioni" id="collezioni">
+    <div class="grid grid-flow-row grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+      <#list collections as collection>
+        <a href="visualizza-collezione?id=${collection.getKey()?c}" class="flex flex-col m-2 border shadow-lg rounded-2xl">
+          <h2 class="flex flex-col p-2">
+            ${collection.getNome()}
+          </h2>
+        </a>
+      </#list>
+    </div>
+  </div>
+</#if>
