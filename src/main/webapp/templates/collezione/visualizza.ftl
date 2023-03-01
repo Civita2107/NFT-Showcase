@@ -13,6 +13,7 @@
         <a class="p-2 w-fit mr-auto" href="mailto:${user.getEmail()}">${user.getEmail()}</a>
         <#if logininfo?? && (user.getKey() == logininfo.userid)>
             <a class="px-4 py-2 ml-2 mr-auto font-bold text-white duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" href="modifica-collezione?id=${collection.getKey()}">modifica collezione</a>
+            <a class="px-4 py-2 ml-2 mr-auto font-bold text-white duration-200 bg-gray-600 border rounded-full hover:bg-black w-min whitespace-nowrap" href="elimina-collezione?id=${collection.getKey()}">elimina</a>
         </#if>
     </div>
 </div>

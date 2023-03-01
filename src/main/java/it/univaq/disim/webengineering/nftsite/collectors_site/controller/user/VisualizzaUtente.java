@@ -24,12 +24,12 @@ import it.univaq.disim.webengineering.nftsite.framework.result.TemplateManagerEx
 import it.univaq.disim.webengineering.nftsite.framework.result.TemplateResult;
 
 public class VisualizzaUtente extends CollectorsBaseController {
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
      * @throws ServletException
      */
@@ -38,7 +38,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         try {
             if (request.getMethod().equals("POST")) {
                 action_modifica(request, response);
-            } else{
+            } else {
                 action_default(request, response);
             }
         } catch (IOException | TemplateManagerException | DataException ex) {
@@ -56,7 +56,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         UserDAO userDAO = dataLayer.getUserDAO();
         user = userDAO.getUser((Integer.parseInt(request.getParameter("id"))));
-        Set<Collection> collezioni1 = new HashSet<>(); 
+        Set<Collection> collezioni1 = new HashSet<>();
         Set<Collection> collezioni = new HashSet<>(dataLayer.getCollectionDAO().getCollections(user));
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(user);
 
@@ -67,18 +67,15 @@ public class VisualizzaUtente extends CollectorsBaseController {
         }
 
         request.setAttribute("following", following);
-        try {
-            if (!request.getParameter("id").equals(String.valueOf(Utility.getUser(request).getKey()))) {
-                for (Collection collection : collezioni) {
-                    if (collection.isPubblica()) {
-                        collezioni1.add(collection);
-                    }                    
+
+        if (loggedUser == null || !user.getKey().equals(loggedUser.getKey())) {
+            for (Collection collection : collezioni) {
+                if (collection.isPubblica()) {
+                    collezioni1.add(collection);
                 }
-            } else {
-                collezioni1 = new HashSet<>(dataLayer.getCollectionDAO().getCollections(user));
             }
-        } catch (NullPointerException e) {
-            //
+        } else {
+            collezioni1 = collezioni;
         }
 
         request.setAttribute("user", user);
@@ -86,7 +83,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         request.setAttribute("nfts", nfts);
         result.activate("user/visualizza.ftl", request, response);
     }
-    
+
     private void action_modifica(HttpServletRequest request, HttpServletResponse response) throws IOException, TemplateManagerException, DataException {
         try {
             User loggedUser = Utility.getUser(request);
@@ -100,14 +97,13 @@ public class VisualizzaUtente extends CollectorsBaseController {
             user.getFollower();
             if (request.getParameter("follow_action").equals("follow")) {
                 user.addFollower(loggedUser);
-            }
-            else {
+            } else {
                 user.removeFollower(loggedUser);
             }
             userDAO.storeUser(user);
             action_default(request, response);
         } catch (DataException | SQLException e) {
-            throw new DataException("Errore nell'azionedi follow/unfollow.",e);
+            throw new DataException("Errore nell'azione di follow/unfollow.", e);
         }
     }
 }
