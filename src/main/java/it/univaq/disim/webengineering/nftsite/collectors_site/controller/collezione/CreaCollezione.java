@@ -75,15 +75,13 @@ public class CreaCollezione extends CollectorsBaseController {
             User user = Utility.getUser(request);
 
             String nome = request.getParameter("nome");
-            boolean pubblica = false;
+            boolean pubblica;
             String pubblicaValue = request.getParameter("pubblica");
-            if (pubblicaValue != null && pubblicaValue.equals("pubblica")) {
-                pubblica = true;
-            }
-            
+            pubblica = pubblicaValue != null;
+       
             Collection collection = new CollectionImpl(nome, pubblica, user);
             dataLayer.getCollectionDAO().storeCollection(collection);
-            response.sendRedirect("lista-collezioni");
+            response.sendRedirect("visualizza-utente?id=" + user.getKey());
         } catch (IOException | DataException e) {
             handleError(e, request, response);
         }

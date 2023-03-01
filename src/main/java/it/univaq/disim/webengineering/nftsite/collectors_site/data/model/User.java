@@ -25,6 +25,8 @@ public interface User extends DataItem<Integer>  {
     List<User> getFollower();
 
     void addFollower(User follower);
+    
+    void removeFollower(User follower);
 
     List<User> getFollowing();
 

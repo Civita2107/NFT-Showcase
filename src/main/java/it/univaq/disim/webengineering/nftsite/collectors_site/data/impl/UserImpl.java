@@ -82,6 +82,11 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
     }
 
     @Override
+    public void removeFollower(User follower){
+        this.followers.removeIf((u) -> {return u.getKey().equals(follower.getKey());});
+    }
+
+    @Override
     public List<User> getFollowing() {
         return this.follow;
     }
@@ -102,24 +107,8 @@ public class UserImpl extends DataItemImpl<Integer> implements User {
             String base64 = Base64.getEncoder().encodeToString(this.foto);
             return "data:"+mimeType+";base64," + base64;
         } catch (IOException e) {
-            System.out.println(e.getMessage());
             return null;
         }
-        /*if (this.foto == null){
-            return null;
-        }
-        try {
-            // genero il dataURI per la sua visualizzazione
-            byte[] data = new byte[this.foto.available()];// = this.foto.readAllBytes();
-            System.out.println("a");
-            this.foto.read(data);
-            System.out.println("b");
-            String base64 = Base64.getEncoder().encodeToString(data);
-            return "data:image/png;base64," + base64;
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }*/
     }
 
     @Override

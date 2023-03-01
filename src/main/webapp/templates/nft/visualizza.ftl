@@ -35,6 +35,8 @@
                     </#list>
                 </div>
             </div>
+            <#if logininfo??>
+
             <!-- comment form -->
             <div class="flex items-center justify-center max-w-lg mx-auto mt-56 mb-4 shadow-lg">
                 <form method="post" class="w-full max-w-xl px-4 pt-2 bg-white rounded-lg" action="crea-commento?nft_id=${nft.getKey()?c}">
@@ -53,6 +55,7 @@
                     </div>
                 </form>
             </div>
+            </#if>
             <!-- commenti -->
             <#list user_comment as uc>
                 <div class="relative grid grid-cols-1 gap-4 p-4 mb-8 bg-white border rounded-lg shadow-lg">

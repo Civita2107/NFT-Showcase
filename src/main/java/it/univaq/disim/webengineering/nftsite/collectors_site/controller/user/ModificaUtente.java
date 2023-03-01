@@ -157,13 +157,10 @@ public class ModificaUtente extends CollectorsBaseController {
             response.sendRedirect("visualizza-utente?id=" + user.getKey());
 
         } catch (DataException e) {
-            System.out.println("e1");
-            System.out.println(e.getMessage());
             request.setAttribute("error", e.getMessage());
             action_default(request, response);
         }
         catch (SQLException | FileUploadException ex){
-            System.out.println("e2");
             request.setAttribute("error", "Si è verificato un errore inaspettato, siamo spiacenti");
             action_default(request, response);
         }
