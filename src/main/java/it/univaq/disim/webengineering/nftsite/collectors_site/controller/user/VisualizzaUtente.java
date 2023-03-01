@@ -56,7 +56,7 @@ public class VisualizzaUtente extends CollectorsBaseController {
         CollectorsDataLayer dataLayer = ((CollectorsDataLayer) request.getAttribute("datalayer"));
         UserDAO userDAO = dataLayer.getUserDAO();
         user = userDAO.getUser((Integer.parseInt(request.getParameter("id"))));
-
+        Set<Collection> collezioni1 = new HashSet<>(); 
         Set<Collection> collezioni = new HashSet<>(dataLayer.getCollectionDAO().getCollections(user));
         List<Nft> nfts = dataLayer.getNftDAO().getNfts(user);
 
@@ -67,8 +67,22 @@ public class VisualizzaUtente extends CollectorsBaseController {
         }
 
         request.setAttribute("following", following);
+        try {
+            if (!request.getParameter("id").equals(String.valueOf(Utility.getUser(request).getKey()))) {
+                for (Collection collection : collezioni) {
+                    if (collection.isPubblica()) {
+                        collezioni1.add(collection);
+                    }                    
+                }
+            } else {
+                collezioni1 = new HashSet<>(dataLayer.getCollectionDAO().getCollections(user));
+            }
+        } catch (NullPointerException e) {
+            //
+        }
+
         request.setAttribute("user", user);
-        request.setAttribute("collezioni", collezioni);
+        request.setAttribute("collezioni", collezioni1);
         request.setAttribute("nfts", nfts);
         result.activate("user/visualizza.ftl", request, response);
     }
