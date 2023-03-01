@@ -77,7 +77,7 @@ public class UserProxy extends UserImpl implements DataItemProxy {
 
     @Override
     public List<User> getFollowing() {
-        if (followInizialized) {
+        if (!followInizialized) {
             try {
                 List<User> following = ((UserDAO) dataLayer.getDAO(User.class)).getFollowing(this);
                 following.forEach((User follower) -> addFollowing(follower));
