@@ -1,10 +1,19 @@
 package it.univaq.disim.webengineering.nftsite.collectors_site.data.DAOimp;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.*;
-import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.*;
+import javax.sql.DataSource;
+
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CollectionDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.CommentDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.NftDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.UserDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.DAO.WalletDAO;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Collection;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Comment;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Nft;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.User;
+import it.univaq.disim.webengineering.nftsite.collectors_site.data.model.Wallet;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataException;
 import it.univaq.disim.webengineering.nftsite.framework.data.DataLayer;
 
@@ -22,7 +31,6 @@ public class CollectorsDataLayer extends DataLayer {
         //register our daos
         registerDAO(Collection.class, new CollectionDAOimpl(this));
         registerDAO(Comment.class, new CommentDAOimpl(this));
-        registerDAO(Foto.class, new FotoDAOimpl(this));
         registerDAO(Nft.class, new NftDAOimp(this));
         registerDAO(User.class, new UserDAOimpl(this));
         registerDAO(Wallet.class, new WalletDAOimp(this));
@@ -37,10 +45,6 @@ public class CollectorsDataLayer extends DataLayer {
 
     public CommentDAO getCommentDAO() {
         return (CommentDAO) getDAO(Comment.class);
-    }
-
-    public FotoDAO getImmagineDAO() {
-        return (FotoDAO) getDAO(Foto.class);
     }
 
     public NftDAO getNftDAO() {
